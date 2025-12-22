@@ -1,0 +1,87 @@
+{
+    "project": {
+        "name": "Sistema OSINT Vicerrectorado EMI",
+        "version": "1.0.0",
+        "description": "Sistema de recolección y análisis OSINT para la Escuela Militar de Ingeniería"
+    },
+    "database": {
+        "type": "sqlite",
+        "path": "data/osint_emi.db",
+        "backup_enabled": true,
+        "backup_path": "data/backups/"
+    },
+    "sources": {
+        "facebook": {
+            "enabled": true,
+            "pages": [
+                {
+                    "name": "EMI Oficial",
+                    "url": "https://www.facebook.com/profile.php?id=61574626396439",
+                    "reliability_score": 0.95
+                },
+                {
+                    "name": "EMI UALP",
+                    "url": "https://www.facebook.com/EMI.UALP",
+                    "reliability_score": 0.90
+                }
+            ],
+            "rate_limit": {
+                "requests_per_hour": 60,
+                "delay_min_seconds": 3,
+                "delay_max_seconds": 7
+            }
+        },
+        "tiktok": {
+            "enabled": true,
+            "accounts": [
+                {
+                    "name": "EMI La Paz Oficial",
+                    "username": "emilapazoficial",
+                    "url": "https://www.tiktok.com/@emilapazoficial",
+                    "reliability_score": 0.85
+                }
+            ],
+            "rate_limit": {
+                "requests_per_hour": 30,
+                "delay_min_seconds": 5,
+                "delay_max_seconds": 10
+            },
+            "ms_token": ""
+        }
+    },
+    "scraping": {
+        "headless": true,
+        "viewport": {
+            "width": 1920,
+            "height": 1080
+        },
+        "timeout_ms": 30000,
+        "max_retries": 3,
+        "retry_delay_seconds": 5,
+        "scroll_pause_seconds": 2,
+        "max_scroll_attempts": 20
+    },
+    "scheduler": {
+        "enabled": true,
+        "collection_interval_hours": 12,
+        "etl_interval_hours": 6,
+        "timezone": "America/La_Paz"
+    },
+    "etl": {
+        "batch_size": 100,
+        "min_text_length": 10,
+        "max_text_length": 5000,
+        "remove_urls": true,
+        "remove_emojis": false,
+        "remove_hashtags": false,
+        "remove_mentions": true,
+        "normalize_whitespace": true
+    },
+    "logging": {
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "file_path": "logs/osint_system.log",
+        "max_file_size_mb": 10,
+        "backup_count": 5
+    }
+}

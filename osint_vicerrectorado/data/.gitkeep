@@ -1,0 +1,6 @@
+# Directorio de datos y logs
+# Los archivos en este directorio son generados automáticamente
+
+Este directorio contiene:
+- `osint_emi.db` - Base de datos SQLite (generada al inicializar)
+- `logs/` - Archivos de log del sistema
