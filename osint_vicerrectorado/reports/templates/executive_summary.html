@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ report_title }}</title>
+    <link rel="stylesheet" href="report.css">
+</head>
+<body>
+    <!-- ==================== PORTADA ==================== -->
+    <div class="cover-page">
+        {% if logo_base64 %}
+        <img src="{{ logo_base64 }}" alt="Logo EMI" class="logo">
+        {% else %}
+        <div class="logo-placeholder">
+            <span>EMI</span>
+        </div>
+        {% endif %}
+        
+        <h1 class="report-title">{{ report_title }}</h1>
+        <p class="report-subtitle">{{ report_subtitle }}</p>
+        
+        <div class="cover-info">
+            <p class="institution">{{ institution }}</p>
+            <p class="department">{{ department }}</p>
+        </div>
+        
+        <div class="cover-period">
+            <div class="period-box">
+                <span class="period-label">Período Analizado</span>
+                <span class="period-value">{{ period_display }}</span>
+            </div>
+            <div class="period-box">
+                <span class="period-label">Fecha de Generación</span>
+                <span class="period-value">{{ generated_date }}</span>
+            </div>
+        </div>
+        
+        <div class="cover-footer">
+            <p>Sistema de Analítica OSINT</p>
+            <p>Documento Confidencial</p>
+        </div>
+    </div>
+    
+    <!-- ==================== RESUMEN EJECUTIVO ==================== -->
+    {% if 'summary' in sections %}
+    <div class="page" id="summary">
+        <h2 class="section-title">
+            <span class="section-icon">📊</span>
+            Resumen Ejecutivo
+        </h2>
+        
+        <div class="executive-summary">
+            <p class="summary-intro">
+                Durante el período <strong>{{ period_display }}</strong>, el Sistema de Analítica OSINT 
+                recolectó y analizó <strong>{{ total_posts|format_number }}</strong> publicaciones de redes sociales 
+                relacionadas con la Escuela Militar de Ingeniería.
+            </p>
+            
+            <!-- KPIs Principales -->
+            <div class="kpi-grid">
+                <div class="kpi-card positive">
+                    <div class="kpi-icon">👍</div>
+                    <div class="kpi-value">{{ positive_percent }}%</div>
+                    <div class="kpi-label">Menciones Positivas</div>
+                    <div class="kpi-count">({{ kpis.positive_count|format_number }} posts)</div>
+                </div>
+                
+                <div class="kpi-card negative">
+                    <div class="kpi-icon">👎</div>
+                    <div class="kpi-value">{{ negative_percent }}%</div>
+                    <div class="kpi-label">Menciones Negativas</div>
+                    <div class="kpi-count">({{ kpis.negative_count|format_number }} posts)</div>
+                </div>
+                
+                <div class="kpi-card neutral">
+                    <div class="kpi-icon">😐</div>
+                    <div class="kpi-value">{{ neutral_percent }}%</div>
+                    <div class="kpi-label">Menciones Neutrales</div>
+                    <div class="kpi-count">({{ kpis.neutral_count|format_number }} posts)</div>
+                </div>
+                
+                <div class="kpi-card {% if satisfaction_index >= 60 %}positive{% elif satisfaction_index <= 40 %}negative{% else %}neutral{% endif %}">
+                    <div class="kpi-icon">📈</div>
+                    <div class="kpi-value">{{ satisfaction_index }}</div>
+                    <div class="kpi-label">Índice de Satisfacción</div>
+                    <div class="kpi-trend">Tendencia: {{ trend }}</div>
+                </div>
+            </div>
+            
+            <!-- Conclusión rápida -->
+            <div class="summary-conclusion">
+                <h4>Hallazgos Principales</h4>
+                <ul>
+                    <li>
+                        {% if trend == 'creciente' %}
+                        <span class="trend-up">↑</span> La percepción institucional muestra una tendencia positiva sostenida.
+                        {% elif trend == 'decreciente' %}
+                        <span class="trend-down">↓</span> Se detecta una tendencia a la baja que requiere atención.
+                        {% else %}
+                        <span class="trend-stable">→</span> La percepción institucional se mantiene estable.
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if critical_alerts > 0 %}
+                        <span class="alert-badge">{{ critical_alerts }}</span> alertas críticas requieren atención inmediata.
+                        {% else %}
+                        No se detectaron alertas críticas durante el período.
+                        {% endif %}
+                    </li>
+                    <li>
+                        El engagement promedio fue de <strong>{{ kpis.avg_engagement }}%</strong> sobre el benchmark histórico.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== ANÁLISIS DE SENTIMIENTO ==================== -->
+    {% if 'sentiment' in sections and charts.sentiment_evolution %}
+    <div class="page" id="sentiment">
+        <h2 class="section-title">
+            <span class="section-icon">💬</span>
+            Análisis de Sentimiento
+        </h2>
+        
+        <div class="chart-container">
+            <h3 class="chart-title">Evolución Temporal de Sentimientos</h3>
+            <img src="{{ charts.sentiment_evolution }}" alt="Gráfico de Evolución de Sentimientos" class="chart">
+            
+            <div class="chart-interpretation">
+                <h4>Interpretación</h4>
+                <p>
+                    El gráfico muestra la evolución diaria de los sentimientos detectados en las publicaciones 
+                    durante el período analizado. Se observa que:
+                </p>
+                <ul>
+                    <li>Las menciones positivas representan el <strong>{{ positive_percent }}%</strong> del total.</li>
+                    <li>Las menciones negativas representan el <strong>{{ negative_percent }}%</strong> del total.</li>
+                    <li>Las menciones neutrales (informativas) representan el <strong>{{ neutral_percent }}%</strong>.</li>
+                </ul>
+            </div>
+        </div>
+        
+        {% if charts.sentiment_distribution %}
+        <div class="chart-container half-width">
+            <h3 class="chart-title">Distribución General</h3>
+            <img src="{{ charts.sentiment_distribution }}" alt="Distribución de Sentimientos" class="chart">
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- ==================== ALERTAS CRÍTICAS ==================== -->
+    {% if 'alerts' in sections and alerts %}
+    <div class="page" id="alerts">
+        <h2 class="section-title">
+            <span class="section-icon">🚨</span>
+            Alertas Críticas Detectadas
+        </h2>
+        
+        <div class="alerts-summary">
+            <p>
+                Durante el período se detectaron <strong>{{ total_alerts }}</strong> alertas,
+                de las cuales <strong>{{ critical_alerts }}</strong> fueron clasificadas como críticas.
+            </p>
+        </div>
+        
+        <table class="data-table alerts-table">
+            <thead>
+                <tr>
+                    <th width="15%">Severidad</th>
+                    <th width="20%">Tipo</th>
+                    <th width="40%">Descripción</th>
+                    <th width="15%">Fecha</th>
+                    <th width="10%">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alert in alerts[:10] %}
+                <tr class="severity-{{ alert.severity }}">
+                    <td>
+                        <span class="severity-badge {{ alert.severity }}">
+                            {{ alert.severity|upper }}
+                        </span>
+                    </td>
+                    <td>{{ alert.type }}</td>
+                    <td>{{ alert.description }}</td>
+                    <td>{{ alert.date|format_date }}</td>
+                    <td>{{ alert.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {% if total_alerts > 10 %}
+        <p class="table-note">
+            Mostrando 10 de {{ total_alerts }} alertas. Consulte el sistema para el listado completo.
+        </p>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- ==================== TOP QUEJAS ==================== -->
+    {% if 'complaints' in sections and top_complaints %}
+    <div class="page" id="complaints">
+        <h2 class="section-title">
+            <span class="section-icon">📝</span>
+            Top 10 Quejas Recurrentes
+        </h2>
+        
+        <p class="section-intro">
+            A continuación se presentan los temas de queja más frecuentes identificados durante el período:
+        </p>
+        
+        <div class="complaints-list">
+            {% for complaint in top_complaints[:10] %}
+            <div class="complaint-item">
+                <div class="complaint-rank">#{{ loop.index }}</div>
+                <div class="complaint-content">
+                    <div class="complaint-topic">{{ complaint.topic }}</div>
+                    <div class="complaint-stats">
+                        <span class="complaint-count">{{ complaint.count }} menciones</span>
+                        <span class="complaint-sentiment {% if complaint.sentiment_avg < -0.5 %}very-negative{% elif complaint.sentiment_avg < 0 %}negative{% else %}neutral{% endif %}">
+                            Sentimiento: {{ "%.1f"|format(complaint.sentiment_avg) }}
+                        </span>
+                    </div>
+                </div>
+                <div class="complaint-bar-container">
+                    <div class="complaint-bar" style="width: {{ (complaint.count / top_complaints[0].count * 100)|round }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="complaints-note">
+            <h4>💡 Nota Metodológica</h4>
+            <p>
+                Las quejas fueron identificadas mediante análisis de texto con procesamiento de lenguaje natural (NLP),
+                agrupando menciones similares y calculando su frecuencia y sentimiento promedio.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== TENDENCIAS POR CARRERA ==================== -->
+    {% if 'trends' in sections and career_trends %}
+    <div class="page" id="trends">
+        <h2 class="section-title">
+            <span class="section-icon">📈</span>
+            Tendencias por Carrera
+        </h2>
+        
+        {% if charts.career_comparison %}
+        <div class="chart-container">
+            <h3 class="chart-title">Comparativa de Satisfacción por Carrera</h3>
+            <img src="{{ charts.career_comparison }}" alt="Comparación por Carreras" class="chart">
+        </div>
+        {% endif %}
+        
+        <table class="data-table career-table">
+            <thead>
+                <tr>
+                    <th>Carrera</th>
+                    <th>Índice de Satisfacción</th>
+                    <th>Menciones</th>
+                    <th>Tendencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for career in career_trends %}
+                <tr>
+                    <td>{{ career.name }}</td>
+                    <td>
+                        <div class="satisfaction-bar-container">
+                            <div class="satisfaction-bar {% if career.satisfaction >= 70 %}high{% elif career.satisfaction >= 50 %}medium{% else %}low{% endif %}"
+                                 style="width: {{ career.satisfaction }}%">
+                            </div>
+                            <span class="satisfaction-value">{{ career.satisfaction }}%</span>
+                        </div>
+                    </td>
+                    <td>{{ career.mentions|format_number }}</td>
+                    <td>
+                        {% if career.trend == 'up' %}
+                        <span class="trend-indicator up">↑ Subiendo</span>
+                        {% elif career.trend == 'down' %}
+                        <span class="trend-indicator down">↓ Bajando</span>
+                        {% else %}
+                        <span class="trend-indicator stable">→ Estable</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== RECOMENDACIONES ==================== -->
+    {% if 'recommendations' in sections and recommendations %}
+    <div class="page" id="recommendations">
+        <h2 class="section-title">
+            <span class="section-icon">💡</span>
+            Recomendaciones
+        </h2>
+        
+        <p class="section-intro">
+            Basándose en el análisis de datos del período, se proponen las siguientes acciones:
+        </p>
+        
+        <div class="recommendations-list">
+            {% for rec in recommendations %}
+            <div class="recommendation-card priority-{{ rec.priority }}">
+                <div class="rec-header">
+                    <span class="rec-priority {{ rec.priority }}">
+                        {% if rec.priority == 'urgente' %}🔴{% elif rec.priority == 'alta' %}🟠{% else %}🟢{% endif %}
+                        {{ rec.priority|upper }}
+                    </span>
+                    <span class="rec-area">{{ rec.area }}</span>
+                </div>
+                <div class="rec-body">
+                    <p class="rec-text">{{ rec.recommendation }}</p>
+                    <p class="rec-impact"><strong>Impacto esperado:</strong> {{ rec.expected_impact }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== METODOLOGÍA ==================== -->
+    <div class="page appendix" id="methodology">
+        <h2 class="section-title">
+            <span class="section-icon">📖</span>
+            Apéndice: Metodología
+        </h2>
+        
+        <div class="methodology-content">
+            <h3>Fuentes de Datos</h3>
+            <p>
+                Los datos fueron recolectados de las siguientes fuentes de información pública:
+            </p>
+            <ul>
+                <li><strong>Facebook:</strong> Páginas oficiales e institucionales relacionadas con la EMI</li>
+                <li><strong>TikTok:</strong> Cuentas y hashtags relevantes para la comunidad estudiantil</li>
+            </ul>
+            
+            <h3>Procesamiento de Datos</h3>
+            <p>
+                El pipeline de procesamiento incluye las siguientes etapas:
+            </p>
+            <ol>
+                <li><strong>Recolección:</strong> Web scraping automatizado de publicaciones públicas</li>
+                <li><strong>Limpieza:</strong> Normalización de texto, eliminación de emojis y URLs</li>
+                <li><strong>Clasificación:</strong> Análisis de sentimiento con modelo BETO (Transformer)</li>
+                <li><strong>Agregación:</strong> Cálculo de métricas e indicadores</li>
+            </ol>
+            
+            <h3>Modelo de Análisis de Sentimiento</h3>
+            <p>
+                Se utiliza el modelo BETO (BERT para español) fine-tuneado específicamente para
+                análisis de sentimiento en texto universitario. El modelo clasifica cada texto en:
+            </p>
+            <ul>
+                <li><strong>Positivo:</strong> Expresiones de satisfacción, apoyo o reconocimiento</li>
+                <li><strong>Negativo:</strong> Quejas, críticas o expresiones de insatisfacción</li>
+                <li><strong>Neutral:</strong> Menciones informativas sin carga emocional clara</li>
+            </ul>
+            
+            <h3>Cálculo del Índice de Satisfacción</h3>
+            <p>
+                El índice de satisfacción se calcula mediante la fórmula:
+            </p>
+            <div class="formula">
+                IS = min(100, max(0, %Positivos - %Negativos + 50))
+            </div>
+            <p>
+                Donde un valor de 50 indica equilibrio entre menciones positivas y negativas,
+                valores superiores indican percepción favorable y valores inferiores indican
+                percepción desfavorable.
+            </p>
+            
+            <h3>Limitaciones</h3>
+            <ul>
+                <li>Solo se analizan publicaciones públicas disponibles</li>
+                <li>El análisis de sentimiento tiene un margen de error del ~15%</li>
+                <li>No se incluyen mensajes privados ni contenido eliminado</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- ==================== CONTRATAPA ==================== -->
+    <div class="back-cover">
+        <div class="back-content">
+            <p class="confidential-notice">
+                Este documento es de carácter confidencial y está destinado exclusivamente
+                para uso interno del Vicerrectorado de Grado de la Escuela Militar de Ingeniería.
+            </p>
+            
+            <div class="generation-info">
+                <p><strong>Sistema de Analítica OSINT</strong></p>
+                <p>Versión: {{ report_version }}</p>
+                <p>Generado: {{ generated_date }}</p>
+            </div>
+            
+            <div class="contact-info">
+                <p>Para consultas sobre este reporte:</p>
+                <p>osint@emi.edu.bo</p>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

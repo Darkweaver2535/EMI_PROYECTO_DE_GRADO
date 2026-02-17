@@ -316,11 +316,41 @@ class DatabaseWriter:
             try:
                 # Verificar si ya existe
                 cursor.execute(
-                    "SELECT id_dato FROM dato_recolectado WHERE id_externo = ?",
+                    "SELECT id_dato, metadata_json FROM dato_recolectado WHERE id_externo = ?",
                     (item['id_externo'],)
                 )
                 
-                if cursor.fetchone():
+                existing = cursor.fetchone()
+                if existing:
+                    # Si el item tiene comentarios, actualizar el registro existente
+                    item_metadata = item.get('metadata_json', {})
+                    if isinstance(item_metadata, str):
+                        item_metadata = json.loads(item_metadata)
+                    
+                    if item_metadata.get('comentarios') or item_metadata.get('num_comentarios_extraidos'):
+                        # Fusionar metadata
+                        old_metadata = {}
+                        if existing['metadata_json']:
+                            try:
+                                old_metadata = json.loads(existing['metadata_json'])
+                            except:
+                                old_metadata = {}
+                        
+                        old_metadata.update(item_metadata)
+                        new_metadata = json.dumps(old_metadata, ensure_ascii=False)
+                        
+                        cursor.execute("""
+                            UPDATE dato_recolectado 
+                            SET metadata_json = ?,
+                                engagement_comments = ?
+                            WHERE id_dato = ?
+                        """, (
+                            new_metadata,
+                            item.get('engagement_comments', len(item_metadata.get('comentarios', []))),
+                            existing['id_dato']
+                        ))
+                        self.logger.debug(f"Actualizado registro {existing['id_dato']} con comentarios")
+                    
                     duplicates += 1
                     continue
                 
@@ -676,6 +706,59 @@ class DatabaseWriter:
         """, (processed, successful, failed, estado, error_msg, details_json, log_id))
         
         conn.commit()
+
+
+    def get_all_processed_data(self) -> List[Dict[str, Any]]:
+        """
+        Obtiene todos los datos procesados para exportación.
+        
+        Returns:
+            Lista de diccionarios con datos procesados y raw combinados
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT 
+                dp.id_dato_procesado as id_procesado,
+                dr.id_dato as id_raw,
+                dr.id_externo,
+                f.nombre_fuente as fuente,
+                f.tipo_fuente as plataforma,
+                dr.autor,
+                dr.contenido_original,
+                dp.contenido_limpio,
+                dr.fecha_publicacion,
+                dr.engagement_likes as likes,
+                dr.engagement_comments as comentarios,
+                dr.engagement_shares as compartidos,
+                dr.engagement_views as views,
+                dp.sentimiento_basico as sentimiento,
+                dp.categoria_preliminar as categoria,
+                dp.engagement_normalizado as engagement_score,
+                dp.semestre,
+                dp.fecha_procesamiento,
+                dr.metadata_json
+            FROM dato_procesado dp
+            JOIN dato_recolectado dr ON dp.id_dato_original = dr.id_dato
+            JOIN fuente_osint f ON dr.id_fuente = f.id_fuente
+            ORDER BY dp.fecha_procesamiento DESC
+        """)
+        
+        columns = [desc[0] for desc in cursor.description]
+        results = []
+        
+        for row in cursor.fetchall():
+            record = dict(zip(columns, row))
+            # Parsear JSON fields
+            if record.get('metadata_json'):
+                try:
+                    record['metadata'] = json.loads(record['metadata_json'])
+                except:
+                    record['metadata'] = {}
+            results.append(record)
+        
+        return results
 
 
 # =========================================================

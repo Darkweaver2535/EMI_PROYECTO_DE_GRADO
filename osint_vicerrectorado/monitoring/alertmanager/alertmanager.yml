@@ -1,0 +1,108 @@
+# AlertManager Configuration - Sistema OSINT EMI Bolivia
+# Sprint 6: Hardening y Automatización
+
+global:
+  # Configuración de resolución de alertas
+  resolve_timeout: 5m
+  
+  # Configuración de SMTP (para notificaciones por email)
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alertas@emi.edu.bo'
+  smtp_auth_username: ''
+  smtp_auth_password: ''
+  smtp_require_tls: true
+
+# Configuración de templates
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Configuración de rutas
+route:
+  # Receptor por defecto
+  receiver: 'osint-team'
+  
+  # Agrupar alertas similares
+  group_by: ['alertname', 'severity', 'scraper_name']
+  
+  # Tiempo de espera antes de enviar el primer grupo
+  group_wait: 30s
+  
+  # Tiempo entre envíos del mismo grupo
+  group_interval: 5m
+  
+  # Tiempo antes de repetir una notificación
+  repeat_interval: 4h
+  
+  # Rutas específicas
+  routes:
+    # Alertas críticas - enviar inmediatamente
+    - match:
+        severity: critical
+      receiver: 'osint-critical'
+      group_wait: 10s
+      repeat_interval: 1h
+    
+    # Alertas de scrapers
+    - match:
+        team: osint
+      receiver: 'osint-team'
+      routes:
+        - match:
+            alertname: CircuitBreakerOpen
+          receiver: 'osint-team'
+          repeat_interval: 30m
+    
+    # Alertas de infraestructura
+    - match:
+        team: infra
+      receiver: 'infra-team'
+
+# Configuración de receptores
+receivers:
+  # Receptor por defecto
+  - name: 'osint-team'
+    # Email
+    email_configs:
+      - to: 'osint-team@emi.edu.bo'
+        send_resolved: true
+        headers:
+          subject: '[OSINT EMI] {{ .Status | toUpper }} - {{ .CommonAnnotations.summary }}'
+    
+    # Webhook (para integración con Slack, Discord, etc.)
+    webhook_configs:
+      - url: 'http://api:5000/api/v1/alerts/webhook'
+        send_resolved: true
+
+  # Receptor para alertas críticas
+  - name: 'osint-critical'
+    email_configs:
+      - to: 'osint-critical@emi.edu.bo,admin@emi.edu.bo'
+        send_resolved: true
+        headers:
+          subject: '🚨 [CRÍTICO] {{ .CommonAnnotations.summary }}'
+    webhook_configs:
+      - url: 'http://api:5000/api/v1/alerts/webhook/critical'
+        send_resolved: true
+
+  # Receptor para equipo de infraestructura
+  - name: 'infra-team'
+    email_configs:
+      - to: 'infra@emi.edu.bo'
+        send_resolved: true
+        headers:
+          subject: '[INFRA] {{ .Status | toUpper }} - {{ .CommonAnnotations.summary }}'
+
+# Configuración de inhibiciones
+# (Previene envío de alertas menos severas cuando hay una crítica)
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'scraper_name']
+  
+  - source_match:
+      alertname: 'ScraperDown'
+    target_match_re:
+      alertname: 'Scraper.*'
+    equal: ['scraper_name']

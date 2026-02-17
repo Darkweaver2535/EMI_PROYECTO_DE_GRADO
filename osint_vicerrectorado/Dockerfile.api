@@ -1,0 +1,50 @@
+# Dockerfile para API Flask + Celery
+# Sistema de Analítica OSINT - EMI Bolivia
+# Sprint 5: Reportes y Estadísticas
+
+FROM python:3.11-slim
+
+# Variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV TZ=America/La_Paz
+
+# Instalar dependencias del sistema para WeasyPrint
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # WeasyPrint dependencies
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libcairo2 \
+    libgdk-pixbuf2.0-0 \
+    libffi-dev \
+    shared-mime-info \
+    # Fonts
+    fonts-liberation \
+    fonts-noto-cjk \
+    # Build tools
+    gcc \
+    g++ \
+    # Cleanup
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Copiar requirements
+COPY requirements.txt .
+
+# Instalar dependencias Python
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Copiar código de la aplicación
+COPY . .
+
+# Crear directorios necesarios
+RUN mkdir -p /app/reports/generated /app/data /app/logs
+
+# Exponer puerto
+EXPOSE 5000
+
+# Comando por defecto (puede ser sobreescrito)
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000"]

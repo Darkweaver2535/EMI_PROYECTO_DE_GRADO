@@ -1,0 +1,888 @@
+{
+  "plataforma": "TikTok",
+  "fecha_exportacion": "2025-12-23T10:05:23.003325",
+  "total_videos": 20,
+  "total_comentarios": 28,
+  "videos": [
+    {
+      "id": 41,
+      "id_externo": "tt_7574522070541995320",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-11-19 15:34:17",
+      "contenido": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 52,
+        "comentarios": 5,
+        "compartidos": 12,
+        "views": 2685
+      },
+      "comentarios": [
+        {
+          "autor": "eba",
+          "texto": "Es*",
+          "fecha": "2025-12-23T09:54:12.315074"
+        },
+        {
+          "autor": "eba",
+          "texto": "Hasta cuando rd",
+          "fecha": "2025-12-23T09:54:12.320230"
+        },
+        {
+          "autor": "Alicia",
+          "texto": "😳😳😳",
+          "fecha": "2025-12-23T09:54:12.325032"
+        },
+        {
+          "autor": "LH_Esmeralda",
+          "texto": "💕💕💕",
+          "fecha": "2025-12-23T09:54:12.329225"
+        }
+      ],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7574522070541995320",
+        "duration": 60,
+        "views": 2708,
+        "music": "Dance You Outta My Head",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-23T09:53:50.988582",
+        "comentarios": [
+          {
+            "texto": "Es*",
+            "autor": "eba",
+            "likes": 0,
+            "fecha": "2025-12-23T09:54:12.315074"
+          },
+          {
+            "texto": "Hasta cuando rd",
+            "autor": "eba",
+            "likes": 0,
+            "fecha": "2025-12-23T09:54:12.320230"
+          },
+          {
+            "texto": "😳😳😳",
+            "autor": "Alicia",
+            "likes": 0,
+            "fecha": "2025-12-23T09:54:12.325032"
+          },
+          {
+            "texto": "💕💕💕",
+            "autor": "LH_Esmeralda",
+            "likes": 0,
+            "fecha": "2025-12-23T09:54:12.329225"
+          }
+        ],
+        "num_comentarios_extraidos": 4
+      }
+    },
+    {
+      "id": 42,
+      "id_externo": "tt_7567044533859503416",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-10-30 11:57:36",
+      "contenido": "🔵🟡En la EM!... ¡Hasta los muertos se reportan! Demuestra tu Creativid...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 70,
+        "comentarios": 4,
+        "compartidos": 9,
+        "views": 3493
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7567044533859503416",
+        "duration": 43,
+        "views": 3493,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.230875"
+      }
+    },
+    {
+      "id": 43,
+      "id_externo": "tt_7566041149010431288",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-10-27 19:04:01",
+      "contenido": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 356,
+        "comentarios": 19,
+        "compartidos": 76,
+        "views": 10700
+      },
+      "comentarios": [
+        {
+          "autor": "Danny🧃",
+          "texto": "que habrá ???",
+          "fecha": "2025-12-23T09:55:14.489185"
+        },
+        {
+          "autor": "Gabriel Quino",
+          "texto": "No carrasco.........😫",
+          "fecha": "2025-12-23T09:55:14.494362"
+        },
+        {
+          "autor": "AOT hank",
+          "texto": "aña",
+          "fecha": "2025-12-23T09:55:14.499106"
+        },
+        {
+          "autor": "Paul Vaure",
+          "texto": "Un examen del Ing Pereira 😖😖😖",
+          "fecha": "2025-12-23T09:55:14.503474"
+        },
+        {
+          "autor": "mishi 😼",
+          "texto": "el terror: cálculo II",
+          "fecha": "2025-12-23T09:55:14.507338"
+        },
+        {
+          "autor": "KZYN",
+          "texto": "Y en Cochabamba no habrá nada?",
+          "fecha": "2025-12-23T09:55:14.511102"
+        },
+        {
+          "autor": "Queso996",
+          "texto": "Habrá Cañaso mortal",
+          "fecha": "2025-12-23T09:55:14.514594"
+        },
+        {
+          "autor": "Manuel Flores",
+          "texto": "Un examen de la Ing. Carrasco eso si da miedo de verdad ☠",
+          "fecha": "2025-12-23T09:55:14.518072"
+        },
+        {
+          "autor": "mao",
+          "texto": "los parciales 🗿🙏",
+          "fecha": "2025-12-23T09:55:14.521300"
+        },
+        {
+          "autor": "__jeanfer__",
+          "texto": "No siento ni un poquito de miedo 😭😂",
+          "fecha": "2025-12-23T09:55:14.525205"
+        },
+        {
+          "autor": "gaaaaa",
+          "texto": "Los optativos ☠",
+          "fecha": "2025-12-23T09:55:14.528880"
+        },
+        {
+          "autor": "chimba",
+          "texto": "10-27",
+          "fecha": "2025-12-23T09:55:14.532116"
+        },
+        {
+          "autor": "yun.txn",
+          "texto": "Pongan a la ingeniera Carrasco 😖",
+          "fecha": "2025-12-23T09:55:14.535043"
+        },
+        {
+          "autor": "Samuel Vargas",
+          "texto": "No me digas , solo básicas ?",
+          "fecha": "2025-12-23T09:55:14.537720"
+        },
+        {
+          "autor": "MARVIN",
+          "texto": "Conozco esa calva ….",
+          "fecha": "2025-12-23T09:55:14.540511"
+        }
+      ],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7566041149010431288",
+        "duration": 30,
+        "views": 10700,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-23T09:53:50.988645",
+        "comentarios": [
+          {
+            "texto": "que habrá ???",
+            "autor": "Danny🧃",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.489185"
+          },
+          {
+            "texto": "No carrasco.........😫",
+            "autor": "Gabriel Quino",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.494362"
+          },
+          {
+            "texto": "aña",
+            "autor": "AOT hank",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.499106"
+          },
+          {
+            "texto": "Un examen del Ing Pereira 😖😖😖",
+            "autor": "Paul Vaure",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.503474"
+          },
+          {
+            "texto": "el terror: cálculo II",
+            "autor": "mishi 😼",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.507338"
+          },
+          {
+            "texto": "Y en Cochabamba no habrá nada?",
+            "autor": "KZYN",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.511102"
+          },
+          {
+            "texto": "Habrá Cañaso mortal",
+            "autor": "Queso996",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.514594"
+          },
+          {
+            "texto": "Un examen de la Ing. Carrasco eso si da miedo de verdad ☠",
+            "autor": "Manuel Flores",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.518072"
+          },
+          {
+            "texto": "los parciales 🗿🙏",
+            "autor": "mao",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.521300"
+          },
+          {
+            "texto": "No siento ni un poquito de miedo 😭😂",
+            "autor": "__jeanfer__",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.525205"
+          },
+          {
+            "texto": "Los optativos ☠",
+            "autor": "gaaaaa",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.528880"
+          },
+          {
+            "texto": "10-27",
+            "autor": "chimba",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.532116"
+          },
+          {
+            "texto": "Pongan a la ingeniera Carrasco 😖",
+            "autor": "yun.txn",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.535043"
+          },
+          {
+            "texto": "No me digas , solo básicas ?",
+            "autor": "Samuel Vargas",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.537720"
+          },
+          {
+            "texto": "Conozco esa calva ….",
+            "autor": "MARVIN",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:14.540511"
+          }
+        ],
+        "num_comentarios_extraidos": 15
+      }
+    },
+    {
+      "id": 44,
+      "id_externo": "tt_7545247432431488261",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-09-01 18:13:47",
+      "contenido": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 502,
+        "comentarios": 10,
+        "compartidos": 66,
+        "views": 18200
+      },
+      "comentarios": [
+        {
+          "autor": "Reneco",
+          "texto": "el mejor paso el de ese crack de tumba la casa mami",
+          "fecha": "2025-12-23T09:55:50.543800"
+        },
+        {
+          "autor": "Varinia Delgado65",
+          "texto": "todos en su propia sintonía 😂✨",
+          "fecha": "2025-12-23T09:55:50.549086"
+        },
+        {
+          "autor": "silesalanezdaniel",
+          "texto": "😂😂😂Buena ahí",
+          "fecha": "2025-12-23T09:55:50.554814"
+        },
+        {
+          "autor": "𝒍𝒂𝒓𝒄𝒉➛",
+          "texto": "eso Rony eso Rony 🗣️",
+          "fecha": "2025-12-23T09:55:50.559110"
+        },
+        {
+          "autor": "Reneco",
+          "texto": "@Iván Carrasco el más crack como siempre",
+          "fecha": "2025-12-23T09:55:50.562917"
+        },
+        {
+          "autor": "Bertha Andrea Peredo Subieta",
+          "texto": "@Matty Matt :D salieron los prohibidos",
+          "fecha": "2025-12-23T09:55:50.566730"
+        },
+        {
+          "autor": "vanesthermart",
+          "texto": "😂😂😂",
+          "fecha": "2025-12-23T09:55:50.570336"
+        },
+        {
+          "autor": "lmirandarod",
+          "texto": "❣️❣️❣️",
+          "fecha": "2025-12-23T09:55:50.573696"
+        },
+        {
+          "autor": "Liv.Cor.",
+          "texto": "tumba la casa mami Ja",
+          "fecha": "2025-12-23T09:55:50.577137"
+        }
+      ],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7545247432431488261",
+        "duration": 54,
+        "views": 18200,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-23T09:53:50.988664",
+        "comentarios": [
+          {
+            "texto": "el mejor paso el de ese crack de tumba la casa mami",
+            "autor": "Reneco",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.543800"
+          },
+          {
+            "texto": "todos en su propia sintonía 😂✨",
+            "autor": "Varinia Delgado65",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.549086"
+          },
+          {
+            "texto": "😂😂😂Buena ahí",
+            "autor": "silesalanezdaniel",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.554814"
+          },
+          {
+            "texto": "eso Rony eso Rony 🗣️",
+            "autor": "𝒍𝒂𝒓𝒄𝒉➛",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.559110"
+          },
+          {
+            "texto": "@Iván Carrasco el más crack como siempre",
+            "autor": "Reneco",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.562917"
+          },
+          {
+            "texto": "@Matty Matt :D salieron los prohibidos",
+            "autor": "Bertha Andrea Peredo Subieta",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.566730"
+          },
+          {
+            "texto": "😂😂😂",
+            "autor": "vanesthermart",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.570336"
+          },
+          {
+            "texto": "❣️❣️❣️",
+            "autor": "lmirandarod",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.573696"
+          },
+          {
+            "texto": "tumba la casa mami Ja",
+            "autor": "Liv.Cor.",
+            "likes": 0,
+            "fecha": "2025-12-23T09:55:50.577137"
+          }
+        ],
+        "num_comentarios_extraidos": 9
+      }
+    },
+    {
+      "id": 45,
+      "id_externo": "tt_7540073721529306373",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-08-18 19:37:03",
+      "contenido": "🔵🟡¡INSCRIPCIONES ABIERTAS! - PREUNIVERSITARIO REGULAR Una carrera, tr...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 365,
+        "comentarios": 5,
+        "compartidos": 24,
+        "views": 10700
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7540073721529306373",
+        "duration": 12,
+        "views": 10700,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.230937"
+      }
+    },
+    {
+      "id": 46,
+      "id_externo": "tt_7531395709484993797",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-07-26 10:21:55",
+      "contenido": "🔵🟡 ¡ÚLTIMOS DÍAS DE PSA! Ultimos días para inscribirte a la PRUEBA DE...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 271,
+        "comentarios": 3,
+        "compartidos": 23,
+        "views": 8584
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7531395709484993797",
+        "duration": 54,
+        "views": 8584,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.230960"
+      }
+    },
+    {
+      "id": 47,
+      "id_externo": "tt_7523407572049693958",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-07-04 21:43:55",
+      "contenido": "Recuerda que todo esfuerzo tiene su recompensa💪🏽 Y nuestros estudiant...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 922,
+        "comentarios": 14,
+        "compartidos": 188,
+        "views": 21400
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7523407572049693958",
+        "duration": 8,
+        "views": 21400,
+        "music": "original sound",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.230975"
+      }
+    },
+    {
+      "id": 48,
+      "id_externo": "tt_7520014533235166469",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-06-25 18:17:11",
+      "contenido": "🔵🟡La EMI-Unidad Académica La Paz estuvo presente en la feria de Unive...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 145,
+        "comentarios": 9,
+        "compartidos": 8,
+        "views": 9726
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7520014533235166469",
+        "duration": 52,
+        "views": 9726,
+        "music": "TRINIX Vaitimbora feat Mari Froes",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.230992"
+      }
+    },
+    {
+      "id": 49,
+      "id_externo": "tt_7515979510563474744",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-06-14 21:19:12",
+      "contenido": "Todos están en modo descanso, pero nosotros...🔵🟡 te brindamos nuestra...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 497,
+        "comentarios": 10,
+        "compartidos": 36,
+        "views": 13500
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7515979510563474744",
+        "duration": 21,
+        "views": 13500,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231011"
+      }
+    },
+    {
+      "id": 50,
+      "id_externo": "tt_7515503537309191429",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-06-13 14:32:11",
+      "contenido": "¡ESTE ES TU MOMENTO!🫵🏽🙂‍↔️🔵🟡 ¿Quieres estudiar una carrera de INGENIE...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 705,
+        "comentarios": 9,
+        "compartidos": 91,
+        "views": 39300
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7515503537309191429",
+        "duration": 20,
+        "views": 39300,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231030"
+      }
+    },
+    {
+      "id": 51,
+      "id_externo": "tt_7509260008404634886",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-05-27 18:44:07",
+      "contenido": "Porque no hay amor más puro que el de mamá 💖 Hoy celebramos a la muje...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 567,
+        "comentarios": 2,
+        "compartidos": 18,
+        "views": 31600
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7509260008404634886",
+        "duration": 76,
+        "views": 31600,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231049"
+      }
+    },
+    {
+      "id": 52,
+      "id_externo": "tt_7506568103380225286",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-05-20 12:38:09",
+      "contenido": "¡No esperes hasta el último momento!🫵🏽 adquiere tu credencial y no de...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 7564,
+        "comentarios": 81,
+        "compartidos": 476,
+        "views": 375000
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7506568103380225286",
+        "duration": 22,
+        "views": 375000,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231065"
+      }
+    },
+    {
+      "id": 53,
+      "id_externo": "tt_7504303537296362807",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-05-14 10:10:27",
+      "contenido": "\"Dicen que en la EMI los docentes son estrictos… pero no los vieron s...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 2195,
+        "comentarios": 31,
+        "compartidos": 353,
+        "views": 82300
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7504303537296362807",
+        "duration": 18,
+        "views": 82300,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231081"
+      }
+    },
+    {
+      "id": 54,
+      "id_externo": "tt_7502225241939135799",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-05-08 19:45:38",
+      "contenido": "¡Prepárate para ser parte de la EMI!🔵🟡 ¿Tienes dudas en Álgebra, Cálc...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 417,
+        "comentarios": 5,
+        "compartidos": 52,
+        "views": 16700
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7502225241939135799",
+        "duration": 56,
+        "views": 16700,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231100"
+      }
+    },
+    {
+      "id": 55,
+      "id_externo": "tt_7498484567666396421",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-04-28 17:49:53",
+      "contenido": "Nuestro equipo compartió con los estudiantes toda la información sobr...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 134,
+        "comentarios": 3,
+        "compartidos": 6,
+        "views": 10800
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7498484567666396421",
+        "duration": 19,
+        "views": 10800,
+        "music": "original sound - Vince Caluag",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231117"
+      }
+    },
+    {
+      "id": 56,
+      "id_externo": "tt_7496675373275450630",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-04-23 20:49:18",
+      "contenido": "A veces los sueños se mal interpretan, pero un sello EMI vuelve los s...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 463,
+        "comentarios": 8,
+        "compartidos": 81,
+        "views": 20200
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7496675373275450630",
+        "duration": 58,
+        "views": 20200,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231132"
+      }
+    },
+    {
+      "id": 57,
+      "id_externo": "tt_7496222040265952567",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-04-22 15:30:09",
+      "contenido": "Los cimientos sólidos son la base de una buena construcción, tu futur...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 279,
+        "comentarios": 0,
+        "compartidos": 26,
+        "views": 11400
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7496222040265952567",
+        "duration": 18,
+        "views": 11400,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231150"
+      }
+    },
+    {
+      "id": 58,
+      "id_externo": "tt_7491767598896385286",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-04-10 15:24:36",
+      "contenido": "Requisitos para ser un buen Ingeniero😎 Aprovecha estos días e inscrib...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 251,
+        "comentarios": 12,
+        "compartidos": 78,
+        "views": 11800
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7491767598896385286",
+        "duration": 18,
+        "views": 11800,
+        "music": "sonido original",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231165"
+      }
+    },
+    {
+      "id": 59,
+      "id_externo": "tt_7491039121016737030",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-04-08 16:17:49",
+      "contenido": "Damos la bienvenida a los estudiantes del Preuniversitario Regular qu...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 202,
+        "comentarios": 2,
+        "compartidos": 22,
+        "views": 12900
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7491039121016737030",
+        "duration": 16,
+        "views": 12900,
+        "music": "room where it happened sped up",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231180"
+      }
+    },
+    {
+      "id": 60,
+      "id_externo": "tt_7486203597152128262",
+      "fuente": "EMI La Paz Oficial",
+      "url_fuente": "https://www.tiktok.com/@emilapazoficial",
+      "fecha_publicacion": "2025-03-26 15:33:28",
+      "contenido": "Si eres bachiller 2025 o estudiante de último año no esperes más e in...",
+      "autor": "emilapazoficial",
+      "metricas": {
+        "likes": 1634,
+        "comentarios": 36,
+        "compartidos": 98,
+        "views": 86100
+      },
+      "comentarios": [],
+      "metadata": {
+        "platform": "tiktok",
+        "username": "emilapazoficial",
+        "account_name": "EMI La Paz Oficial",
+        "video_id": "7486203597152128262",
+        "duration": 16,
+        "views": 86100,
+        "music": "original sound",
+        "hashtags": [],
+        "scrape_method": "yt-dlp",
+        "scrape_timestamp": "2025-12-22T21:09:30.231195"
+      }
+    }
+  ]
+}

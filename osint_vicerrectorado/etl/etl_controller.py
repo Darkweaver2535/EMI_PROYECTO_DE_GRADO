@@ -219,6 +219,10 @@ class ETLController:
         summary = self.transformer.get_transformation_summary(transformed_df)
         self.logger.info(f"Transformación completada. Categorías: {summary.get('categorias', {})}")
         
+        # Renombrar id_dato a id_dato_original para que coincida con el esquema de base de datos
+        if 'id_dato' in transformed_df.columns:
+            transformed_df = transformed_df.rename(columns={'id_dato': 'id_dato_original'})
+        
         return transformed_df
     
     def _validate(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -282,12 +286,21 @@ class ETLController:
         records = []
         
         for _, row in df.iterrows():
+            # Convertir fecha_publicacion a string ISO si es datetime
+            fecha_pub = row.get('fecha_publicacion_iso', row.get('fecha_publicacion'))
+            if hasattr(fecha_pub, 'isoformat'):
+                fecha_pub = fecha_pub.isoformat()
+            elif pd.notna(fecha_pub):
+                fecha_pub = str(fecha_pub)
+            else:
+                fecha_pub = None
+            
             record = {
-                'id_dato_original': int(row['id_dato']),
+                'id_dato_original': int(row['id_dato_original']),
                 'contenido_limpio': str(row.get('contenido_limpio', row.get('contenido_original', ''))),
                 'longitud_texto': int(row.get('longitud_texto', 0)),
                 'cantidad_palabras': int(row.get('cantidad_palabras', 0)),
-                'fecha_publicacion_iso': row.get('fecha_publicacion_iso', row.get('fecha_publicacion')),
+                'fecha_publicacion_iso': fecha_pub,
                 'anio': int(row['anio']) if pd.notna(row.get('anio')) else None,
                 'mes': int(row['mes']) if pd.notna(row.get('mes')) else None,
                 'dia_semana': int(row['dia_semana']) if pd.notna(row.get('dia_semana')) else None,
@@ -312,8 +325,16 @@ class ETLController:
         """
         Completa el registro de log de ejecución.
         """
+        # Convertir datetime a string para JSON
+        stats_for_json = {}
+        for key, value in self.stats.items():
+            if hasattr(value, 'isoformat'):
+                stats_for_json[key] = value.isoformat()
+            else:
+                stats_for_json[key] = value
+        
         details = {
-            'stats': self.stats,
+            'stats': stats_for_json,
             'validation_report': self.validator.get_validation_report() if self.validator.validation_errors else None
         }
         

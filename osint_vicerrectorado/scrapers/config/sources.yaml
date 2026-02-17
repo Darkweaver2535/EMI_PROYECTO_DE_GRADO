@@ -1,0 +1,391 @@
+# =============================================================================
+# Configuración de Fuentes OSINT - Sistema EMI Bolivia
+# Sprint 6: Hardening y Automatización
+#
+# Este archivo define la configuración de todas las fuentes de datos
+# incluyendo parámetros de resiliencia, rate limiting, y selectores.
+# =============================================================================
+
+# Configuración global del orquestador
+orchestrator:
+  max_concurrent_scrapers: 5
+  default_interval_seconds: 300  # 5 minutos
+  shutdown_timeout: 30
+  health_check_interval: 60
+  enable_circuit_breaker: true
+  enable_rate_limiter: true
+  enable_retry: true
+  enable_metrics: true
+
+# Configuración por defecto para todos los scrapers
+defaults:
+  # Scraping básico
+  headless: true
+  viewport_width: 1920
+  viewport_height: 1080
+  delay_min_seconds: 2.0
+  delay_max_seconds: 5.0
+  scroll_pause_seconds: 2.0
+  timeout_ms: 30000
+  
+  # Rate Limiting
+  requests_per_minute: 60
+  adaptive_rate_limiting: true
+  min_rpm: 10
+  max_rpm: 120
+  
+  # Circuit Breaker
+  failure_threshold: 5
+  circuit_timeout_seconds: 300
+  
+  # Retry
+  max_retries: 3
+  initial_retry_delay: 1.0
+  max_retry_delay: 60.0
+  
+  # Timeouts
+  connect_timeout: 10.0
+  read_timeout: 30.0
+  total_timeout: 60.0
+
+# =============================================================================
+# CONFIGURACIÓN POR FUENTE
+# =============================================================================
+
+sources:
+  # ---------------------------------------------------------------------------
+  # Facebook
+  # ---------------------------------------------------------------------------
+  facebook:
+    enabled: true
+    priority: 10  # Alta prioridad
+    interval_seconds: 600  # 10 minutos
+    
+    source_name: "facebook"
+    source_url: "https://www.facebook.com"
+    
+    # Rate limiting más conservador para Facebook
+    requests_per_minute: 30
+    adaptive_rate_limiting: true
+    min_rpm: 5
+    max_rpm: 60
+    
+    # Circuit breaker más sensible
+    failure_threshold: 3
+    circuit_timeout_seconds: 600  # 10 minutos
+    
+    # Timeouts
+    connect_timeout: 15.0
+    read_timeout: 45.0
+    total_timeout: 90.0
+    
+    # Selectores CSS (con múltiples fallbacks)
+    css_selectors:
+      post_container:
+        - "[data-pagelet='FeedUnit']"
+        - "div[role='article']"
+        - ".x1yztbdb.x1n2onr6"
+      post_content:
+        - "[data-ad-comet-preview='message']"
+        - "[data-ad-preview='message']"
+        - ".xdj266r.x11i5rnm.xat24cr"
+      post_timestamp:
+        - "a[role='link'] span.x1i10hfl"
+        - "abbr[data-utime]"
+        - "span.timestampContent"
+      engagement_likes:
+        - "[aria-label*='reactions']"
+        - "span.gpro0wi8"
+      engagement_comments:
+        - "[aria-label*='comment']"
+        - "span._3hg-"
+      engagement_shares:
+        - "[aria-label*='share']"
+        - "span._355t"
+      author_name:
+        - "strong > span"
+        - "h2 > span > span > a > strong > span"
+    
+    # Configuración extra específica
+    extra_config:
+      login_required: false
+      scroll_for_content: true
+      max_scroll_count: 10
+      capture_images: false
+      capture_videos: false
+
+  # ---------------------------------------------------------------------------
+  # TikTok
+  # ---------------------------------------------------------------------------
+  tiktok:
+    enabled: true
+    priority: 9
+    interval_seconds: 600
+    
+    source_name: "tiktok"
+    source_url: "https://www.tiktok.com"
+    
+    # TikTok tiene rate limiting estricto
+    requests_per_minute: 20
+    adaptive_rate_limiting: true
+    min_rpm: 5
+    max_rpm: 40
+    
+    failure_threshold: 5
+    circuit_timeout_seconds: 600
+    
+    connect_timeout: 15.0
+    read_timeout: 60.0
+    total_timeout: 120.0
+    
+    css_selectors:
+      video_container:
+        - "[data-e2e='user-post-item']"
+        - ".tiktok-yz6ijl-DivWrapper"
+      video_description:
+        - "[data-e2e='video-desc']"
+        - ".tiktok-j2a19r-SpanText"
+      video_stats:
+        - "[data-e2e='video-views']"
+        - ".video-count"
+      author_name:
+        - "[data-e2e='video-author-nickname']"
+        - ".tiktok-1c7urt-SpanNickName"
+      likes_count:
+        - "[data-e2e='like-count']"
+      comments_count:
+        - "[data-e2e='comment-count']"
+      shares_count:
+        - "[data-e2e='share-count']"
+    
+    extra_config:
+      use_api: false
+      scroll_for_content: true
+      max_scroll_count: 15
+      video_duration_limit: 180  # segundos
+
+  # ---------------------------------------------------------------------------
+  # Instagram
+  # ---------------------------------------------------------------------------
+  instagram:
+    enabled: false  # Deshabilitado por defecto (requiere autenticación)
+    priority: 8
+    interval_seconds: 900  # 15 minutos
+    
+    source_name: "instagram"
+    source_url: "https://www.instagram.com"
+    
+    requests_per_minute: 30
+    adaptive_rate_limiting: true
+    min_rpm: 10
+    max_rpm: 60
+    
+    failure_threshold: 3
+    circuit_timeout_seconds: 900
+    
+    css_selectors:
+      post_container:
+        - "article"
+        - "._aagv"
+      post_image:
+        - "img.x5yr21d"
+        - "img._aagt"
+      post_caption:
+        - "h1._ap3a"
+        - "span._aacl"
+      likes_count:
+        - "span._aacl._aaco._aacw"
+      comments_section:
+        - "ul._a9ym"
+    
+    extra_config:
+      login_required: true
+      use_graph_api: false
+
+  # ---------------------------------------------------------------------------
+  # Twitter/X
+  # ---------------------------------------------------------------------------
+  twitter:
+    enabled: false  # Deshabilitado (API de pago)
+    priority: 7
+    interval_seconds: 300
+    
+    source_name: "twitter"
+    source_url: "https://twitter.com"
+    
+    requests_per_minute: 180  # Twitter permite más requests
+    adaptive_rate_limiting: true
+    min_rpm: 30
+    max_rpm: 300
+    
+    failure_threshold: 10
+    circuit_timeout_seconds: 300
+    
+    css_selectors:
+      tweet_container:
+        - "[data-testid='tweet']"
+        - "article"
+      tweet_text:
+        - "[data-testid='tweetText']"
+      engagement_likes:
+        - "[data-testid='like']"
+      engagement_retweets:
+        - "[data-testid='retweet']"
+      engagement_replies:
+        - "[data-testid='reply']"
+    
+    extra_config:
+      use_api: false
+      api_version: "v2"
+
+  # ---------------------------------------------------------------------------
+  # Sitios de Noticias Bolivia
+  # ---------------------------------------------------------------------------
+  noticias_bolivia:
+    enabled: true
+    priority: 6
+    interval_seconds: 1800  # 30 minutos
+    
+    source_name: "noticias_bolivia"
+    source_url: "multiple"
+    
+    requests_per_minute: 60
+    adaptive_rate_limiting: true
+    min_rpm: 20
+    max_rpm: 120
+    
+    failure_threshold: 5
+    circuit_timeout_seconds: 300
+    
+    # Lista de sitios de noticias
+    extra_config:
+      sites:
+        - name: "La Razón"
+          url: "https://www.la-razon.com"
+          selectors:
+            article: "article.entry"
+            title: "h2.entry-title"
+            content: ".entry-content"
+            date: "time.entry-date"
+        
+        - name: "El Deber"
+          url: "https://eldeber.com.bo"
+          selectors:
+            article: ".article-card"
+            title: ".article-title"
+            content: ".article-summary"
+            date: ".article-date"
+        
+        - name: "Página Siete"
+          url: "https://www.paginasiete.bo"
+          selectors:
+            article: ".nota"
+            title: ".titulo"
+            content: ".bajada"
+            date: ".fecha"
+        
+        - name: "Los Tiempos"
+          url: "https://www.lostiempos.com"
+          selectors:
+            article: ".article"
+            title: ".article-title"
+            content: ".article-body"
+            date: ".article-date"
+        
+        - name: "Erbol"
+          url: "https://erbol.com.bo"
+          selectors:
+            article: ".post"
+            title: ".post-title"
+            content: ".post-excerpt"
+            date: ".post-date"
+
+  # ---------------------------------------------------------------------------
+  # Gobierno y Instituciones
+  # ---------------------------------------------------------------------------
+  gobierno_bolivia:
+    enabled: true
+    priority: 5
+    interval_seconds: 3600  # 1 hora
+    
+    source_name: "gobierno"
+    source_url: "multiple"
+    
+    requests_per_minute: 30
+    adaptive_rate_limiting: false  # Servidores gubernamentales pueden ser lentos
+    
+    failure_threshold: 10
+    circuit_timeout_seconds: 600
+    
+    connect_timeout: 30.0
+    read_timeout: 60.0
+    total_timeout: 120.0
+    
+    extra_config:
+      sites:
+        - name: "ABI Bolivia"
+          url: "https://www.abi.bo"
+          type: "news"
+        - name: "Ministerio de Educación"
+          url: "https://www.minedu.gob.bo"
+          type: "institutional"
+        - name: "Ministerio de Economía"
+          url: "https://www.economiayfinanzas.gob.bo"
+          type: "institutional"
+
+# =============================================================================
+# ALERTAS Y UMBRALES
+# =============================================================================
+
+alerts:
+  # Alertas de Circuit Breaker
+  circuit_breaker:
+    notify_on_open: true
+    notify_on_close: true
+    notification_channels:
+      - email
+      - slack
+  
+  # Alertas de Rate Limiting
+  rate_limit:
+    threshold_percent: 80  # Alertar cuando se alcance 80% del límite
+    consecutive_429_threshold: 3
+  
+  # Alertas de Error Rate
+  error_rate:
+    threshold_percent: 10  # Alertar si error rate > 10%
+    window_minutes: 15
+  
+  # Alertas de Latencia
+  latency:
+    p95_threshold_seconds: 30
+    avg_threshold_seconds: 10
+
+# =============================================================================
+# MÉTRICAS Y LOGGING
+# =============================================================================
+
+metrics:
+  enabled: true
+  port: 9090
+  path: "/metrics"
+  
+  # Métricas a exportar
+  export:
+    - scraper_requests_total
+    - scraper_request_duration_seconds
+    - scraper_errors_total
+    - scraper_items_scraped_total
+    - circuit_breaker_state
+    - rate_limiter_throttled_total
+
+logging:
+  level: INFO
+  format: json
+  output: stdout
+  
+  # Campos adicionales en cada log
+  extra_fields:
+    service: "osint_scraper"
+    environment: "production"
+    version: "2.0.0"

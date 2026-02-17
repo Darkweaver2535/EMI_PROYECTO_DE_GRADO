@@ -1,0 +1,22 @@
+{
+  "plataforma": "TikTok",
+  "fecha_exportacion": "2025-12-23T10:03:32.961313",
+  "fuentes": [
+    {
+      "id": 4,
+      "nombre": "EMI La Paz Oficial",
+      "url": "https://www.tiktok.com/@emilapazoficial",
+      "tipo": "Tiktok",
+      "total_videos": 20,
+      "videos": [],
+      "total_comentarios": 0
+    }
+  ],
+  "estadisticas": {
+    "total_videos": 0,
+    "total_comentarios": 0,
+    "videos_con_comentarios": 0,
+    "total_views": 0,
+    "total_likes": 0
+  }
+}

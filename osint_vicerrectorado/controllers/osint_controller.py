@@ -214,6 +214,18 @@ class OSINTController:
             scrapers_to_run = self.scrapers
         elif source in self.scrapers:
             scrapers_to_run = {source: self.scrapers[source]}
+        elif source in ['facebook', 'tiktok']:
+            # Filtrar por tipo de plataforma
+            scrapers_to_run = {
+                sid: sinfo for sid, sinfo in self.scrapers.items()
+                if sinfo.get('type', '').lower() == source.lower()
+            }
+            if not scrapers_to_run:
+                error_msg = f"No hay scrapers configurados para: {source}"
+                self.logger.error(error_msg)
+                results['success'] = False
+                results['errors'].append(error_msg)
+                return results
         else:
             error_msg = f"Scraper no encontrado: {source}"
             self.logger.error(error_msg)

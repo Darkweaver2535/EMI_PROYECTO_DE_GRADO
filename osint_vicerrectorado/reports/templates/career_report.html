@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ report_title }}</title>
+    <link rel="stylesheet" href="report.css">
+    <style>
+        /* Estilos específicos para reporte de carrera */
+        .career-header {
+            background: linear-gradient(135deg, #1B5E20, #2E7D32);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .career-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .career-name-main {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .career-faculty {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .quick-stat {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .quick-stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1B5E20;
+        }
+        
+        .quick-stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .quick-stat-change {
+            font-size: 11px;
+            margin-top: 5px;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        
+        .quick-stat-change.positive {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        
+        .quick-stat-change.negative {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        
+        .satisfaction-gauge {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+        }
+        
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .gauge-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1B5E20;
+        }
+        
+        .gauge-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .topic-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .topic-tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        .topic-tag.positive {
+            background: #E8F5E9;
+            color: #1B5E20;
+            border: 1px solid #A5D6A7;
+        }
+        
+        .topic-tag.negative {
+            background: #FFEBEE;
+            color: #C62828;
+            border: 1px solid #EF9A9A;
+        }
+        
+        .topic-tag.neutral {
+            background: #F5F5F5;
+            color: #616161;
+            border: 1px solid #E0E0E0;
+        }
+        
+        .topic-tag.large {
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+        
+        .topic-tag.small {
+            font-size: 11px;
+            padding: 5px 10px;
+        }
+        
+        .comparison-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-title {
+            font-weight: bold;
+            color: #1B5E20;
+        }
+        
+        .comparison-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .comparison-bar {
+            height: 30px;
+            background: #E0E0E0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .comparison-fill {
+            height: 100%;
+            border-radius: 15px;
+            position: relative;
+        }
+        
+        .comparison-fill.career {
+            background: linear-gradient(90deg, #1B5E20, #4CAF50);
+        }
+        
+        .comparison-fill.institution {
+            background: linear-gradient(90deg, #FFD700, #FFC107);
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            opacity: 0.6;
+        }
+        
+        .comparison-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legend-dot.career { background: #1B5E20; }
+        .legend-dot.institution { background: #FFD700; }
+        
+        .timeline-month {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .timeline-date {
+            width: 80px;
+            text-align: center;
+        }
+        
+        .timeline-month-name {
+            font-weight: bold;
+            color: #1B5E20;
+        }
+        
+        .timeline-year {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #1B5E20;
+        }
+        
+        .sentiment-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .sentiment-indicator.positive {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        
+        .sentiment-indicator.negative {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        
+        .sentiment-indicator.neutral {
+            background: #F5F5F5;
+            color: #616161;
+        }
+        
+        .post-sample {
+            background: #F5F5F5;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .post-content {
+            font-style: italic;
+            line-height: 1.6;
+        }
+        
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .action-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .action-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+        }
+        
+        .action-item.immediate {
+            border-color: #C62828;
+        }
+        
+        .action-item.short-term {
+            border-color: #EF6C00;
+        }
+        
+        .action-item.medium-term {
+            border-color: #F9A825;
+        }
+        
+        .action-item.long-term {
+            border-color: #2E7D32;
+        }
+        
+        .action-priority {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .action-item.immediate .action-priority { color: #C62828; }
+        .action-item.short-term .action-priority { color: #EF6C00; }
+        .action-item.medium-term .action-priority { color: #F9A825; }
+        .action-item.long-term .action-priority { color: #2E7D32; }
+        
+        .action-description {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== PORTADA ==================== -->
+    <div class="cover-page career">
+        {% if logo_base64 %}
+        <img src="{{ logo_base64 }}" alt="Logo EMI" class="logo">
+        {% else %}
+        <div class="logo-placeholder">
+            <span>EMI</span>
+        </div>
+        {% endif %}
+        
+        <div class="career-badge">
+            <span class="career-icon">🎓</span>
+        </div>
+        
+        <h1 class="report-title">ANÁLISIS DE PERCEPCIÓN</h1>
+        <h2 class="career-title">{{ career_name }}</h2>
+        
+        <div class="cover-satisfaction">
+            <div class="satisfaction-circle {% if satisfaction_index >= 60 %}high{% elif satisfaction_index >= 40 %}medium{% else %}low{% endif %}">
+                <span class="satisfaction-value">{{ satisfaction_index }}</span>
+                <span class="satisfaction-label">Índice de Satisfacción</span>
+            </div>
+        </div>
+        
+        <div class="cover-period">
+            <span class="period-label">Período:</span>
+            <span class="period-value">{{ period_display }}</span>
+        </div>
+        
+        <div class="cover-footer">
+            <p>Sistema de Analítica OSINT</p>
+            <p>{{ generated_date }}</p>
+        </div>
+    </div>
+    
+    <!-- ==================== RESUMEN EJECUTIVO ==================== -->
+    <div class="page" id="summary">
+        <div class="career-header">
+            <div class="career-icon">🎓</div>
+            <div class="career-name-main">{{ career_name }}</div>
+            <div class="career-faculty">{{ faculty_name }}</div>
+        </div>
+        
+        <h2 class="section-title">
+            <span class="section-icon">📊</span>
+            Resumen Ejecutivo
+        </h2>
+        
+        <div class="quick-stats">
+            <div class="quick-stat">
+                <div class="quick-stat-value">{{ total_mentions|format_number }}</div>
+                <div class="quick-stat-label">Menciones Totales</div>
+                <div class="quick-stat-change {% if mentions_change >= 0 %}positive{% else %}negative{% endif %}">
+                    {% if mentions_change >= 0 %}↑{% else %}↓{% endif %} {{ mentions_change|abs }}%
+                </div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-value">{{ satisfaction_index }}</div>
+                <div class="quick-stat-label">Índice de Satisfacción</div>
+                <div class="quick-stat-change {% if satisfaction_change >= 0 %}positive{% else %}negative{% endif %}">
+                    {% if satisfaction_change >= 0 %}↑{% else %}↓{% endif %} {{ satisfaction_change|abs }} pts
+                </div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-value">{{ positive_percent }}%</div>
+                <div class="quick-stat-label">Menciones Positivas</div>
+            </div>
+            <div class="quick-stat">
+                <div class="quick-stat-value">{{ alerts_count }}</div>
+                <div class="quick-stat-label">Alertas Detectadas</div>
+            </div>
+        </div>
+        
+        <div class="summary-text">
+            <p>
+                Durante el período <strong>{{ period_display }}</strong>, la carrera de 
+                <strong>{{ career_name }}</strong> registró <strong>{{ total_mentions|format_number }}</strong> 
+                menciones en redes sociales. El índice de satisfacción alcanzó 
+                <strong>{{ satisfaction_index }} puntos</strong>, lo que representa una percepción 
+                {% if satisfaction_index >= 60 %}favorable{% elif satisfaction_index >= 40 %}neutral{% else %}desfavorable{% endif %}
+                de la carrera.
+            </p>
+            
+            {% if ranking_position %}
+            <p>
+                En el ranking institucional, la carrera ocupa la posición <strong>#{{ ranking_position }}</strong> 
+                de <strong>{{ total_careers }}</strong> carreras analizadas.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- ==================== ANÁLISIS DE SENTIMIENTO ==================== -->
+    <div class="page" id="sentiment">
+        <h2 class="section-title">
+            <span class="section-icon">💬</span>
+            Análisis de Sentimiento
+        </h2>
+        
+        <div class="two-column">
+            <div>
+                <h3>Distribución de Sentimientos</h3>
+                {% if charts.sentiment_distribution %}
+                <img src="{{ charts.sentiment_distribution }}" alt="Distribución" class="chart">
+                {% endif %}
+            </div>
+            <div>
+                <h3>Evolución Temporal</h3>
+                {% if charts.sentiment_evolution %}
+                <img src="{{ charts.sentiment_evolution }}" alt="Evolución" class="chart">
+                {% endif %}
+            </div>
+        </div>
+        
+        <h3>Comparativa con el Promedio Institucional</h3>
+        
+        <div class="comparison-card">
+            <div class="comparison-header">
+                <span class="comparison-title">Índice de Satisfacción</span>
+                <span class="comparison-value">{{ satisfaction_index }} vs {{ institution_avg }}</span>
+            </div>
+            <div class="comparison-bar">
+                <div class="comparison-fill institution" style="width: {{ institution_avg }}%;"></div>
+                <div class="comparison-fill career" style="width: {{ satisfaction_index }}%;"></div>
+            </div>
+            <div class="comparison-legend">
+                <div class="legend-item">
+                    <div class="legend-dot career"></div>
+                    <span>{{ career_name }}: {{ satisfaction_index }}</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot institution"></div>
+                    <span>Promedio EMI: {{ institution_avg }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-card">
+            <div class="comparison-header">
+                <span class="comparison-title">Porcentaje de Menciones Positivas</span>
+                <span class="comparison-value">{{ positive_percent }}% vs {{ institution_positive }}%</span>
+            </div>
+            <div class="comparison-bar">
+                <div class="comparison-fill institution" style="width: {{ institution_positive }}%;"></div>
+                <div class="comparison-fill career" style="width: {{ positive_percent }}%;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ==================== TEMAS PRINCIPALES ==================== -->
+    <div class="page" id="topics">
+        <h2 class="section-title">
+            <span class="section-icon">🏷️</span>
+            Temas Principales
+        </h2>
+        
+        <h3>Nube de Temas Mencionados</h3>
+        
+        <div class="topic-cloud">
+            {% for topic in main_topics %}
+            <span class="topic-tag {{ topic.sentiment }} {% if topic.count > avg_topic_count * 1.5 %}large{% elif topic.count < avg_topic_count * 0.5 %}small{% endif %}">
+                {{ topic.name }} ({{ topic.count }})
+            </span>
+            {% endfor %}
+        </div>
+        
+        <h3>Top 5 Temas Positivos</h3>
+        
+        <table class="data-table compact">
+            <thead>
+                <tr>
+                    <th>Tema</th>
+                    <th>Menciones</th>
+                    <th>Sentimiento Prom.</th>
+                    <th>Ejemplos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for topic in positive_topics[:5] %}
+                <tr>
+                    <td>
+                        <span class="sentiment-indicator positive">👍 {{ topic.name }}</span>
+                    </td>
+                    <td>{{ topic.count }}</td>
+                    <td>+{{ "%.2f"|format(topic.avg_sentiment) }}</td>
+                    <td>{{ topic.keywords[:3]|join(', ') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <h3>Top 5 Temas Negativos (Áreas de Atención)</h3>
+        
+        <table class="data-table compact">
+            <thead>
+                <tr>
+                    <th>Tema</th>
+                    <th>Menciones</th>
+                    <th>Sentimiento Prom.</th>
+                    <th>Ejemplos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for topic in negative_topics[:5] %}
+                <tr>
+                    <td>
+                        <span class="sentiment-indicator negative">👎 {{ topic.name }}</span>
+                    </td>
+                    <td>{{ topic.count }}</td>
+                    <td>{{ "%.2f"|format(topic.avg_sentiment) }}</td>
+                    <td>{{ topic.keywords[:3]|join(', ') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- ==================== EVOLUCIÓN MENSUAL ==================== -->
+    <div class="page" id="timeline">
+        <h2 class="section-title">
+            <span class="section-icon">📅</span>
+            Evolución Mensual
+        </h2>
+        
+        {% if charts.monthly_evolution %}
+        <div class="chart-container">
+            <img src="{{ charts.monthly_evolution }}" alt="Evolución Mensual" class="chart">
+        </div>
+        {% endif %}
+        
+        <h3>Resumen por Mes</h3>
+        
+        {% for month in monthly_data %}
+        <div class="timeline-month">
+            <div class="timeline-date">
+                <div class="timeline-month-name">{{ month.name }}</div>
+                <div class="timeline-year">{{ month.year }}</div>
+            </div>
+            <div class="timeline-content">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>{{ month.mentions|format_number }}</strong> menciones
+                        <span class="sentiment-indicator {% if month.sentiment > 0 %}positive{% elif month.sentiment < 0 %}negative{% else %}neutral{% endif %}">
+                            {% if month.sentiment > 0 %}↑{% elif month.sentiment < 0 %}↓{% else %}→{% endif %}
+                            {{ "%.2f"|format(month.sentiment) }}
+                        </span>
+                    </div>
+                    <div>
+                        Satisfacción: <strong>{{ month.satisfaction }}</strong>
+                    </div>
+                </div>
+                {% if month.highlight %}
+                <p style="margin: 10px 0 0; font-size: 13px; color: #666;">
+                    📌 {{ month.highlight }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- ==================== PUBLICACIONES DESTACADAS ==================== -->
+    <div class="page" id="posts">
+        <h2 class="section-title">
+            <span class="section-icon">📱</span>
+            Publicaciones Destacadas
+        </h2>
+        
+        <h3>Menciones Positivas Más Relevantes</h3>
+        
+        {% for post in top_positive_posts[:3] %}
+        <div class="post-sample">
+            <div class="post-header">
+                <span>{{ post.source }} | {{ post.date|format_date }}</span>
+                <span class="sentiment-indicator positive">+{{ "%.2f"|format(post.sentiment) }}</span>
+            </div>
+            <div class="post-content">
+                "{{ post.text[:200] }}{% if post.text|length > 200 %}...{% endif %}"
+            </div>
+            <div class="post-footer">
+                <span>{{ post.engagement }} interacciones</span>
+                <span>Alcance: {{ post.reach|format_number }}</span>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <h3>Menciones Negativas que Requieren Atención</h3>
+        
+        {% for post in top_negative_posts[:3] %}
+        <div class="post-sample" style="border-left: 3px solid #C62828;">
+            <div class="post-header">
+                <span>{{ post.source }} | {{ post.date|format_date }}</span>
+                <span class="sentiment-indicator negative">{{ "%.2f"|format(post.sentiment) }}</span>
+            </div>
+            <div class="post-content">
+                "{{ post.text[:200] }}{% if post.text|length > 200 %}...{% endif %}"
+            </div>
+            <div class="post-footer">
+                <span>{{ post.engagement }} interacciones</span>
+                <span>Alcance: {{ post.reach|format_number }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- ==================== ALERTAS DE LA CARRERA ==================== -->
+    {% if career_alerts %}
+    <div class="page" id="alerts">
+        <h2 class="section-title">
+            <span class="section-icon">🚨</span>
+            Alertas Detectadas
+        </h2>
+        
+        <p>
+            Durante el período se detectaron <strong>{{ career_alerts|length }}</strong> alertas 
+            relacionadas específicamente con la carrera de {{ career_name }}.
+        </p>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Severidad</th>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alert in career_alerts %}
+                <tr>
+                    <td>{{ alert.date|format_date }}</td>
+                    <td>
+                        <span class="severity-badge {{ alert.severity }}">
+                            {{ alert.severity|upper }}
+                        </span>
+                    </td>
+                    <td>{{ alert.type }}</td>
+                    <td>{{ alert.description[:100] }}{% if alert.description|length > 100 %}...{% endif %}</td>
+                    <td>{{ alert.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== RECOMENDACIONES ==================== -->
+    <div class="page" id="recommendations">
+        <h2 class="section-title">
+            <span class="section-icon">💡</span>
+            Recomendaciones Específicas
+        </h2>
+        
+        <p>
+            Basándose en el análisis de datos del período, se proponen las siguientes acciones 
+            específicas para la carrera de <strong>{{ career_name }}</strong>:
+        </p>
+        
+        <div class="action-items">
+            {% for action in recommendations %}
+            <div class="action-item {{ action.timeframe }}">
+                <div class="action-priority">
+                    {% if action.timeframe == 'immediate' %}🔴 Inmediato (1-7 días)
+                    {% elif action.timeframe == 'short-term' %}🟠 Corto plazo (1-4 semanas)
+                    {% elif action.timeframe == 'medium-term' %}🟡 Mediano plazo (1-3 meses)
+                    {% else %}🟢 Largo plazo (3-6 meses)
+                    {% endif %}
+                </div>
+                <div class="action-description">{{ action.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <h3>Plan de Acción Resumido</h3>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Acción</th>
+                    <th>Responsable</th>
+                    <th>Plazo</th>
+                    <th>Indicador de Éxito</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for action in action_plan %}
+                <tr>
+                    <td>{{ action.action }}</td>
+                    <td>{{ action.responsible }}</td>
+                    <td>{{ action.deadline }}</td>
+                    <td>{{ action.kpi }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- ==================== CONCLUSIONES ==================== -->
+    <div class="page" id="conclusions">
+        <h2 class="section-title">
+            <span class="section-icon">✅</span>
+            Conclusiones
+        </h2>
+        
+        <div class="conclusion-box">
+            <h3>🎯 Resumen del Análisis</h3>
+            <ul class="conclusion-list">
+                {% for conclusion in conclusions %}
+                <li>{{ conclusion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <h3>Fortalezas Identificadas</h3>
+        <ul>
+            {% for strength in strengths %}
+            <li>✅ {{ strength }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Oportunidades de Mejora</h3>
+        <ul>
+            {% for opportunity in opportunities %}
+            <li>📌 {{ opportunity }}</li>
+            {% endfor %}
+        </ul>
+        
+        <div class="data-highlight">
+            <h4>📊 Próximo Reporte</h4>
+            <p>
+                El siguiente análisis detallado de la carrera se generará el 
+                <strong>{{ next_report_date }}</strong>. Se recomienda implementar las acciones 
+                sugeridas antes de esa fecha para medir su impacto.
+            </p>
+        </div>
+    </div>
+    
+    <!-- ==================== PIE DE PÁGINA ==================== -->
+    <div class="back-cover">
+        <div class="back-content">
+            <h3>{{ career_name }}</h3>
+            <p class="subtitle">Análisis de Percepción Institucional</p>
+            
+            <div class="generation-info">
+                <p><strong>Sistema de Analítica OSINT</strong></p>
+                <p>Escuela Militar de Ingeniería</p>
+                <p>Período: {{ period_display }}</p>
+                <p>Generado: {{ generated_date }}</p>
+            </div>
+            
+            <p class="confidential-notice">
+                Este reporte es de carácter confidencial y está destinado 
+                para uso interno de la dirección de carrera.
+            </p>
+        </div>
+    </div>
+    
+</body>
+</html>

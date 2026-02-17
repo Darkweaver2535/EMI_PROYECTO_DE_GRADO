@@ -2,9 +2,11 @@
 Configuración de pytest para el proyecto OSINT EMI.
 
 Este archivo configura fixtures globales y opciones de pytest.
+Sprint 6: Agregadas fixtures para módulos de resiliencia y monitoreo.
 """
 
 import pytest
+import asyncio
 import sys
 import os
 
@@ -12,10 +14,22 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+# =============================================================================
+# Project Root Fixtures
+# =============================================================================
+
 @pytest.fixture(scope='session')
 def project_root():
     """Retorna el directorio raíz del proyecto."""
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    """Create an instance of the default event loop for the test session."""
+    loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest.fixture(scope='session')

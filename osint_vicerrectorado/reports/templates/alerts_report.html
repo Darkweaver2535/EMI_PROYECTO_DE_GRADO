@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ report_title }}</title>
+    <link rel="stylesheet" href="report.css">
+    <style>
+        /* Estilos específicos para reporte de alertas */
+        .alert-dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .alert-stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+        }
+        
+        .alert-stat-card.critical {
+            border-color: #C62828;
+            background: linear-gradient(135deg, #FFEBEE, white);
+        }
+        
+        .alert-stat-card.high {
+            border-color: #EF6C00;
+            background: linear-gradient(135deg, #FFF3E0, white);
+        }
+        
+        .alert-stat-card.medium {
+            border-color: #F9A825;
+            background: linear-gradient(135deg, #FFFDE7, white);
+        }
+        
+        .alert-stat-card.low {
+            border-color: #2E7D32;
+            background: linear-gradient(135deg, #E8F5E9, white);
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .alert-detail-card {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .alert-detail-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .alert-detail-header.critical {
+            background: #C62828;
+            color: white;
+        }
+        
+        .alert-detail-header.high {
+            background: #EF6C00;
+            color: white;
+        }
+        
+        .alert-detail-header.medium {
+            background: #F9A825;
+            color: #333;
+        }
+        
+        .alert-detail-header.low {
+            background: #2E7D32;
+            color: white;
+        }
+        
+        .alert-id {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .alert-type {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .alert-timestamp {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .alert-detail-body {
+            padding: 20px;
+        }
+        
+        .alert-description {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .alert-source {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: #F5F5F5;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        
+        .alert-source-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .alert-source-label {
+            color: #666;
+        }
+        
+        .alert-source-value {
+            font-weight: 500;
+        }
+        
+        .alert-actions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .alert-actions h4 {
+            margin: 0 0 10px 0;
+            color: #1B5E20;
+            font-size: 13px;
+        }
+        
+        .alert-actions ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .alert-actions li {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-container {
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 50px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #E0E0E0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: 43px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px;
+        }
+        
+        .timeline-marker.critical { background: #C62828; box-shadow: 0 0 0 2px #C62828; }
+        .timeline-marker.high { background: #EF6C00; box-shadow: 0 0 0 2px #EF6C00; }
+        .timeline-marker.medium { background: #F9A825; box-shadow: 0 0 0 2px #F9A825; }
+        .timeline-marker.low { background: #2E7D32; box-shadow: 0 0 0 2px #2E7D32; }
+        
+        .timeline-date {
+            position: absolute;
+            left: 0;
+            width: 40px;
+            text-align: right;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .timeline-content {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .no-alerts-message {
+            text-align: center;
+            padding: 60px 40px;
+            background: #E8F5E9;
+            border-radius: 10px;
+            margin: 40px 0;
+        }
+        
+        .no-alerts-message .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .no-alerts-message h3 {
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== PORTADA ==================== -->
+    <div class="cover-page alerts-cover">
+        {% if logo_base64 %}
+        <img src="{{ logo_base64 }}" alt="Logo EMI" class="logo">
+        {% else %}
+        <div class="logo-placeholder">
+            <span>EMI</span>
+        </div>
+        {% endif %}
+        
+        <div class="cover-alert-indicator {{ overall_severity }}">
+            {% if critical_count > 0 %}
+            🚨
+            {% elif high_count > 0 %}
+            ⚠️
+            {% else %}
+            ✅
+            {% endif %}
+        </div>
+        
+        <h1 class="report-title">{{ report_title }}</h1>
+        <p class="report-subtitle">{{ report_subtitle }}</p>
+        
+        <div class="cover-stats">
+            <div class="cover-stat">
+                <span class="stat-value">{{ total_alerts }}</span>
+                <span class="stat-label">Alertas Totales</span>
+            </div>
+            <div class="cover-stat critical">
+                <span class="stat-value">{{ critical_count }}</span>
+                <span class="stat-label">Críticas</span>
+            </div>
+            <div class="cover-stat high">
+                <span class="stat-value">{{ high_count }}</span>
+                <span class="stat-label">Altas</span>
+            </div>
+        </div>
+        
+        <div class="cover-period">
+            <span class="period-label">Período:</span>
+            <span class="period-value">{{ period_display }}</span>
+        </div>
+        
+        <div class="cover-footer">
+            <p>Generado: {{ generated_date }}</p>
+            <p>Sistema de Analítica OSINT - EMI Bolivia</p>
+        </div>
+    </div>
+    
+    <!-- ==================== DASHBOARD DE ALERTAS ==================== -->
+    <div class="page" id="dashboard">
+        <h2 class="section-title">
+            <span class="section-icon">📊</span>
+            Dashboard de Alertas
+        </h2>
+        
+        <div class="alert-dashboard">
+            <div class="alert-stat-card critical">
+                <div class="stat-number" style="color: #C62828;">{{ critical_count }}</div>
+                <div class="stat-label">Críticas</div>
+            </div>
+            <div class="alert-stat-card high">
+                <div class="stat-number" style="color: #EF6C00;">{{ high_count }}</div>
+                <div class="stat-label">Altas</div>
+            </div>
+            <div class="alert-stat-card medium">
+                <div class="stat-number" style="color: #F9A825;">{{ medium_count }}</div>
+                <div class="stat-label">Medias</div>
+            </div>
+            <div class="alert-stat-card low">
+                <div class="stat-number" style="color: #2E7D32;">{{ low_count }}</div>
+                <div class="stat-label">Bajas</div>
+            </div>
+        </div>
+        
+        {% if charts.severity_distribution %}
+        <div class="chart-container half-width">
+            <h3 class="chart-title">Distribución por Severidad</h3>
+            <img src="{{ charts.severity_distribution }}" alt="Distribución de Severidad" class="chart">
+        </div>
+        {% endif %}
+        
+        {% if charts.alerts_timeline %}
+        <div class="chart-container">
+            <h3 class="chart-title">Línea de Tiempo de Alertas</h3>
+            <img src="{{ charts.alerts_timeline }}" alt="Timeline de Alertas" class="chart">
+        </div>
+        {% endif %}
+        
+        <div class="summary-box">
+            <h4>Resumen del Período</h4>
+            <p>
+                Durante los últimos <strong>{{ days }} días</strong>, el sistema detectó 
+                <strong>{{ total_alerts }} alertas</strong>, de las cuales 
+                <strong>{{ critical_count + high_count }}</strong> requieren atención prioritaria.
+            </p>
+            {% if critical_count > 0 %}
+            <p class="warning-text">
+                ⚠️ <strong>Atención:</strong> Hay {{ critical_count }} alerta(s) crítica(s) 
+                que requieren acción inmediata.
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- ==================== ALERTAS CRÍTICAS ==================== -->
+    {% if critical_alerts %}
+    <div class="page" id="critical-alerts">
+        <h2 class="section-title">
+            <span class="section-icon">🔴</span>
+            Alertas Críticas ({{ critical_count }})
+        </h2>
+        
+        <p class="section-intro">
+            Las siguientes alertas requieren atención inmediata por su potencial impacto reputacional:
+        </p>
+        
+        {% for alert in critical_alerts %}
+        <div class="alert-detail-card">
+            <div class="alert-detail-header critical">
+                <div>
+                    <span class="alert-id">ID: {{ alert.id }}</span>
+                    <span class="alert-type">{{ alert.type }}</span>
+                </div>
+                <span class="alert-timestamp">{{ alert.date|format_date }}</span>
+            </div>
+            <div class="alert-detail-body">
+                <p class="alert-description">{{ alert.description }}</p>
+                
+                <div class="alert-source">
+                    <div class="alert-source-item">
+                        <span class="alert-source-label">Fuente:</span>
+                        <span class="alert-source-value">{{ alert.source }}</span>
+                    </div>
+                    <div class="alert-source-item">
+                        <span class="alert-source-label">Alcance:</span>
+                        <span class="alert-source-value">{{ alert.reach|format_number }} personas</span>
+                    </div>
+                    <div class="alert-source-item">
+                        <span class="alert-source-label">Sentimiento:</span>
+                        <span class="alert-source-value">{{ "%.2f"|format(alert.sentiment_score) }}</span>
+                    </div>
+                </div>
+                
+                {% if alert.recommended_actions %}
+                <div class="alert-actions">
+                    <h4>✅ Acciones Recomendadas</h4>
+                    <ul>
+                        {% for action in alert.recommended_actions %}
+                        <li>{{ action }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- ==================== ALERTAS ALTAS ==================== -->
+    {% if high_alerts %}
+    <div class="page" id="high-alerts">
+        <h2 class="section-title">
+            <span class="section-icon">🟠</span>
+            Alertas de Severidad Alta ({{ high_count }})
+        </h2>
+        
+        {% for alert in high_alerts %}
+        <div class="alert-detail-card">
+            <div class="alert-detail-header high">
+                <div>
+                    <span class="alert-id">ID: {{ alert.id }}</span>
+                    <span class="alert-type">{{ alert.type }}</span>
+                </div>
+                <span class="alert-timestamp">{{ alert.date|format_date }}</span>
+            </div>
+            <div class="alert-detail-body">
+                <p class="alert-description">{{ alert.description }}</p>
+                
+                <div class="alert-source">
+                    <div class="alert-source-item">
+                        <span class="alert-source-label">Fuente:</span>
+                        <span class="alert-source-value">{{ alert.source }}</span>
+                    </div>
+                    <div class="alert-source-item">
+                        <span class="alert-source-label">Alcance:</span>
+                        <span class="alert-source-value">{{ alert.reach|format_number }} personas</span>
+                    </div>
+                </div>
+                
+                {% if alert.recommended_actions %}
+                <div class="alert-actions">
+                    <h4>✅ Acciones Recomendadas</h4>
+                    <ul>
+                        {% for action in alert.recommended_actions %}
+                        <li>{{ action }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- ==================== TABLA RESUMEN DE TODAS LAS ALERTAS ==================== -->
+    <div class="page" id="all-alerts-table">
+        <h2 class="section-title">
+            <span class="section-icon">📋</span>
+            Listado Completo de Alertas
+        </h2>
+        
+        {% if all_alerts %}
+        <table class="data-table compact">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Severidad</th>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Fuente</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alert in all_alerts %}
+                <tr>
+                    <td>{{ alert.id }}</td>
+                    <td>{{ alert.date|format_date }}</td>
+                    <td>
+                        <span class="severity-badge {{ alert.severity }}">
+                            {{ alert.severity }}
+                        </span>
+                    </td>
+                    <td>{{ alert.type }}</td>
+                    <td>{{ alert.description[:80] }}{% if alert.description|length > 80 %}...{% endif %}</td>
+                    <td>{{ alert.source }}</td>
+                    <td>{{ alert.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-alerts-message">
+            <div class="icon">✅</div>
+            <h3>¡Sin Alertas!</h3>
+            <p>No se detectaron alertas durante el período analizado.</p>
+            <p class="small">Esto indica que la percepción pública de la EMI se mantiene estable.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- ==================== LÍNEA DE TIEMPO ==================== -->
+    {% if all_alerts %}
+    <div class="page" id="timeline">
+        <h2 class="section-title">
+            <span class="section-icon">⏱️</span>
+            Línea de Tiempo de Eventos
+        </h2>
+        
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            {% for alert in all_alerts[:15] %}
+            <div class="timeline-item">
+                <div class="timeline-date">
+                    {{ alert.date.strftime('%d/%m') if alert.date else 'N/A' }}
+                </div>
+                <div class="timeline-marker {{ alert.severity }}"></div>
+                <div class="timeline-content">
+                    <strong>{{ alert.type }}</strong>
+                    <p>{{ alert.description[:100] }}{% if alert.description|length > 100 %}...{% endif %}</p>
+                    <small>Severidad: {{ alert.severity|upper }} | {{ alert.source }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if all_alerts|length > 15 %}
+        <p class="table-note">
+            Mostrando 15 de {{ all_alerts|length }} alertas en la línea de tiempo.
+        </p>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- ==================== ANÁLISIS DE PATRONES ==================== -->
+    <div class="page" id="patterns">
+        <h2 class="section-title">
+            <span class="section-icon">🔍</span>
+            Análisis de Patrones
+        </h2>
+        
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <h4>📅 Días con Mayor Actividad</h4>
+                {% if alert_patterns.peak_days %}
+                <ul>
+                    {% for day in alert_patterns.peak_days[:5] %}
+                    <li>{{ day.date }}: {{ day.count }} alertas</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>Sin datos suficientes</p>
+                {% endif %}
+            </div>
+            
+            <div class="pattern-card">
+                <h4>📱 Fuentes Principales</h4>
+                {% if alert_patterns.top_sources %}
+                <ul>
+                    {% for source in alert_patterns.top_sources %}
+                    <li>{{ source.name }}: {{ source.count }} alertas</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>Sin datos suficientes</p>
+                {% endif %}
+            </div>
+            
+            <div class="pattern-card">
+                <h4>🏷️ Tipos Más Comunes</h4>
+                {% if alert_patterns.common_types %}
+                <ul>
+                    {% for type in alert_patterns.common_types %}
+                    <li>{{ type.name }}: {{ type.count }} alertas</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>Sin datos suficientes</p>
+                {% endif %}
+            </div>
+            
+            <div class="pattern-card">
+                <h4>⚡ Tiempo Promedio de Respuesta</h4>
+                <div class="big-stat">{{ alert_patterns.avg_response_time or 'N/A' }}</div>
+                <p class="stat-context">horas desde detección</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ==================== RECOMENDACIONES DE ACCIÓN ==================== -->
+    <div class="page" id="action-plan">
+        <h2 class="section-title">
+            <span class="section-icon">✅</span>
+            Plan de Acción Recomendado
+        </h2>
+        
+        <div class="action-plan">
+            {% if critical_count > 0 %}
+            <div class="action-priority urgent">
+                <div class="action-header">
+                    <span class="action-badge">URGENTE</span>
+                    <span class="action-timeframe">Próximas 24 horas</span>
+                </div>
+                <ul>
+                    <li>Revisar y responder a las {{ critical_count }} alerta(s) crítica(s) identificadas</li>
+                    <li>Preparar comunicado oficial si la situación lo requiere</li>
+                    <li>Informar a las autoridades correspondientes</li>
+                </ul>
+            </div>
+            {% endif %}
+            
+            {% if high_count > 0 %}
+            <div class="action-priority high">
+                <div class="action-header">
+                    <span class="action-badge">ALTA PRIORIDAD</span>
+                    <span class="action-timeframe">Esta semana</span>
+                </div>
+                <ul>
+                    <li>Monitorear la evolución de las {{ high_count }} alerta(s) de severidad alta</li>
+                    <li>Preparar respuestas a las quejas más recurrentes</li>
+                    <li>Coordinar con las carreras afectadas</li>
+                </ul>
+            </div>
+            {% endif %}
+            
+            <div class="action-priority normal">
+                <div class="action-header">
+                    <span class="action-badge">MANTENIMIENTO</span>
+                    <span class="action-timeframe">Próximas 2 semanas</span>
+                </div>
+                <ul>
+                    <li>Revisar alertas de severidad media y baja pendientes</li>
+                    <li>Actualizar protocolos de respuesta según patrones identificados</li>
+                    <li>Programar revisión del siguiente período</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ==================== PIE DE PÁGINA ==================== -->
+    <div class="back-cover">
+        <div class="back-content">
+            <p class="confidential-notice">
+                Este reporte de alertas es de carácter confidencial y está destinado 
+                para uso interno del equipo de gestión de crisis y comunicación.
+            </p>
+            
+            <div class="generation-info">
+                <p><strong>Sistema de Analítica OSINT - Módulo de Alertas</strong></p>
+                <p>Generado: {{ generated_date }}</p>
+                <p>Período: {{ period_display }}</p>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

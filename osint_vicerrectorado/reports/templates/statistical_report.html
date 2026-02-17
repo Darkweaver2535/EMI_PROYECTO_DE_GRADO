@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ report_title }}</title>
+    <link rel="stylesheet" href="report.css">
+    <style>
+        /* Estilos específicos para anuario estadístico */
+        .toc-section {
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .toc-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dotted rgba(255,255,255,0.3);
+        }
+        
+        .toc-item:last-child {
+            border-bottom: none;
+        }
+        
+        .toc-link {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .toc-page {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .chapter-cover {
+            background: linear-gradient(135deg, #1B5E20, #2E7D32);
+            color: white;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+            padding: 40px;
+            page-break-before: always;
+        }
+        
+        .chapter-number {
+            font-size: 60px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .chapter-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .chapter-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-box {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-top: 4px solid #1B5E20;
+        }
+        
+        .stat-box.highlight {
+            border-top-color: #FFD700;
+            background: linear-gradient(135deg, #FFFDE7, white);
+        }
+        
+        .stat-value {
+            font-size: 42px;
+            font-weight: bold;
+            color: #1B5E20;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .stat-change {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .stat-change.up { color: #2E7D32; }
+        .stat-change.down { color: #C62828; }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .data-highlight {
+            background: #FFF8E1;
+            border-left: 4px solid #FFD700;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .data-highlight h4 {
+            color: #F57F17;
+            margin: 0 0 10px 0;
+        }
+        
+        .monthly-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .month-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .month-name {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .month-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1B5E20;
+        }
+        
+        .month-sentiment {
+            font-size: 10px;
+            margin-top: 5px;
+        }
+        
+        .career-row {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .career-rank {
+            width: 40px;
+            height: 40px;
+            background: #1B5E20;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .career-info {
+            flex: 1;
+        }
+        
+        .career-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .career-stats {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .career-bar-bg {
+            flex: 1;
+            max-width: 200px;
+            height: 20px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .career-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .career-bar-fill.high { background: #2E7D32; }
+        .career-bar-fill.medium { background: #F9A825; }
+        .career-bar-fill.low { background: #C62828; }
+        
+        .conclusion-box {
+            background: linear-gradient(135deg, #1B5E20, #2E7D32);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .conclusion-box h3 {
+            color: #FFD700;
+            margin-top: 0;
+        }
+        
+        .conclusion-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .conclusion-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .conclusion-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .appendix-table {
+            font-size: 11px;
+        }
+        
+        .appendix-table th, .appendix-table td {
+            padding: 8px;
+        }
+        
+        .mini-chart {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== PORTADA ==================== -->
+    <div class="cover-page yearbook">
+        {% if logo_base64 %}
+        <img src="{{ logo_base64 }}" alt="Logo EMI" class="logo large">
+        {% else %}
+        <div class="logo-placeholder large">
+            <span>EMI</span>
+        </div>
+        {% endif %}
+        
+        <h1 class="report-title main">ANUARIO ESTADÍSTICO</h1>
+        <h2 class="report-title sub">Análisis de Percepción Institucional</h2>
+        
+        <div class="yearbook-period">
+            <span class="semester-label">{{ semester }}</span>
+        </div>
+        
+        <div class="cover-institution">
+            <p>{{ institution }}</p>
+            <p>{{ department }}</p>
+        </div>
+        
+        <div class="cover-meta">
+            <div class="meta-item">
+                <span class="meta-value">{{ total_posts|format_number }}</span>
+                <span class="meta-label">Publicaciones Analizadas</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-value">{{ total_days }}</span>
+                <span class="meta-label">Días de Monitoreo</span>
+            </div>
+        </div>
+        
+        <div class="cover-footer">
+            <p>Sistema de Analítica OSINT</p>
+            <p>Generado: {{ generated_date }}</p>
+        </div>
+    </div>
+    
+    <!-- ==================== ÍNDICE ==================== -->
+    <div class="page toc-page">
+        <div class="toc-section">
+            <h2 class="toc-title">📚 Índice de Contenidos</h2>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#cap1" class="toc-link">1. Resumen Ejecutivo del Semestre</a>
+                    <span class="toc-page">3</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap2" class="toc-link">2. Metodología y Fuentes</a>
+                    <span class="toc-page">5</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap3" class="toc-link">3. Estadísticas Generales de Recolección</a>
+                    <span class="toc-page">7</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap4" class="toc-link">4. Análisis de Sentimiento Global</a>
+                    <span class="toc-page">11</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap5" class="toc-link">5. Evolución Mensual</a>
+                    <span class="toc-page">17</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap6" class="toc-link">6. Análisis por Carrera</a>
+                    <span class="toc-page">23</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap7" class="toc-link">7. Análisis por Fuente</a>
+                    <span class="toc-page">29</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap8" class="toc-link">8. Top Temas y Tendencias</a>
+                    <span class="toc-page">33</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap9" class="toc-link">9. Alertas y Eventos Relevantes</a>
+                    <span class="toc-page">37</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#cap10" class="toc-link">10. Conclusiones y Recomendaciones</a>
+                    <span class="toc-page">41</span>
+                </li>
+                <li class="toc-item">
+                    <a href="#appendix" class="toc-link">Apéndices y Datos Complementarios</a>
+                    <span class="toc-page">45</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- ==================== CAPÍTULO 1: RESUMEN EJECUTIVO ==================== -->
+    {% if 'executive_summary' in sections %}
+    <div class="page" id="cap1">
+        <div class="chapter-cover">
+            <div class="chapter-number">01</div>
+            <div class="chapter-title">Resumen Ejecutivo</div>
+            <div class="chapter-subtitle">Visión general del semestre {{ semester }}</div>
+        </div>
+        
+        <div class="stat-grid">
+            <div class="stat-box highlight">
+                <div class="stat-value">{{ total_posts|format_number }}</div>
+                <div class="stat-label">Publicaciones Analizadas</div>
+                <div class="stat-change {% if posts_change >= 0 %}up{% else %}down{% endif %}">
+                    {% if posts_change >= 0 %}↑{% else %}↓{% endif %} {{ posts_change|abs }}% vs semestre anterior
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ satisfaction_index }}</div>
+                <div class="stat-label">Índice de Satisfacción</div>
+                <div class="stat-change {% if satisfaction_change >= 0 %}up{% else %}down{% endif %}">
+                    {% if satisfaction_change >= 0 %}↑{% else %}↓{% endif %} {{ satisfaction_change|abs }} pts
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value">{{ total_alerts }}</div>
+                <div class="stat-label">Alertas Detectadas</div>
+                <div class="stat-change {% if alerts_change <= 0 %}up{% else %}down{% endif %}">
+                    {% if alerts_change <= 0 %}↓{% else %}↑{% endif %} {{ alerts_change|abs }}% alertas
+                </div>
+            </div>
+        </div>
+        
+        <h3>Hallazgos Principales del Semestre</h3>
+        
+        <div class="two-column">
+            <div>
+                <h4>✅ Aspectos Positivos</h4>
+                <ul>
+                    {% for item in positive_findings %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h4>⚠️ Áreas de Mejora</h4>
+                <ul>
+                    {% for item in improvement_areas %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="data-highlight">
+            <h4>📊 Dato Destacado</h4>
+            <p>{{ highlight_fact }}</p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== CAPÍTULO 3: ESTADÍSTICAS GENERALES ==================== -->
+    {% if 'collection_stats' in sections %}
+    <div class="page" id="cap3">
+        <div class="chapter-cover">
+            <div class="chapter-number">03</div>
+            <div class="chapter-title">Estadísticas de Recolección</div>
+            <div class="chapter-subtitle">Volumen y distribución de datos</div>
+        </div>
+        
+        <h3>Volumen de Publicaciones por Mes</h3>
+        
+        <div class="monthly-grid">
+            {% for month in monthly_stats %}
+            <div class="month-card">
+                <div class="month-name">{{ month.name }}</div>
+                <div class="month-value">{{ month.count|format_number }}</div>
+                <div class="month-sentiment {% if month.sentiment > 0 %}positive{% elif month.sentiment < 0 %}negative{% else %}neutral{% endif %}">
+                    {% if month.sentiment > 0 %}↑{% elif month.sentiment < 0 %}↓{% else %}→{% endif %}
+                    {{ "%.1f"|format(month.sentiment) }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if charts.monthly_volume %}
+        <div class="chart-container">
+            <h3 class="chart-title">Evolución del Volumen de Publicaciones</h3>
+            <img src="{{ charts.monthly_volume }}" alt="Volumen Mensual" class="chart">
+        </div>
+        {% endif %}
+        
+        <div class="two-column">
+            <div>
+                <h4>📅 Días con Mayor Actividad</h4>
+                <table class="data-table compact">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Publicaciones</th>
+                            <th>Evento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for day in peak_days[:5] %}
+                        <tr>
+                            <td>{{ day.date|format_date }}</td>
+                            <td>{{ day.count }}</td>
+                            <td>{{ day.event or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h4>📱 Distribución por Fuente</h4>
+                {% if charts.source_distribution %}
+                <img src="{{ charts.source_distribution }}" alt="Distribución por Fuente" class="mini-chart">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== CAPÍTULO 4: ANÁLISIS DE SENTIMIENTO ==================== -->
+    {% if 'sentiment_analysis' in sections %}
+    <div class="page" id="cap4">
+        <div class="chapter-cover">
+            <div class="chapter-number">04</div>
+            <div class="chapter-title">Análisis de Sentimiento</div>
+            <div class="chapter-subtitle">Percepción institucional en redes sociales</div>
+        </div>
+        
+        <h3>Distribución General de Sentimientos</h3>
+        
+        <div class="stat-grid">
+            <div class="stat-box" style="border-top-color: #2E7D32;">
+                <div class="stat-value" style="color: #2E7D32;">{{ positive_percent }}%</div>
+                <div class="stat-label">Positivos</div>
+                <div class="stat-change">{{ positive_count|format_number }} publicaciones</div>
+            </div>
+            <div class="stat-box" style="border-top-color: #757575;">
+                <div class="stat-value" style="color: #757575;">{{ neutral_percent }}%</div>
+                <div class="stat-label">Neutrales</div>
+                <div class="stat-change">{{ neutral_count|format_number }} publicaciones</div>
+            </div>
+            <div class="stat-box" style="border-top-color: #C62828;">
+                <div class="stat-value" style="color: #C62828;">{{ negative_percent }}%</div>
+                <div class="stat-label">Negativos</div>
+                <div class="stat-change">{{ negative_count|format_number }} publicaciones</div>
+            </div>
+        </div>
+        
+        {% if charts.sentiment_distribution %}
+        <div class="chart-container half-width centered">
+            <img src="{{ charts.sentiment_distribution }}" alt="Distribución de Sentimientos" class="chart">
+        </div>
+        {% endif %}
+        
+        <h3>Evolución del Sentimiento en el Tiempo</h3>
+        
+        {% if charts.sentiment_evolution %}
+        <div class="chart-container">
+            <img src="{{ charts.sentiment_evolution }}" alt="Evolución de Sentimientos" class="chart">
+        </div>
+        {% endif %}
+        
+        <div class="data-highlight">
+            <h4>🔍 Análisis Detallado</h4>
+            <p>
+                El índice de satisfacción promedio del semestre fue de <strong>{{ satisfaction_index }}</strong>, 
+                lo que representa una percepción 
+                {% if satisfaction_index >= 60 %}favorable{% elif satisfaction_index <= 40 %}desfavorable{% else %}neutral{% endif %} 
+                de la institución. 
+                {% if satisfaction_change > 0 %}
+                Esto representa una mejora de {{ satisfaction_change }} puntos respecto al semestre anterior.
+                {% elif satisfaction_change < 0 %}
+                Se observa una disminución de {{ satisfaction_change|abs }} puntos respecto al semestre anterior.
+                {% else %}
+                El índice se mantiene estable respecto al período anterior.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== CAPÍTULO 6: ANÁLISIS POR CARRERA ==================== -->
+    {% if 'career_analysis' in sections %}
+    <div class="page" id="cap6">
+        <div class="chapter-cover">
+            <div class="chapter-number">06</div>
+            <div class="chapter-title">Análisis por Carrera</div>
+            <div class="chapter-subtitle">Percepción comparativa entre programas académicos</div>
+        </div>
+        
+        <h3>Ranking de Satisfacción por Carrera</h3>
+        
+        {% for career in career_stats[:10] %}
+        <div class="career-row">
+            <div class="career-rank">{{ loop.index }}</div>
+            <div class="career-info">
+                <div class="career-name">{{ career.name }}</div>
+                <div class="career-stats">
+                    {{ career.mentions|format_number }} menciones | 
+                    Sentimiento: {{ "%.2f"|format(career.avg_sentiment) }}
+                </div>
+            </div>
+            <div class="career-bar-bg">
+                <div class="career-bar-fill {% if career.satisfaction >= 60 %}high{% elif career.satisfaction >= 40 %}medium{% else %}low{% endif %}"
+                     style="width: {{ career.satisfaction }}%;">
+                </div>
+            </div>
+            <div style="width: 60px; text-align: right; font-weight: bold;">
+                {{ career.satisfaction }}%
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% if charts.career_comparison %}
+        <div class="chart-container">
+            <h3 class="chart-title">Comparativa de Carreras</h3>
+            <img src="{{ charts.career_comparison }}" alt="Comparación de Carreras" class="chart">
+        </div>
+        {% endif %}
+        
+        <h3>Detalle por Carrera</h3>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Carrera</th>
+                    <th>Menciones</th>
+                    <th>Positivos</th>
+                    <th>Neutrales</th>
+                    <th>Negativos</th>
+                    <th>Índice</th>
+                    <th>Tendencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for career in career_stats %}
+                <tr>
+                    <td>{{ career.name }}</td>
+                    <td>{{ career.mentions|format_number }}</td>
+                    <td>{{ career.positive }}%</td>
+                    <td>{{ career.neutral }}%</td>
+                    <td>{{ career.negative }}%</td>
+                    <td><strong>{{ career.satisfaction }}</strong></td>
+                    <td>
+                        {% if career.trend == 'up' %}
+                        <span style="color: #2E7D32;">↑</span>
+                        {% elif career.trend == 'down' %}
+                        <span style="color: #C62828;">↓</span>
+                        {% else %}
+                        <span style="color: #757575;">→</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== CAPÍTULO 10: CONCLUSIONES ==================== -->
+    {% if 'conclusions' in sections %}
+    <div class="page" id="cap10">
+        <div class="chapter-cover">
+            <div class="chapter-number">10</div>
+            <div class="chapter-title">Conclusiones y Recomendaciones</div>
+            <div class="chapter-subtitle">Síntesis y acciones propuestas</div>
+        </div>
+        
+        <div class="conclusion-box">
+            <h3>🎯 Conclusiones Principales</h3>
+            <ul class="conclusion-list">
+                {% for conclusion in conclusions %}
+                <li>{{ conclusion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <h3>📋 Recomendaciones Estratégicas</h3>
+        
+        <div class="recommendations-list">
+            {% for rec in recommendations %}
+            <div class="recommendation-card priority-{{ rec.priority }}">
+                <div class="rec-header">
+                    <span class="rec-priority {{ rec.priority }}">
+                        {% if rec.priority == 'urgente' %}🔴{% elif rec.priority == 'alta' %}🟠{% else %}🟢{% endif %}
+                        {{ rec.priority|upper }}
+                    </span>
+                    <span class="rec-area">{{ rec.area }}</span>
+                </div>
+                <div class="rec-body">
+                    <p class="rec-text">{{ rec.recommendation }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <h3>📅 Próximos Pasos</h3>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Acción</th>
+                    <th>Responsable</th>
+                    <th>Plazo</th>
+                    <th>Prioridad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for action in action_plan %}
+                <tr>
+                    <td>{{ action.description }}</td>
+                    <td>{{ action.responsible }}</td>
+                    <td>{{ action.deadline }}</td>
+                    <td>
+                        <span class="severity-badge {{ action.priority }}">
+                            {{ action.priority|upper }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    <!-- ==================== APÉNDICES ==================== -->
+    <div class="page appendix" id="appendix">
+        <div class="chapter-cover">
+            <div class="chapter-number">A</div>
+            <div class="chapter-title">Apéndices</div>
+            <div class="chapter-subtitle">Datos complementarios y metodología detallada</div>
+        </div>
+        
+        <h3>A.1 Glosario de Términos</h3>
+        
+        <table class="data-table appendix-table">
+            <tbody>
+                <tr>
+                    <td><strong>Índice de Satisfacción</strong></td>
+                    <td>Métrica calculada como: IS = min(100, max(0, %Positivos - %Negativos + 50))</td>
+                </tr>
+                <tr>
+                    <td><strong>Sentimiento</strong></td>
+                    <td>Clasificación del tono emocional de un texto (-1 a +1)</td>
+                </tr>
+                <tr>
+                    <td><strong>OSINT</strong></td>
+                    <td>Open Source Intelligence - Inteligencia de fuentes abiertas</td>
+                </tr>
+                <tr>
+                    <td><strong>NLP</strong></td>
+                    <td>Natural Language Processing - Procesamiento de lenguaje natural</td>
+                </tr>
+                <tr>
+                    <td><strong>Alcance</strong></td>
+                    <td>Número estimado de personas que vieron una publicación</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h3>A.2 Fuentes de Datos</h3>
+        
+        <ul>
+            <li><strong>Facebook:</strong> Páginas públicas relacionadas con EMI Bolivia</li>
+            <li><strong>TikTok:</strong> Contenido público con hashtags relevantes</li>
+        </ul>
+        
+        <h3>A.3 Metodología de Análisis</h3>
+        
+        <p>
+            El análisis de sentimiento se realizó utilizando el modelo BETO (Bidirectional Encoder 
+            Representations from Transformers para español), fine-tuneado específicamente para 
+            contenido universitario boliviano. El modelo alcanza una precisión del 85% en la 
+            clasificación de sentimientos.
+        </p>
+        
+        <h3>A.4 Contacto</h3>
+        
+        <p>
+            Para consultas sobre este reporte, contactar a:<br>
+            <strong>Sistema de Analítica OSINT</strong><br>
+            osint@emi.edu.bo
+        </p>
+    </div>
+    
+    <!-- ==================== CONTRATAPA ==================== -->
+    <div class="back-cover yearbook">
+        <div class="back-content">
+            <div class="back-logo">
+                {% if logo_base64 %}
+                <img src="{{ logo_base64 }}" alt="Logo EMI" style="max-width: 150px;">
+                {% endif %}
+            </div>
+            
+            <h2>Anuario Estadístico {{ semester }}</h2>
+            <p class="subtitle">Sistema de Analítica OSINT</p>
+            
+            <div class="generation-info">
+                <p>Escuela Militar de Ingeniería</p>
+                <p>Vicerrectorado de Grado</p>
+                <p>La Paz, Bolivia</p>
+            </div>
+            
+            <p class="confidential-notice">
+                Documento de uso interno - Confidencial
+            </p>
+            
+            <p class="version-info">
+                Versión {{ report_version }} | {{ generated_date }}
+            </p>
+        </div>
+    </div>
+    
+</body>
+</html>

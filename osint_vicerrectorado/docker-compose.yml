@@ -1,0 +1,307 @@
+# Docker Compose - Sistema de Analítica OSINT EMI Bolivia
+# Sprint 6: Hardening y Automatización del Módulo de Recolección
+# Incluye: API Flask, Frontend React, Celery Workers, Redis, Flower
+#          Prometheus, Grafana, AlertManager para monitoring
+
+version: '3.8'
+
+services:
+  # =============================================
+  # Redis - Message Broker para Celery
+  # =============================================
+  redis:
+    image: redis:7-alpine
+    container_name: osint-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # Backend API - Flask
+  # =============================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: osint-app
+    ports:
+      - "5000:5000"
+      - "9090:9090"  # Prometheus metrics
+    volumes:
+      - ./:/app
+      - ./reports/generated:/app/reports/generated
+      - ./data:/app/data
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=api/app.py
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_PATH=/app/data/osint_emi.db
+      - REPORTS_OUTPUT_DIR=/app/reports/generated
+      - TZ=America/La_Paz
+      # Metrics configuration
+      - METRICS_PORT=9090
+      - METRICS_HOST=0.0.0.0
+      - ENABLE_METRICS=true
+      # Resilience configuration
+      - ENABLE_CIRCUIT_BREAKER=true
+      - ENABLE_RATE_LIMITER=true
+      - ENABLE_RETRY=true
+      # Logging
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+      # Email configuration (set in .env)
+      - SMTP_SERVER=${SMTP_SERVER:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USERNAME=${SMTP_USERNAME:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - EMAIL_FROM=${EMAIL_FROM:-reportes@emi.edu.bo}
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # Celery Worker - Procesamiento de tareas
+  # =============================================
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: osint-celery-worker
+    command: celery -A reports.tasks worker --loglevel=info --concurrency=2
+    volumes:
+      - ./:/app
+      - ./reports/generated:/app/reports/generated
+      - ./data:/app/data
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_PATH=/app/data/osint_emi.db
+      - REPORTS_OUTPUT_DIR=/app/reports/generated
+      - TZ=America/La_Paz
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+      - SMTP_SERVER=${SMTP_SERVER:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USERNAME=${SMTP_USERNAME:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - EMAIL_FROM=${EMAIL_FROM:-reportes@emi.edu.bo}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # Celery Beat - Scheduler para tareas programadas
+  # =============================================
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: emi_celery_beat
+    command: celery -A reports.tasks beat --loglevel=info --scheduler=celery.beat:PersistentScheduler --schedule=/app/data/celerybeat-schedule
+    volumes:
+      - ./:/app
+      - ./data:/app/data
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - TZ=America/La_Paz
+    depends_on:
+      - celery-worker
+    networks:
+      - emi_network
+
+  # =============================================
+  # Flower - Monitoreo de Celery
+  # =============================================
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: emi_flower
+    command: celery -A reports.tasks flower --port=5555 --broker=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_BASIC_AUTH=${FLOWER_USER:-admin}:${FLOWER_PASSWORD:-emi2024}
+    depends_on:
+      - celery-worker
+    networks:
+      - emi_network
+
+  # =============================================
+  # Frontend - React
+  # =============================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: osint-frontend
+    ports:
+      - "3001:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # Prometheus - Metrics Collection
+  # =============================================
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: osint-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # Grafana - Visualization
+  # =============================================
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: osint-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-osint2024}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # AlertManager - Alert Management
+  # =============================================
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: osint-alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # Redis Exporter - Redis Metrics
+  # =============================================
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: osint-redis-exporter
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+  # =============================================
+  # Node Exporter - Host Metrics
+  # =============================================
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: osint-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - emi_network
+
+# =============================================
+# Volumes
+# =============================================
+volumes:
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+# =============================================
+# Networks
+# =============================================
+networks:
+  emi_network:
+    driver: bridge

@@ -63,8 +63,8 @@ def initialize_database(config: dict) -> DatabaseWriter:
     Returns:
         DatabaseWriter: Instancia del gestor de base de datos
     """
+    # La inicialización del schema se hace automáticamente en el constructor
     db = DatabaseWriter(config=config)
-    db.initialize_schema()
     return db
 
 
@@ -211,34 +211,40 @@ def cmd_stats(args, config: dict):
     try:
         stats = db.get_statistics()
         
+        # Extract data from nested structure
+        datos_raw = stats.get('datos_recolectados', {})
+        datos_proc = stats.get('datos_procesados', {})
+        
         print("\n  📊 DATOS RECOLECTADOS")
         print("  " + "-"*40)
-        print(f"  Total registros raw:       {stats.get('total_raw', 0)}")
-        print(f"  Total registros procesados: {stats.get('total_processed', 0)}")
-        print(f"  Registros pendientes ETL:   {stats.get('pending_etl', 0)}")
+        print(f"  Total registros raw:       {datos_raw.get('total', 0)}")
+        print(f"  Total registros procesados: {datos_proc.get('total', 0)}")
+        print(f"  Registros pendientes ETL:   {datos_raw.get('pendientes', 0)}")
         
-        print("\n  📱 POR FUENTE")
+        print("\n  📱 POR TIPO DE FUENTE")
         print("  " + "-"*40)
-        by_source = stats.get('by_source', {})
-        for source, count in by_source.items():
-            print(f"  {source}: {count} registros")
+        por_tipo = stats.get('por_tipo', {})
+        for tipo, count in por_tipo.items():
+            print(f"  {tipo or 'Sin tipo'}: {count} registros")
         
         print("\n  📅 ÚLTIMAS EJECUCIONES")
         print("  " + "-"*40)
-        last_collection = stats.get('last_collection')
-        last_etl = stats.get('last_etl')
-        print(f"  Última recolección: {last_collection or 'Nunca'}")
-        print(f"  Último ETL:         {last_etl or 'Nunca'}")
+        ultima_recoleccion = datos_raw.get('ultima_recoleccion')
+        print(f"  Última recolección: {ultima_recoleccion or 'Nunca'}")
         
         # Estadísticas de engagement
         print("\n  📈 ENGAGEMENT POR FUENTE")
         print("  " + "-"*40)
         engagement = db.get_engagement_stats_by_source()
         for source_stats in engagement:
-            print(f"  {source_stats['nombre']}:")
-            print(f"    Publicaciones: {source_stats['total_posts']}")
-            print(f"    Likes promedio: {source_stats['avg_likes']:.1f}")
-            print(f"    Comentarios promedio: {source_stats['avg_comments']:.1f}")
+            nombre = source_stats.get('nombre_fuente', 'Desconocido')
+            total = source_stats.get('total_posts', 0)
+            avg_likes = source_stats.get('promedio_likes', 0) or 0
+            avg_comments = source_stats.get('promedio_comments', 0) or 0
+            print(f"  {nombre}:")
+            print(f"    Publicaciones: {total}")
+            print(f"    Likes promedio: {avg_likes:.1f}")
+            print(f"    Comentarios promedio: {avg_comments:.1f}")
         
         # Mostrar configuración
         print("\n  ⚙️ CONFIGURACIÓN ACTUAL")
@@ -333,10 +339,10 @@ def cmd_init_db(args, config: dict):
     
     print(f"\n[*] Base de datos: {db_path}")
     
+    # La inicialización del schema se hace automáticamente en el constructor
     db = DatabaseWriter(config=config)
     
     try:
-        db.initialize_schema()
         print("\n[+] Esquema creado/verificado correctamente")
         
         # Mostrar tablas creadas

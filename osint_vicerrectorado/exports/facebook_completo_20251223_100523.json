@@ -1,0 +1,462 @@
+{
+  "plataforma": "Facebook",
+  "fecha_exportacion": "2025-12-23T10:05:23.002652",
+  "total_posts": 15,
+  "total_comentarios": 10,
+  "posts": [
+    {
+      "id": 32,
+      "id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-19 19:49:57.118742",
+      "contenido": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que Dios bendiga tu camino de grandes éxitos y bendicio…Ver más",
+      "autor": "3 días",
+      "metricas": {
+        "likes": 0,
+        "comentarios": 10,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [
+        {
+          "autor": "",
+          "texto": "Favian Vargas\nMucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que Dios bendiga tu camino de grandes éxitos y bendiciones te deseo lo mejor hermano.\nTe quiere tu hermano Favian.\n3 días\nMe gusta\nResponder\n2",
+          "fecha": "2025-12-22T22:32:26.431932"
+        },
+        {
+          "autor": "",
+          "texto": "Luz Zan\nMil Felicidades amada hijita Samantha Gozalvez, Dios bendiga tu vida profesiónal . FELICIDADES.....\n1 día\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.434241"
+        },
+        {
+          "autor": "",
+          "texto": "Salvador Lorite\nUn abrazo muy fuerte Andrés Vela Garate de todos los presentes y ausentes valoramos y admiramos tú impetú sigue adelante\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.436790"
+        },
+        {
+          "autor": "",
+          "texto": "Milenka Sejas Alcazar\nMuchas felicidades querido ahijado Rafael Padilla Villca Que Dios bendiga tú camino de grandes éxitos \n son los deseos de padrinos\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.439497"
+        },
+        {
+          "autor": "",
+          "texto": "Monica Jeannette Berdeja Lopez\nVanesa Martínez querida mil felicidades. Sencillamente eres un sol porque brillas con tu luz propia\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.441836"
+        },
+        {
+          "autor": "",
+          "texto": "Maries CT\nMuchas felicidades hijita Carla Condori Salas, te deseo lo mejor y miles de exitos.\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.443989"
+        },
+        {
+          "autor": "",
+          "texto": "Janet Rosario Chávez de Vargas\nCongratulaciones a los nuevos profesionales y éxitos en todos sus desafíos\n5 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.446062"
+        },
+        {
+          "autor": "",
+          "texto": "Justina Rodriguez\nSigue adelante querida sobrina\n5 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.448427"
+        },
+        {
+          "autor": "",
+          "texto": "Ana María Céspedes\nMuchas felicidades mi amada hija Maya Rafita Arteaga que Dios ilumine tu camino como hasta ahora, tu tarea es fuerte y digna por el bien de nuestro planeta, muchas felicidades ING Arteaga \n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.450522"
+        },
+        {
+          "autor": "",
+          "texto": "Edna Fernandez\nFelicidades mi hijito querido Ramiro Vega Quiroz exitos en tu camino...\n3 días\nMe gusta\nResponder\nEditado",
+          "fecha": "2025-12-22T22:32:26.452585"
+        }
+      ],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T22:28:53.656912",
+        "has_image": false,
+        "has_video": false,
+        "text_length": 260,
+        "comentarios": [
+          {
+            "texto": "Favian Vargas\nMucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que Dios bendiga tu camino de grandes éxitos y bendiciones te deseo lo mejor hermano.\nTe quiere tu hermano Favian.\n3 días\nMe gusta\nResponder\n2",
+            "fecha": "2025-12-22T22:32:26.431932"
+          },
+          {
+            "texto": "Luz Zan\nMil Felicidades amada hijita Samantha Gozalvez, Dios bendiga tu vida profesiónal . FELICIDADES.....\n1 día\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.434241"
+          },
+          {
+            "texto": "Salvador Lorite\nUn abrazo muy fuerte Andrés Vela Garate de todos los presentes y ausentes valoramos y admiramos tú impetú sigue adelante\n3 días\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.436790"
+          },
+          {
+            "texto": "Milenka Sejas Alcazar\nMuchas felicidades querido ahijado Rafael Padilla Villca Que Dios bendiga tú camino de grandes éxitos \n son los deseos de padrinos\n3 días\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.439497"
+          },
+          {
+            "texto": "Monica Jeannette Berdeja Lopez\nVanesa Martínez querida mil felicidades. Sencillamente eres un sol porque brillas con tu luz propia\n3 días\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.441836"
+          },
+          {
+            "texto": "Maries CT\nMuchas felicidades hijita Carla Condori Salas, te deseo lo mejor y miles de exitos.\n3 días\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.443989"
+          },
+          {
+            "texto": "Janet Rosario Chávez de Vargas\nCongratulaciones a los nuevos profesionales y éxitos en todos sus desafíos\n5 días\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.446062"
+          },
+          {
+            "texto": "Justina Rodriguez\nSigue adelante querida sobrina\n5 días\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.448427"
+          },
+          {
+            "texto": "Ana María Céspedes\nMuchas felicidades mi amada hija Maya Rafita Arteaga que Dios ilumine tu camino como hasta ahora, tu tarea es fuerte y digna por el bien de nuestro planeta, muchas felicidades ING Arteaga \n3 días\nMe gusta\nResponder",
+            "fecha": "2025-12-22T22:32:26.450522"
+          },
+          {
+            "texto": "Edna Fernandez\nFelicidades mi hijito querido Ramiro Vega Quiroz exitos en tu camino...\n3 días\nMe gusta\nResponder\nEditado",
+            "fecha": "2025-12-22T22:32:26.452585"
+          }
+        ],
+        "num_comentarios_extraidos": 10
+      }
+    },
+    {
+      "id": 28,
+      "id_externo": "fb_EMI.UALP_285a43ecfba7afed",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-19 19:49:49.862684",
+      "contenido": "Adin Gutierrezera el 16",
+      "autor": "Adin Gutierrez",
+      "metricas": {
+        "likes": 0,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:49.862957",
+        "has_image": false,
+        "has_video": false,
+        "text_length": 23
+      }
+    },
+    {
+      "id": 27,
+      "id_externo": "fb_EMI.UALP_4b4db18d3b4e47dc",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-19 19:49:49.861933",
+      "contenido": "Alguien sabe cuando será la graduación EMI santa cruz",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 0,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:49.862187",
+        "has_image": false,
+        "has_video": false,
+        "text_length": 53
+      }
+    },
+    {
+      "id": 30,
+      "id_externo": "fb_EMI.UALP_c8d29b4648210642",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-17 19:49:49.867260",
+      "contenido": "Excelente iniciativa Mil Felicidades!!",
+      "autor": "5 días",
+      "metricas": {
+        "likes": 0,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:49.867645",
+        "has_image": false,
+        "has_video": false,
+        "text_length": 38
+      }
+    },
+    {
+      "id": 34,
+      "id_externo": "fb_EMI.UALP_a6247530024e76bb",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-16 19:49:57.123847",
+      "contenido": "Bonita la banda de la emi, antes no había",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 0,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:57.124414",
+        "has_image": false,
+        "has_video": false,
+        "text_length": 41
+      }
+    },
+    {
+      "id": 33,
+      "id_externo": "fb_EMI.UALP_e5e014ba637eae99",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-16 19:49:57.120633",
+      "contenido": "La Escuela Militar de Ingeniería – UALP realizó la Revista Militar del batallón CEFOR, y las compañías GREMI y CADEMI, demostrando la formación militar de Subtenient…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 346242,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:57.122776",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 173
+      }
+    },
+    {
+      "id": 31,
+      "id_externo": "fb_EMI.UALP_92e192b6e802026c",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-16 19:49:57.116679",
+      "contenido": "SOLEMNE ACTO DE COLACIÓN DE GRADO GESTIÓN II-2025L…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 2924159,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:57.117815",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 58
+      }
+    },
+    {
+      "id": 29,
+      "id_externo": "fb_EMI.UALP_a0df46b526af45c2",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-16 19:49:49.864484",
+      "contenido": "En estas fiestas de fin de año, la EMI llegó al Centro de Orientación Femenina de Miraflores para compartir obsequios, sonrisas y esperanza con los niños que viven j…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 128311,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:49.866342",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 173
+      }
+    },
+    {
+      "id": 26,
+      "id_externo": "fb_EMI.UALP_30dc7ba4797c4af8",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-16 19:49:49.859680",
+      "contenido": "Da el gran salto hacia tu futuro profesionalSi sueñas con convertirte en Ingeniero y buscas una oportunidad que marque la diferencia, este es el momento.P…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 47110,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:49.860993",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 162
+      }
+    },
+    {
+      "id": 40,
+      "id_externo": "fb_EMI.UALP_c51a7031fa797175",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-12 19:50:31.215967",
+      "contenido": "¿Listo para construir tu futuro profesional?En el Tecnológico EMI La Paz te formamos con disciplina, prestigio y excelencia académica.…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 333,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:50:31.216877",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 142
+      }
+    },
+    {
+      "id": 39,
+      "id_externo": "fb_EMI.UALP_81eb5147fa0230f3",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-12 19:50:31.213217",
+      "contenido": "TECNOLÓGICO EMI LA PAZ#…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 273,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:50:31.214375",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 31
+      }
+    },
+    {
+      "id": 38,
+      "id_externo": "fb_EMI.UALP_935c604242979b6a",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-11 19:50:31.210629",
+      "contenido": "¡Estudia DERECHO en la EMI!P…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 426,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:50:31.211496",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 36
+      }
+    },
+    {
+      "id": 37,
+      "id_externo": "fb_EMI.UALP_1829dc6105a67df3",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-10 19:50:07.308767",
+      "contenido": "¡CONVOCATORIA DOCENTE I-2026!La Escuela Militar de Ingeniería – Unidad Académica La Paz invita a profesionales con vocación docente y alto compromiso académico a…Ver más",
+      "autor": "EMI UALP",
+      "metricas": {
+        "likes": 139176,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:50:07.309767",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 169
+      }
+    },
+    {
+      "id": 36,
+      "id_externo": "fb_EMI.UALP_2b23d86726b9ff7a",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-07 19:50:07.306023",
+      "contenido": "Revista Militar – Gestión II/2025La EMI – Unidad Académica La Paz desarrolló la Revista Militar de la Gestión II/2025, contando con la presencia del Sr. Tcnl. DAEN.…Ver más",
+      "autor": "REVISTA MILITAR GESTIÓN II-2025",
+      "metricas": {
+        "likes": 256228,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:50:07.307134",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 172
+      }
+    },
+    {
+      "id": 35,
+      "id_externo": "fb_EMI.UALP_715261a5f7f42d4c",
+      "fuente": "EMI UALP Facebook",
+      "url_fuente": "https://www.facebook.com/EMI.UALP",
+      "fecha_publicacion": "2025-12-07 19:49:57.125963",
+      "contenido": "Orgullo EMI – La PazNu…Ver más",
+      "autor": "ENTREGA DE RECONOCIMIENTOS",
+      "metricas": {
+        "likes": 10015,
+        "comentarios": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "comentarios": [],
+      "metadata": {
+        "page_id": "EMI.UALP",
+        "page_name": "EMI UALP",
+        "scrape_timestamp": "2025-12-22T19:49:57.127190",
+        "has_image": true,
+        "has_video": false,
+        "text_length": 30
+      }
+    }
+  ]
+}

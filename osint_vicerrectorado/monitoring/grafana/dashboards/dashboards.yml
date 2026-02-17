@@ -1,0 +1,13 @@
+apiVersion: 1
+
+providers:
+  - name: 'OSINT EMI Dashboards'
+    orgId: 1
+    folder: 'OSINT'
+    folderUid: 'osint'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards

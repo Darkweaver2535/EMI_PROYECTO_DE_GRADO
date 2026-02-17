@@ -1,0 +1,301 @@
+# =============================================================================
+# Prometheus Alert Rules - Sistema OSINT EMI Bolivia
+# Sprint 6: Hardening y Automatización
+# =============================================================================
+
+groups:
+  # ===========================================================================
+  # ALERTAS DE SCRAPERS
+  # ===========================================================================
+  - name: scraper_alerts
+    interval: 30s
+    rules:
+      # -----------------------------------------------------------------------
+      # Scraper Down
+      # -----------------------------------------------------------------------
+      - alert: ScraperDown
+        expr: up{job="osint-scrapers"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          team: osint
+        annotations:
+          summary: "Scraper service is down"
+          description: "The OSINT scraper service has been down for more than 2 minutes."
+          runbook_url: "https://docs.emi.bo/runbooks/scraper-down"
+
+      # -----------------------------------------------------------------------
+      # High Error Rate
+      # -----------------------------------------------------------------------
+      - alert: ScraperHighErrorRate
+        expr: |
+          (
+            sum(rate(scraper_errors_total[5m])) by (scraper_name, source)
+            /
+            sum(rate(scraper_requests_total[5m])) by (scraper_name, source)
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "High error rate for scraper {{ $labels.scraper_name }}"
+          description: "Scraper {{ $labels.scraper_name }} has error rate > 10% (current: {{ $value | humanizePercentage }})"
+
+      - alert: ScraperCriticalErrorRate
+        expr: |
+          (
+            sum(rate(scraper_errors_total[5m])) by (scraper_name, source)
+            /
+            sum(rate(scraper_requests_total[5m])) by (scraper_name, source)
+          ) > 0.25
+        for: 2m
+        labels:
+          severity: critical
+          team: osint
+        annotations:
+          summary: "Critical error rate for scraper {{ $labels.scraper_name }}"
+          description: "Scraper {{ $labels.scraper_name }} has error rate > 25% (current: {{ $value | humanizePercentage }})"
+
+      # -----------------------------------------------------------------------
+      # Circuit Breaker Open
+      # -----------------------------------------------------------------------
+      - alert: CircuitBreakerOpen
+        expr: circuit_breaker_state{} == 1
+        for: 1m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "Circuit breaker open for {{ $labels.scraper_name }}"
+          description: "Circuit breaker is OPEN for scraper {{ $labels.scraper_name }} on {{ $labels.source }}"
+
+      - alert: CircuitBreakerStuckOpen
+        expr: circuit_breaker_state{} == 1
+        for: 15m
+        labels:
+          severity: critical
+          team: osint
+        annotations:
+          summary: "Circuit breaker stuck open for {{ $labels.scraper_name }}"
+          description: "Circuit breaker has been OPEN for 15+ minutes for {{ $labels.scraper_name }}"
+
+      # -----------------------------------------------------------------------
+      # Rate Limiting
+      # -----------------------------------------------------------------------
+      - alert: HighRateLimiting
+        expr: |
+          sum(rate(rate_limiter_throttled_total[5m])) by (scraper_name, source) > 1
+        for: 5m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "High rate limiting for {{ $labels.scraper_name }}"
+          description: "Scraper {{ $labels.scraper_name }} is being heavily rate limited"
+
+      - alert: RateLimitAdaptationTooLow
+        expr: rate_limiter_current_rate_rpm < 15
+        for: 10m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "Rate limiter adapted to very low rate"
+          description: "Rate limiter for {{ $labels.scraper_name }} has adapted to {{ $value }} RPM"
+
+      # -----------------------------------------------------------------------
+      # Latencia
+      # -----------------------------------------------------------------------
+      - alert: ScraperHighLatency
+        expr: |
+          histogram_quantile(0.95, 
+            sum(rate(scraper_request_duration_seconds_bucket[5m])) by (scraper_name, source, le)
+          ) > 30
+        for: 5m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "High latency for scraper {{ $labels.scraper_name }}"
+          description: "P95 latency is {{ $value | humanizeDuration }} for {{ $labels.scraper_name }}"
+
+      # -----------------------------------------------------------------------
+      # No Items Scraped
+      # -----------------------------------------------------------------------
+      - alert: NoItemsScraped
+        expr: |
+          sum(increase(scraper_items_scraped_total[1h])) by (scraper_name, source) == 0
+        for: 1h
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "No items scraped in the last hour"
+          description: "Scraper {{ $labels.scraper_name }} has not scraped any items in the last hour"
+
+      # -----------------------------------------------------------------------
+      # Scraper Health
+      # -----------------------------------------------------------------------
+      - alert: ScraperUnhealthy
+        expr: scraper_health == 0
+        for: 5m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "Scraper {{ $labels.scraper_name }} is unhealthy"
+          description: "Scraper {{ $labels.scraper_name }} has been marked as unhealthy"
+
+      - alert: ScraperStale
+        expr: |
+          (time() - scraper_last_success_timestamp) > 3600
+        for: 5m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "Scraper {{ $labels.scraper_name }} is stale"
+          description: "Scraper {{ $labels.scraper_name }} last succeeded {{ $value | humanizeDuration }} ago"
+
+  # ===========================================================================
+  # ALERTAS DE INFRAESTRUCTURA
+  # ===========================================================================
+  - name: infrastructure_alerts
+    rules:
+      # -----------------------------------------------------------------------
+      # Memory
+      # -----------------------------------------------------------------------
+      - alert: HighMemoryUsage
+        expr: |
+          (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) 
+          / node_memory_MemTotal_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          team: infra
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      - alert: CriticalMemoryUsage
+        expr: |
+          (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) 
+          / node_memory_MemTotal_bytes > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          team: infra
+        annotations:
+          summary: "Critical memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      # -----------------------------------------------------------------------
+      # CPU
+      # -----------------------------------------------------------------------
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          team: infra
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}%"
+
+      # -----------------------------------------------------------------------
+      # Disk
+      # -----------------------------------------------------------------------
+      - alert: DiskSpaceLow
+        expr: |
+          (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} 
+          / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) < 0.15
+        for: 5m
+        labels:
+          severity: warning
+          team: infra
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Only {{ $value | humanizePercentage }} disk space remaining"
+
+  # ===========================================================================
+  # ALERTAS DE BASE DE DATOS
+  # ===========================================================================
+  - name: database_alerts
+    rules:
+      # -----------------------------------------------------------------------
+      # PostgreSQL
+      # -----------------------------------------------------------------------
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: infra
+        annotations:
+          summary: "PostgreSQL is down"
+          description: "PostgreSQL database is not responding"
+
+      - alert: PostgreSQLHighConnections
+        expr: |
+          sum(pg_stat_activity_count) 
+          / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          team: infra
+        annotations:
+          summary: "High PostgreSQL connection usage"
+          description: "{{ $value | humanizePercentage }} of max connections used"
+
+      # -----------------------------------------------------------------------
+      # Redis
+      # -----------------------------------------------------------------------
+      - alert: RedisDown
+        expr: redis_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          team: infra
+        annotations:
+          summary: "Redis is down"
+          description: "Redis is not responding"
+
+      - alert: RedisHighMemory
+        expr: |
+          redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          team: infra
+        annotations:
+          summary: "Redis memory usage high"
+          description: "Redis using {{ $value | humanizePercentage }} of max memory"
+
+  # ===========================================================================
+  # ALERTAS DE CELERY
+  # ===========================================================================
+  - name: celery_alerts
+    rules:
+      - alert: CeleryWorkerDown
+        expr: |
+          absent(celery_workers_total) or celery_workers_total == 0
+        for: 2m
+        labels:
+          severity: critical
+          team: osint
+        annotations:
+          summary: "No Celery workers running"
+          description: "All Celery workers are down"
+
+      - alert: CeleryTasksBacklog
+        expr: |
+          sum(celery_queue_length) > 100
+        for: 10m
+        labels:
+          severity: warning
+          team: osint
+        annotations:
+          summary: "Celery task backlog growing"
+          description: "{{ $value }} tasks pending in queue"

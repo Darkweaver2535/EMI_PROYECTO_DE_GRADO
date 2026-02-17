@@ -1,0 +1,119 @@
+# =============================================================================
+# Prometheus Configuration - Sistema OSINT EMI Bolivia
+# Sprint 6: Hardening y Automatización
+# =============================================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'osint-emi-monitor'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Rule files
+rule_files:
+  - "alerts.yml"
+
+# Scrape configurations
+scrape_configs:
+  # ==========================================================================
+  # Prometheus self-monitoring
+  # ==========================================================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    metrics_path: /metrics
+    scheme: http
+
+  # ==========================================================================
+  # OSINT Scraper Metrics
+  # ==========================================================================
+  - job_name: 'osint-scrapers'
+    static_configs:
+      - targets: ['osint-app:9090']
+        labels:
+          service: 'scraper'
+          environment: 'production'
+    metrics_path: /metrics
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # ==========================================================================
+  # Flask API Metrics
+  # ==========================================================================
+  - job_name: 'osint-api'
+    static_configs:
+      - targets: ['osint-app:5000']
+        labels:
+          service: 'api'
+          environment: 'production'
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  # ==========================================================================
+  # Celery Worker Metrics
+  # ==========================================================================
+  - job_name: 'celery-workers'
+    static_configs:
+      - targets: ['celery-worker:9091']
+        labels:
+          service: 'celery'
+          environment: 'production'
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  # ==========================================================================
+  # Redis Metrics (via redis_exporter)
+  # ==========================================================================
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+    scrape_interval: 30s
+
+  # ==========================================================================
+  # PostgreSQL Metrics (via postgres_exporter)
+  # ==========================================================================
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgresql'
+    scrape_interval: 30s
+
+  # ==========================================================================
+  # Node Exporter (host metrics)
+  # ==========================================================================
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          instance: 'osint-server'
+    scrape_interval: 30s
+
+  # ==========================================================================
+  # cAdvisor (container metrics)
+  # ==========================================================================
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+# =============================================================================
+# Remote write (optional - for long-term storage)
+# =============================================================================
+# remote_write:
+#   - url: "http://mimir:9009/api/v1/push"
+#     queue_config:
+#       max_samples_per_send: 1000
+#       batch_send_deadline: 5s
+#       capacity: 10000

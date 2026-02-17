@@ -252,11 +252,13 @@ class DataCleaner:
         # Normalizar a NFC (forma canónica compuesta)
         text = unicodedata.normalize('NFC', text)
         
-        # Corregir secuencias mal codificadas comunes
+        # Corregir secuencias mal codificadas comunes (usando escape sequences)
         replacements = {
-            'Ã¡': 'á', 'Ã©': 'é', 'Ã­': 'í', 'Ã³': 'ó', 'Ãº': 'ú',
-            'Ã±': 'ñ', 'Ã': 'Á', 'Ã‰': 'É', 'Ã': 'Í', 'Ã"': 'Ó',
-            'Ãš': 'Ú', 'Ã'': 'Ñ', 'Ã¼': 'ü', 'Ãœ': 'Ü',
+            '\xc3\xa1': 'á', '\xc3\xa9': 'é', '\xc3\xad': 'í', 
+            '\xc3\xb3': 'ó', '\xc3\xba': 'ú', '\xc3\xb1': 'ñ',
+            '\xc3\x81': 'Á', '\xc3\x89': 'É', '\xc3\x8d': 'Í', 
+            '\xc3\x93': 'Ó', '\xc3\x9a': 'Ú', '\xc3\x91': 'Ñ',
+            '\xc3\xbc': 'ü', '\xc3\x9c': 'Ü',
             '\x00': '', '\ufffd': '',
         }
         

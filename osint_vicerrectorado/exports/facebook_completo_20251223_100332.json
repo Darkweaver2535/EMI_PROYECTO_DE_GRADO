@@ -1,0 +1,29 @@
+{
+  "plataforma": "Facebook",
+  "fecha_exportacion": "2025-12-23T10:03:32.960538",
+  "fuentes": [
+    {
+      "id": 2,
+      "nombre": "EMI UALP Facebook",
+      "url": "https://www.facebook.com/EMI.UALP",
+      "tipo": "Facebook",
+      "total_posts": 15,
+      "posts": [],
+      "total_comentarios": 0
+    },
+    {
+      "id": 3,
+      "nombre": "EMI La Paz TikTok",
+      "url": "https://www.tiktok.com/@emilapazoficial",
+      "tipo": "TikTok",
+      "total_posts": 0,
+      "posts": [],
+      "total_comentarios": 0
+    }
+  ],
+  "estadisticas": {
+    "total_posts": 0,
+    "total_comentarios": 0,
+    "posts_con_comentarios": 0
+  }
+}

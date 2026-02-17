@@ -1,0 +1,3097 @@
+{
+  "meta": {
+    "sistema": "OSINT Vicerrectorado EMI Bolivia",
+    "fecha_exportacion": "2025-12-23T10:10:19.947565",
+    "version": "2.0",
+    "descripcion": "Datos estructurados para análisis con IA. Cada comentario está vinculado a su post original.",
+    "estructura": {
+      "posts": "Lista de posts/videos con sus comentarios anidados",
+      "comentarios_flat": "Lista plana de comentarios con referencia al post",
+      "estadisticas": "Métricas agregadas por plataforma"
+    }
+  },
+  "posts": [
+    {
+      "post_id": 6,
+      "post_id_externo": "fb_61574626396439_7c73d85e1efeac33",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Marcelo QYla gloriosa EMI perdió todo",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-21 19:47:10.286271",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 5,
+      "post_id_externo": "fb_61574626396439_900a2743d4bf1c37",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Las publicaciones que me hubiera gustado leer hace 2 años",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-21 19:47:10.285035",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 4,
+      "post_id_externo": "fb_61574626396439_b8d99bbffa0a827d",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #129Hola, anónimo porfis.Creo que durante los 5 años de carrera la EMI nos fue dando desilusión tras desilusión. Tengo amigos que desde el 1er año ya tenían ganas de cambiarse pero como no tenemos ningún tipo de convenio que no nos perjudique años de estudio si o si nos tenemos que quedar. Donde está la disciplina y prestigio que tanto ostentan tener?? Donde están los valores que dice la misión y visión (que depaso nos ob…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-21 19:47:10.281597",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 806,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 3,
+      "post_id_externo": "fb_61574626396439_88eb212635cb4c22",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confirmo todo lo que digan",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-21 19:47:10.279623",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 2,
+      "post_id_externo": "fb_61574626396439_1248d02dc92aec90",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #130Hola me gustaría recibir recomendaciones e información de los estudiantes.. El próximo año quiero entrar a estudiar al tecnológico EMI Cbba ya fui a preguntar a sus oficinas pero no me explicaron a detalle sobre los costos de la titulación también me gustaría saber si el costo de la mensualidad va incrementando cada año y como va en cuanto a educación. Gracias.",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-21 19:47:10.277324",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 84,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 1,
+      "post_id_externo": "fb_61574626396439_afc28e5be3600b97",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #131AnónimoEsa cawai a la que le dicen la rotada de octavo semestre de indusTanto alardea de que su papá es coronel y  estafa pagos por transferencia QR que pena por la tipa",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-21 19:47:10.274171",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 36,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 16,
+      "post_id_externo": "fb_61574626396439_9cbbbef12d965637",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Creo q no sabe que su hijo se tiró jajaja xD",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:39.294979",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 15,
+      "post_id_externo": "fb_61574626396439_66eb14529eb87e67",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #123Es una pena que hasta para sacar a mi hijo de la EMI tengo que pagar, entre formularios certificado de notas y otra cosas que se inventan tengo que pagar más de bs. 2000 y si no paga no puedes hacer el cambio a otra universidad, me arrepiento en el alma haberla inscrito en esta universidad, a parte están super retrasados en estudios, mi hijo para nivelar se tiene que tomar materias de sementres anteriores, la EMI va de…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:39.292332",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 96112,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 14,
+      "post_id_externo": "fb_61574626396439_dbb54fea0e8eec62",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Que esperan de esos milicos xddd",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:30.284908",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 13,
+      "post_id_externo": "fb_61574626396439_5a4a14a1d5cf2a3b",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #124desahogo de los de décimo.anónimo plox…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:30.282493",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 1303,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 12,
+      "post_id_externo": "fb_61574626396439_e1991e6b7308be9b",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #125es una pena esa universidad la licenciada disque es una q se cree y se agarra con los estudiantes anda intimidado a los jóvenes esa maldita Susi V. de contabilidad no recomiendo a los nuevos estudiantes ingresen a esta universidad ANONIMO",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:23.052717",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 493,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 11,
+      "post_id_externo": "fb_61574626396439_27653131fbf2fa90",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #127¡hola ! quisiera hacer una confesión por favor.Como estudiante ahora graduado, me duele y me decepciona ver en lo que se ha convertido la EMI. Lo que antes era sinónimo de disciplina y prestigio hoy parece ser únicamente el negocio de las autoridades militares.…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:16.459295",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 1741,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 10,
+      "post_id_externo": "fb_61574626396439_e29da095f5e4b0e6",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Por algo firmas un contrato antes de inscribirte, comprometiéndote a cumplir con el pago puntual de las cuotas.",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:10.294539",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 9,
+      "post_id_externo": "fb_61574626396439_2f15c22e86796d49",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #126¿Es realmente necesario que el personal de cobros de la EMI se presente EN PLENA ÉPOCA DE EXÁMENES a interrumpir evaluaciones y perjudicar a los estudiantes?¿Desde cuándo cobrar mensualidades justifica tratar a los estudiantes como rateros o maleantes?Hay casos en los que, por estas intervenciones, estudiantes ya no pudieron rendir otros exámenes y no se les dio ninguna solución. El daño académico ya está hecho y nad…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:10.291904",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 483,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 8,
+      "post_id_externo": "fb_61574626396439_cfb2fe07934d563e",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "depende para que carrera",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:10.290062",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 7,
+      "post_id_externo": "fb_61574626396439_753de4467cc1c98b",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #128(anónimo) Buenasss, yo vengo a preguntar y saber más sobre la EMI trópico qiciera saber sus mensualidades para 5to de ING comercial y su  recidencia, q tal todos por allá? alguien me podría facilitar  xq la universidad le cuesta decir sus motos de pensum y tardan en dar información para hacerme traspaso de la EMI cocha...",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-20 19:47:10.287829",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 21,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 18,
+      "post_id_externo": "fb_61574626396439_e70e09f24466e500",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Increíble que hasta 3T haya, que clase de nivel de educación tiene la EMI?",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-19 19:47:39.298814",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 68,
+      "post_id_externo": "fb_61574626396439_5bab08ba514e3464",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Azul Baspineirocállate maviiiiiiii",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 21:38:53.886476",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 67,
+      "post_id_externo": "fb_61574626396439_d2cf2c8e8de1e51c",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Pase muchas veces con la Lic. igual operativa. y la verdad es una de las mejores licenciadas que tuve en toda mi carrera. Tiene amplio conocimiento. y si es verdad que ambito personal puede mejorar su relacion interpersonal. No desamerita todo lo que e…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 21:38:05.362180",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 65,
+      "post_id_externo": "fb_61574626396439_30a2a137b07f027f",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Raul Cortez Rodriguezbro que te hicieron en el cuartel para estar así de traumadito todo bien ? Alguna confesión que quieras hacer? La EMI cuenta con gabinete psicológico bro ..",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 21:37:29.905133",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 62,
+      "post_id_externo": "fb_61574626396439_0c7e674159f4955f",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Seguro se tiró en calidad",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 21:37:06.324780",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 61,
+      "post_id_externo": "fb_61574626396439_1e029475d3cb1053",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Jean Sanchezno le veo lo chistoso",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 21:36:54.611244",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 25,
+      "post_id_externo": "fb_61574626396439_b67fbbb0f317df3f",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Jean Sanchez no le veo lo chistoso",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:48:04.096296",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 24,
+      "post_id_externo": "fb_61574626396439_b47077186d3e3d6f",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #118Hola a la confesión #113, bro no te hagas, igualito lloraste hace años paraa qué te apruebe :vvvv ahora a bien hecho a los machos diciendo que tiene que doler??? Si tu te traspasaste cuando te tiraste por q pensaste que así te aprobarian y ni en la emi cbba te queríany ni así aprobaste  por eso estás un semestre abajo, ahora 1 me informan que es tu tutora IGUALMENTE te mando a 2t y obvio te iba a aprobar ni mod…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:48:04.093148",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 446,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 23,
+      "post_id_externo": "fb_61574626396439_6331ff3bb726a79f",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Y no quieres tu titulo en PDF también?",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:47:56.652108",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 22,
+      "post_id_externo": "fb_61574626396439_74862f53fec277fa",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #119Buenos días compañer@s y superiores.Como parte de la universidad, queremos hacer la petición de que el 3t sea virtual ya que muchos viven lejos y con lo que aconteció hoy en el país está fea la situación, que se nos considere porfavor.Muchas gracias…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:47:56.649407",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 17815,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 21,
+      "post_id_externo": "fb_61574626396439_8b6e6876d122960b",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #120Buenas tardes, con respecto a la confesión #108, como estudiante de 10mo semestre puedo dar fe, de que la estudiante Aylin G. no asistió a la revista, por que todos los estudiantes que participamos de la instrucción desde el día domingo, preparamos las areas, nos quedamos a dormir y ella en ningún momento aparecio, y lo peor fue que una hora antes llego bien bañadita, relajada y buen descansada y solo se aparecio a rec…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:47:56.646611",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 31,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 20,
+      "post_id_externo": "fb_61574626396439_5ef9e95fac06e001",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Está bien que se vayan al 2t hasta dos materias, a todos pueden pasar, pero ya 3 o 4, no mamen no sean g4ys eso ya significa que se durmieron en el semestre",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:47:48.296395",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 19,
+      "post_id_externo": "fb_61574626396439_e277f9567e037f4f",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #21Con respecto a los estudiantes de la EMI, se pide empatía, aunque a muchos claramente les queda grande. Yo conozco a varios que reaccionan con risas y burlas cuando otros compañeros solicitan 2T o 3T virtual, pero curiosamente esos mismos son los primeros en hacerse a los corchos y en cometer fraude en los exámenes.No se llenen la boca de moral ni se crean superiores. Si no van a apoyar, al menos no estorben ni ridicu…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:47:48.293944",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 57,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 17,
+      "post_id_externo": "fb_61574626396439_ed8fbabfbdc71052",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Confesión #122Hasta el anterior semestre pedían que para habilitar el 3T se tenia que haber dado si o si el 2T y tener una nota de reprobacion minima  3.5 para que te habiliten, ahora dicen que no es necesario esos requisitos, como se nota que la emi quiere dinero de donde sea y al parecer si tiene favoritismos, antes ni 3T teniamos",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-18 19:47:39.296622",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 101,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 69,
+      "post_id_externo": "fb_61574626396439_7e5a508f816b465e",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Esos que dicen estudien y demás tambien dijeron eso los semestres que se dio esa oportunidad a los estudiantes",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-17 21:38:53.887836",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 64,
+      "post_id_externo": "fb_61574626396439_2c72dc9797c90eea",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Tienes razón la EMI debería darte los documentos gratuitamente y darlos en los partes de los lunes bajo orden del día.",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-17 21:37:29.903648",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 63,
+      "post_id_externo": "fb_61574626396439_37f902e0e9cdbf03",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Eso pasa por colocar a un oficial resagado como Director de la EMI, que en lo unico que piensa es en beber en instalaciones de la emi, meterse con las funcionarias y utilizar la plata de las mensualidades para hacer fiesta con los oficiales y es una pe…Ver más",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-17 21:37:18.126611",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 66,
+      "post_id_externo": "fb_61574626396439_20eb752dc01454b0",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI Oficial Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "contenido": {
+        "texto": "Solo entendí que hay que estudiar y que nunca le invitaron al barranco..",
+        "autor": "EMI Oficial",
+        "fecha_publicacion": "2025-12-16 21:38:05.360677",
+        "url": "https://www.facebook.com/profile.php?id=61574626396439"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que Dios bendiga tu camino de grandes éxitos y bendicio…Ver más",
+        "autor": "3 días",
+        "fecha_publicacion": "2025-12-19 19:49:57.118742",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0xuUnPHJExrhhiPdCRZYLYgjmhkVbqkp4i2gqjSpHhQ47cpF8sDmxD1L2GJbYkvNel?comment_id=2057164181489776&__cft__[0]=AZYvcEDPvrijm3iI-bLuJkVBDzm3mZ0oaK8-CD2VYZ98m2xc67ThKesg5iEZntl8ilf4mmGjDFYujIdo7JfDD7erEc0vfsnxJ0oucle3a3vjTt0j-9PAHOz8ei4dFMdWDJDJYsBPBHdLYu1pKoukPdJRFOaDIK_WdmzQCCAsCGo2Elz-qXiLAVbGJm8SQl8PwCg&__tn__=R-R"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 10,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [
+        {
+          "comentario_id": 1,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Favian Vargas\nMucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que Dios bendiga tu camino de grandes éxitos y bendiciones te deseo lo mejor hermano.\nTe quiere tu hermano Favian.\n3 días\nMe gusta\nResponder\n2",
+          "fecha": "2025-12-22T22:32:26.431932",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 2,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Luz Zan\nMil Felicidades amada hijita Samantha Gozalvez, Dios bendiga tu vida profesiónal . FELICIDADES.....\n1 día\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.434241",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 3,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Salvador Lorite\nUn abrazo muy fuerte Andrés Vela Garate de todos los presentes y ausentes valoramos y admiramos tú impetú sigue adelante\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.436790",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 4,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Milenka Sejas Alcazar\nMuchas felicidades querido ahijado Rafael Padilla Villca Que Dios bendiga tú camino de grandes éxitos \n son los deseos de padrinos\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.439497",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 5,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Monica Jeannette Berdeja Lopez\nVanesa Martínez querida mil felicidades. Sencillamente eres un sol porque brillas con tu luz propia\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.441836",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 6,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Maries CT\nMuchas felicidades hijita Carla Condori Salas, te deseo lo mejor y miles de exitos.\n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.443989",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 7,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Janet Rosario Chávez de Vargas\nCongratulaciones a los nuevos profesionales y éxitos en todos sus desafíos\n5 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.446062",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 8,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Justina Rodriguez\nSigue adelante querida sobrina\n5 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.448427",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 9,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Ana María Céspedes\nMuchas felicidades mi amada hija Maya Rafita Arteaga que Dios ilumine tu camino como hasta ahora, tu tarea es fuerte y digna por el bien de nuestro planeta, muchas felicidades ING Arteaga \n3 días\nMe gusta\nResponder",
+          "fecha": "2025-12-22T22:32:26.450522",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        },
+        {
+          "comentario_id": 10,
+          "post_id": 32,
+          "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+          "plataforma": "facebook",
+          "autor": "Anónimo",
+          "texto": "Edna Fernandez\nFelicidades mi hijito querido Ramiro Vega Quiroz exitos en tu camino...\n3 días\nMe gusta\nResponder\nEditado",
+          "fecha": "2025-12-22T22:32:26.452585",
+          "contexto_post": {
+            "autor_post": "3 días",
+            "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+            "fecha_post": "2025-12-19 19:49:57.118742"
+          }
+        }
+      ],
+      "num_comentarios_extraidos": 10
+    },
+    {
+      "post_id": 28,
+      "post_id_externo": "fb_EMI.UALP_285a43ecfba7afed",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Adin Gutierrezera el 16",
+        "autor": "Adin Gutierrez",
+        "fecha_publicacion": "2025-12-19 19:49:49.862684",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0okVyBun1EPBYEaxuJfEq6R9tSSZPcWGAC1VUnzxccdoJq59Ajp7GqF5GhxSWFxmUl?comment_id=836084952568068&reply_comment_id=706835748895078&__cft__[0]=AZZudZmWwWLygcddN5-LRrOUZ9wVmHU-t9V1-4i1sluoZKb4EOdXMeURjl4DqxaTxLSm_LBAZvKGNgL8XPBVpLeXOCBRx82k7IagC6nK1ijWq0eJNieBd3TMntB4HfwPP7s5nwBV5LpRpS2ZK7MotRad1_3iISDlP9o-xzZuPnb9AVP-kyhebiBC3pZnPVVv_bg&__tn__=R-R"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 27,
+      "post_id_externo": "fb_EMI.UALP_4b4db18d3b4e47dc",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Alguien sabe cuando será la graduación EMI santa cruz",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-19 19:49:49.861933",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0okVyBun1EPBYEaxuJfEq6R9tSSZPcWGAC1VUnzxccdoJq59Ajp7GqF5GhxSWFxmUl?comment_id=836084952568068&__cft__[0]=AZZudZmWwWLygcddN5-LRrOUZ9wVmHU-t9V1-4i1sluoZKb4EOdXMeURjl4DqxaTxLSm_LBAZvKGNgL8XPBVpLeXOCBRx82k7IagC6nK1ijWq0eJNieBd3TMntB4HfwPP7s5nwBV5LpRpS2ZK7MotRad1_3iISDlP9o-xzZuPnb9AVP-kyhebiBC3pZnPVVv_bg&__tn__=R-R"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 30,
+      "post_id_externo": "fb_EMI.UALP_c8d29b4648210642",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Excelente iniciativa Mil Felicidades!!",
+        "autor": "5 días",
+        "fecha_publicacion": "2025-12-17 19:49:49.867260",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 34,
+      "post_id_externo": "fb_EMI.UALP_a6247530024e76bb",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Bonita la banda de la emi, antes no había",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-16 19:49:57.123847",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "engagement": {
+        "likes": 0,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 33,
+      "post_id_externo": "fb_EMI.UALP_e5e014ba637eae99",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "La Escuela Militar de Ingeniería – UALP realizó la Revista Militar del batallón CEFOR, y las compañías GREMI y CADEMI, demostrando la formación militar de Subtenient…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-16 19:49:57.120633",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "engagement": {
+        "likes": 346242,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 31,
+      "post_id_externo": "fb_EMI.UALP_92e192b6e802026c",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "SOLEMNE ACTO DE COLACIÓN DE GRADO GESTIÓN II-2025L…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-16 19:49:57.116679",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0xuUnPHJExrhhiPdCRZYLYgjmhkVbqkp4i2gqjSpHhQ47cpF8sDmxD1L2GJbYkvNel?__cft__[0]=AZYvcEDPvrijm3iI-bLuJkVBDzm3mZ0oaK8-CD2VYZ98m2xc67ThKesg5iEZntl8ilf4mmGjDFYujIdo7JfDD7erEc0vfsnxJ0oucle3a3vjTt0j-9PAHOz8ei4dFMdWDJDJYsBPBHdLYu1pKoukPdJRFOaDIK_WdmzQCCAsCGo2Elz-qXiLAVbGJm8SQl8PwCg&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 2924159,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 29,
+      "post_id_externo": "fb_EMI.UALP_a0df46b526af45c2",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "En estas fiestas de fin de año, la EMI llegó al Centro de Orientación Femenina de Miraflores para compartir obsequios, sonrisas y esperanza con los niños que viven j…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-16 19:49:49.864484",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "engagement": {
+        "likes": 128311,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 26,
+      "post_id_externo": "fb_EMI.UALP_30dc7ba4797c4af8",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Da el gran salto hacia tu futuro profesionalSi sueñas con convertirte en Ingeniero y buscas una oportunidad que marque la diferencia, este es el momento.P…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-16 19:49:49.859680",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0okVyBun1EPBYEaxuJfEq6R9tSSZPcWGAC1VUnzxccdoJq59Ajp7GqF5GhxSWFxmUl?__cft__[0]=AZZudZmWwWLygcddN5-LRrOUZ9wVmHU-t9V1-4i1sluoZKb4EOdXMeURjl4DqxaTxLSm_LBAZvKGNgL8XPBVpLeXOCBRx82k7IagC6nK1ijWq0eJNieBd3TMntB4HfwPP7s5nwBV5LpRpS2ZK7MotRad1_3iISDlP9o-xzZuPnb9AVP-kyhebiBC3pZnPVVv_bg&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 47110,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 40,
+      "post_id_externo": "fb_EMI.UALP_c51a7031fa797175",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "¿Listo para construir tu futuro profesional?En el Tecnológico EMI La Paz te formamos con disciplina, prestigio y excelencia académica.…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-12 19:50:31.215967",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid02nvtEFZTCsVrPeCzpDgHkPxyXuyPfQnftmgFECngHFrxXfdRReoD5kqx2LF4brQLtl?__cft__[0]=AZbFNmbvqLcciLNwEh8avhIbdWiEWoRopy1RGOpJQbHoBlHGxxrNAU5mW-DrdtCd1CxHQNwzIp4ztowFK_kvLVcH4sxtV69OMdER8irJL5osGILWEqO8dPzhf0fVFRrpAGTWiJKgZU24X_WSuyYD8phcMaHl-lGGc7BE6_a2XbvpA03pLlYV2bVZZOQHOurxWKY&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 333,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 39,
+      "post_id_externo": "fb_EMI.UALP_81eb5147fa0230f3",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "TECNOLÓGICO EMI LA PAZ#…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-12 19:50:31.213217",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0WgjGGNFfFyndDy9R6jD9Ms5vG7Lnp5Eo3Lsr8UzJMS9bHWMDW4bEo7EjNwEVE4Ejl?__cft__[0]=AZZxE_VdTgab3nH8bPunvp1PQvcFI9I-XLhz7YmCDsqKbTZL8GEOpDPjBxNlkunsTCddqlyrphdsDnjCnvcLm1GUGC4TEgkoCnQd8bunEsMAFDGwZOTRFTmXFhJmpYoB8Y4ubpapABpukHgOk7bFHWD3O2UTV4mDQ2B42NBjC0kdNI8oEEvd37XdYoSXKmJMR1WhHnKUlZwHVsqBa5Mkm2kDksEMvuzqCqrCIG213Hctrg&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 273,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 38,
+      "post_id_externo": "fb_EMI.UALP_935c604242979b6a",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "¡Estudia DERECHO en la EMI!P…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-11 19:50:31.210629",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0ekuvMCoVBQzd2dAn9Lw8DhVgGvYa5tsQBQfM6bKKF1qX3niaV789Q2tf7zvztpYjl?__cft__[0]=AZZ3BSbYBCR1STxFXKcKwqhscdWeeqjHVr4SyYBO6Er4bAWQS0NZ1wDpgYIkJo4zRdJMEMezux6NFOnRaIEFlyoBRvaVkmLZu2X2lAwK24uftbZEEM3alwGflmTlYrh_fJ1lOKFdKLZ5BPj30W-qhYCxr2CqJbWxkjkCWXvacnqC-H06a9kASSNOJJYzFFjWUAQ&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 426,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 37,
+      "post_id_externo": "fb_EMI.UALP_1829dc6105a67df3",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "¡CONVOCATORIA DOCENTE I-2026!La Escuela Militar de Ingeniería – Unidad Académica La Paz invita a profesionales con vocación docente y alto compromiso académico a…Ver más",
+        "autor": "EMI UALP",
+        "fecha_publicacion": "2025-12-10 19:50:07.308767",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid02soX6x4hwVMn7nt3uCTfGHXJRJfAN1LQiywV6NFxiqCJZTHYAV3j3vFB79EW5Pnikl?__cft__[0]=AZYiDfXRVXsTxXNSnj5BjN8lQM3JWKLOpUun1xOXGro9NnmW7vuuwOY4TqrhKzmHLUH2Hutjb0z8S4K4ImgC50xH036G3SQxqJc3H16OH5cDYMndnyy4z-A-SrvTOQ81AbINlHZKD06yh6C-kbg-PUh1JTwlQIx4yZFs8TrRfzuFMhe2-SldY82Ylf-zaW3jbkA&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 139176,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 36,
+      "post_id_externo": "fb_EMI.UALP_2b23d86726b9ff7a",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Revista Militar – Gestión II/2025La EMI – Unidad Académica La Paz desarrolló la Revista Militar de la Gestión II/2025, contando con la presencia del Sr. Tcnl. DAEN.…Ver más",
+        "autor": "REVISTA MILITAR GESTIÓN II-2025",
+        "fecha_publicacion": "2025-12-07 19:50:07.306023",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid0337fzJTdFCvLqiHPvhg9XBe3p8pzkoynTtrKCmsxia2NL4Z6ssR9F3gFwYQf7nQDNl?__cft__[0]=AZbNlppbcmXe0LlwkrSh5NIrYPA0E1K-WoN05tnDKyYPVpHpcgvGT0EeyrZSV7KMuV_SXSOuBW_740gUEq6GkPJY-Zp5WGYjR_a3mTNGRBWw9uAtCI0SRAPtnjiWMC2fQuMuoYft_og_J0Un-b5ouhVm0qZ5sPO9J1FeagJM72bdLEBFpNzuNBideP-JJbvfB6s&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 256228,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 35,
+      "post_id_externo": "fb_EMI.UALP_715261a5f7f42d4c",
+      "plataforma": "facebook",
+      "fuente": {
+        "nombre": "EMI UALP Facebook",
+        "tipo": "Facebook",
+        "url": "https://www.facebook.com/EMI.UALP"
+      },
+      "contenido": {
+        "texto": "Orgullo EMI – La PazNu…Ver más",
+        "autor": "ENTREGA DE RECONOCIMIENTOS",
+        "fecha_publicacion": "2025-12-07 19:49:57.125963",
+        "url": "https://www.facebook.com/EMI.UALP/posts/pfbid02CbhCQd6tFstGQR8JuLq3PAeePAMqfmE6Q4b1y1K89p2bfbiypcq643VzH4TVrrpl?__cft__[0]=AZZd9qn60dZ-k2ispeZmIPois45pyuflEHFVvyr_M8zzIxJKJ5geBZeFCT4Ta5g8IAtz73aJwiXy0rdwkyUf4j0pMAU7zy-npYyfwp8ywGzEKmA929k68udtB5qxE9rKAXHQ2qKM7VMi4JbqvTegLLdJ3x0Rg6ZZk1fJ0verqr_rl0NOfvJBqyBD9KsZdkOlrZQ&__tn__=%2CO%2CP-R"
+      },
+      "engagement": {
+        "likes": 10015,
+        "comentarios_count": 0,
+        "compartidos": 0,
+        "views": 0
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": null,
+        "duracion": null
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 41,
+      "post_id_externo": "tt_7574522070541995320",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-11-19 15:34:17",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7574522070541995320"
+      },
+      "engagement": {
+        "likes": 52,
+        "comentarios_count": 5,
+        "compartidos": 12,
+        "views": 2685
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "Dance You Outta My Head",
+        "duracion": 60
+      },
+      "comentarios": [
+        {
+          "comentario_id": 11,
+          "post_id": 41,
+          "post_id_externo": "tt_7574522070541995320",
+          "plataforma": "tiktok",
+          "autor": "eba",
+          "texto": "Es*",
+          "fecha": "2025-12-23T09:54:12.315074",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+            "fecha_post": "2025-11-19 15:34:17"
+          }
+        },
+        {
+          "comentario_id": 12,
+          "post_id": 41,
+          "post_id_externo": "tt_7574522070541995320",
+          "plataforma": "tiktok",
+          "autor": "eba",
+          "texto": "Hasta cuando rd",
+          "fecha": "2025-12-23T09:54:12.320230",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+            "fecha_post": "2025-11-19 15:34:17"
+          }
+        },
+        {
+          "comentario_id": 13,
+          "post_id": 41,
+          "post_id_externo": "tt_7574522070541995320",
+          "plataforma": "tiktok",
+          "autor": "Alicia",
+          "texto": "😳😳😳",
+          "fecha": "2025-12-23T09:54:12.325032",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+            "fecha_post": "2025-11-19 15:34:17"
+          }
+        },
+        {
+          "comentario_id": 14,
+          "post_id": 41,
+          "post_id_externo": "tt_7574522070541995320",
+          "plataforma": "tiktok",
+          "autor": "LH_Esmeralda",
+          "texto": "💕💕💕",
+          "fecha": "2025-12-23T09:54:12.329225",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+            "fecha_post": "2025-11-19 15:34:17"
+          }
+        }
+      ],
+      "num_comentarios_extraidos": 4
+    },
+    {
+      "post_id": 42,
+      "post_id_externo": "tt_7567044533859503416",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "🔵🟡En la EM!... ¡Hasta los muertos se reportan! Demuestra tu Creativid...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-10-30 11:57:36",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7567044533859503416"
+      },
+      "engagement": {
+        "likes": 70,
+        "comentarios_count": 4,
+        "compartidos": 9,
+        "views": 3493
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 43
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-10-27 19:04:01",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7566041149010431288"
+      },
+      "engagement": {
+        "likes": 356,
+        "comentarios_count": 19,
+        "compartidos": 76,
+        "views": 10700
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 30
+      },
+      "comentarios": [
+        {
+          "comentario_id": 15,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "Danny🧃",
+          "texto": "que habrá ???",
+          "fecha": "2025-12-23T09:55:14.489185",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 16,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "Gabriel Quino",
+          "texto": "No carrasco.........😫",
+          "fecha": "2025-12-23T09:55:14.494362",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 17,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "AOT hank",
+          "texto": "aña",
+          "fecha": "2025-12-23T09:55:14.499106",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 18,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "Paul Vaure",
+          "texto": "Un examen del Ing Pereira 😖😖😖",
+          "fecha": "2025-12-23T09:55:14.503474",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 19,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "mishi 😼",
+          "texto": "el terror: cálculo II",
+          "fecha": "2025-12-23T09:55:14.507338",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 20,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "KZYN",
+          "texto": "Y en Cochabamba no habrá nada?",
+          "fecha": "2025-12-23T09:55:14.511102",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 21,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "Queso996",
+          "texto": "Habrá Cañaso mortal",
+          "fecha": "2025-12-23T09:55:14.514594",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 22,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "Manuel Flores",
+          "texto": "Un examen de la Ing. Carrasco eso si da miedo de verdad ☠",
+          "fecha": "2025-12-23T09:55:14.518072",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 23,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "mao",
+          "texto": "los parciales 🗿🙏",
+          "fecha": "2025-12-23T09:55:14.521300",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 24,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "__jeanfer__",
+          "texto": "No siento ni un poquito de miedo 😭😂",
+          "fecha": "2025-12-23T09:55:14.525205",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 25,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "gaaaaa",
+          "texto": "Los optativos ☠",
+          "fecha": "2025-12-23T09:55:14.528880",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 26,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "chimba",
+          "texto": "10-27",
+          "fecha": "2025-12-23T09:55:14.532116",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 27,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "yun.txn",
+          "texto": "Pongan a la ingeniera Carrasco 😖",
+          "fecha": "2025-12-23T09:55:14.535043",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 28,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "Samuel Vargas",
+          "texto": "No me digas , solo básicas ?",
+          "fecha": "2025-12-23T09:55:14.537720",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        },
+        {
+          "comentario_id": 29,
+          "post_id": 43,
+          "post_id_externo": "tt_7566041149010431288",
+          "plataforma": "tiktok",
+          "autor": "MARVIN",
+          "texto": "Conozco esa calva ….",
+          "fecha": "2025-12-23T09:55:14.540511",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+            "fecha_post": "2025-10-27 19:04:01"
+          }
+        }
+      ],
+      "num_comentarios_extraidos": 15
+    },
+    {
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-09-01 18:13:47",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7545247432431488261"
+      },
+      "engagement": {
+        "likes": 502,
+        "comentarios_count": 10,
+        "compartidos": 66,
+        "views": 18200
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 54
+      },
+      "comentarios": [
+        {
+          "comentario_id": 30,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "Reneco",
+          "texto": "el mejor paso el de ese crack de tumba la casa mami",
+          "fecha": "2025-12-23T09:55:50.543800",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 31,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "Varinia Delgado65",
+          "texto": "todos en su propia sintonía 😂✨",
+          "fecha": "2025-12-23T09:55:50.549086",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 32,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "silesalanezdaniel",
+          "texto": "😂😂😂Buena ahí",
+          "fecha": "2025-12-23T09:55:50.554814",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 33,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "𝒍𝒂𝒓𝒄𝒉➛",
+          "texto": "eso Rony eso Rony 🗣️",
+          "fecha": "2025-12-23T09:55:50.559110",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 34,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "Reneco",
+          "texto": "@Iván Carrasco el más crack como siempre",
+          "fecha": "2025-12-23T09:55:50.562917",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 35,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "Bertha Andrea Peredo Subieta",
+          "texto": "@Matty Matt :D salieron los prohibidos",
+          "fecha": "2025-12-23T09:55:50.566730",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 36,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "vanesthermart",
+          "texto": "😂😂😂",
+          "fecha": "2025-12-23T09:55:50.570336",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 37,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "lmirandarod",
+          "texto": "❣️❣️❣️",
+          "fecha": "2025-12-23T09:55:50.573696",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        },
+        {
+          "comentario_id": 38,
+          "post_id": 44,
+          "post_id_externo": "tt_7545247432431488261",
+          "plataforma": "tiktok",
+          "autor": "Liv.Cor.",
+          "texto": "tumba la casa mami Ja",
+          "fecha": "2025-12-23T09:55:50.577137",
+          "contexto_post": {
+            "autor_post": "emilapazoficial",
+            "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+            "fecha_post": "2025-09-01 18:13:47"
+          }
+        }
+      ],
+      "num_comentarios_extraidos": 9
+    },
+    {
+      "post_id": 45,
+      "post_id_externo": "tt_7540073721529306373",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "🔵🟡¡INSCRIPCIONES ABIERTAS! - PREUNIVERSITARIO REGULAR Una carrera, tr...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-08-18 19:37:03",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7540073721529306373"
+      },
+      "engagement": {
+        "likes": 365,
+        "comentarios_count": 5,
+        "compartidos": 24,
+        "views": 10700
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 12
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 46,
+      "post_id_externo": "tt_7531395709484993797",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "🔵🟡 ¡ÚLTIMOS DÍAS DE PSA! Ultimos días para inscribirte a la PRUEBA DE...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-07-26 10:21:55",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7531395709484993797"
+      },
+      "engagement": {
+        "likes": 271,
+        "comentarios_count": 3,
+        "compartidos": 23,
+        "views": 8584
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 54
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 47,
+      "post_id_externo": "tt_7523407572049693958",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Recuerda que todo esfuerzo tiene su recompensa💪🏽 Y nuestros estudiant...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-07-04 21:43:55",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7523407572049693958"
+      },
+      "engagement": {
+        "likes": 922,
+        "comentarios_count": 14,
+        "compartidos": 188,
+        "views": 21400
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "original sound",
+        "duracion": 8
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 48,
+      "post_id_externo": "tt_7520014533235166469",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "🔵🟡La EMI-Unidad Académica La Paz estuvo presente en la feria de Unive...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-06-25 18:17:11",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7520014533235166469"
+      },
+      "engagement": {
+        "likes": 145,
+        "comentarios_count": 9,
+        "compartidos": 8,
+        "views": 9726
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "TRINIX Vaitimbora feat Mari Froes",
+        "duracion": 52
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 49,
+      "post_id_externo": "tt_7515979510563474744",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Todos están en modo descanso, pero nosotros...🔵🟡 te brindamos nuestra...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-06-14 21:19:12",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7515979510563474744"
+      },
+      "engagement": {
+        "likes": 497,
+        "comentarios_count": 10,
+        "compartidos": 36,
+        "views": 13500
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 21
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 50,
+      "post_id_externo": "tt_7515503537309191429",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "¡ESTE ES TU MOMENTO!🫵🏽🙂‍↔️🔵🟡 ¿Quieres estudiar una carrera de INGENIE...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-06-13 14:32:11",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7515503537309191429"
+      },
+      "engagement": {
+        "likes": 705,
+        "comentarios_count": 9,
+        "compartidos": 91,
+        "views": 39300
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 20
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 51,
+      "post_id_externo": "tt_7509260008404634886",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Porque no hay amor más puro que el de mamá 💖 Hoy celebramos a la muje...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-05-27 18:44:07",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7509260008404634886"
+      },
+      "engagement": {
+        "likes": 567,
+        "comentarios_count": 2,
+        "compartidos": 18,
+        "views": 31600
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 76
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 52,
+      "post_id_externo": "tt_7506568103380225286",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "¡No esperes hasta el último momento!🫵🏽 adquiere tu credencial y no de...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-05-20 12:38:09",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7506568103380225286"
+      },
+      "engagement": {
+        "likes": 7564,
+        "comentarios_count": 81,
+        "compartidos": 476,
+        "views": 375000
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 22
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 53,
+      "post_id_externo": "tt_7504303537296362807",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "\"Dicen que en la EMI los docentes son estrictos… pero no los vieron s...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-05-14 10:10:27",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7504303537296362807"
+      },
+      "engagement": {
+        "likes": 2195,
+        "comentarios_count": 31,
+        "compartidos": 353,
+        "views": 82300
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 18
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 54,
+      "post_id_externo": "tt_7502225241939135799",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "¡Prepárate para ser parte de la EMI!🔵🟡 ¿Tienes dudas en Álgebra, Cálc...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-05-08 19:45:38",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7502225241939135799"
+      },
+      "engagement": {
+        "likes": 417,
+        "comentarios_count": 5,
+        "compartidos": 52,
+        "views": 16700
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 56
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 55,
+      "post_id_externo": "tt_7498484567666396421",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Nuestro equipo compartió con los estudiantes toda la información sobr...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-04-28 17:49:53",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7498484567666396421"
+      },
+      "engagement": {
+        "likes": 134,
+        "comentarios_count": 3,
+        "compartidos": 6,
+        "views": 10800
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "original sound - Vince Caluag",
+        "duracion": 19
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 56,
+      "post_id_externo": "tt_7496675373275450630",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "A veces los sueños se mal interpretan, pero un sello EMI vuelve los s...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-04-23 20:49:18",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7496675373275450630"
+      },
+      "engagement": {
+        "likes": 463,
+        "comentarios_count": 8,
+        "compartidos": 81,
+        "views": 20200
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 58
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 57,
+      "post_id_externo": "tt_7496222040265952567",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Los cimientos sólidos son la base de una buena construcción, tu futur...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-04-22 15:30:09",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7496222040265952567"
+      },
+      "engagement": {
+        "likes": 279,
+        "comentarios_count": 0,
+        "compartidos": 26,
+        "views": 11400
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 18
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 58,
+      "post_id_externo": "tt_7491767598896385286",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Requisitos para ser un buen Ingeniero😎 Aprovecha estos días e inscrib...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-04-10 15:24:36",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7491767598896385286"
+      },
+      "engagement": {
+        "likes": 251,
+        "comentarios_count": 12,
+        "compartidos": 78,
+        "views": 11800
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "sonido original",
+        "duracion": 18
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 59,
+      "post_id_externo": "tt_7491039121016737030",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Damos la bienvenida a los estudiantes del Preuniversitario Regular qu...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-04-08 16:17:49",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7491039121016737030"
+      },
+      "engagement": {
+        "likes": 202,
+        "comentarios_count": 2,
+        "compartidos": 22,
+        "views": 12900
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "room where it happened sped up",
+        "duracion": 16
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    },
+    {
+      "post_id": 60,
+      "post_id_externo": "tt_7486203597152128262",
+      "plataforma": "tiktok",
+      "fuente": {
+        "nombre": "EMI La Paz Oficial",
+        "tipo": "Tiktok",
+        "url": "https://www.tiktok.com/@emilapazoficial"
+      },
+      "contenido": {
+        "texto": "Si eres bachiller 2025 o estudiante de último año no esperes más e in...",
+        "autor": "emilapazoficial",
+        "fecha_publicacion": "2025-03-26 15:33:28",
+        "url": "https://www.tiktok.com/@emilapazoficial/video/7486203597152128262"
+      },
+      "engagement": {
+        "likes": 1634,
+        "comentarios_count": 36,
+        "compartidos": 98,
+        "views": 86100
+      },
+      "metadata": {
+        "hashtags": [],
+        "musica": "original sound",
+        "duracion": 16
+      },
+      "comentarios": [],
+      "num_comentarios_extraidos": 0
+    }
+  ],
+  "comentarios_flat": [
+    {
+      "comentario_id": 1,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Favian Vargas\nMucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que Dios bendiga tu camino de grandes éxitos y bendiciones te deseo lo mejor hermano.\nTe quiere tu hermano Favian.\n3 días\nMe gusta\nResponder\n2",
+      "fecha": "2025-12-22T22:32:26.431932",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 2,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Luz Zan\nMil Felicidades amada hijita Samantha Gozalvez, Dios bendiga tu vida profesiónal . FELICIDADES.....\n1 día\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.434241",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 3,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Salvador Lorite\nUn abrazo muy fuerte Andrés Vela Garate de todos los presentes y ausentes valoramos y admiramos tú impetú sigue adelante\n3 días\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.436790",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 4,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Milenka Sejas Alcazar\nMuchas felicidades querido ahijado Rafael Padilla Villca Que Dios bendiga tú camino de grandes éxitos \n son los deseos de padrinos\n3 días\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.439497",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 5,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Monica Jeannette Berdeja Lopez\nVanesa Martínez querida mil felicidades. Sencillamente eres un sol porque brillas con tu luz propia\n3 días\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.441836",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 6,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Maries CT\nMuchas felicidades hijita Carla Condori Salas, te deseo lo mejor y miles de exitos.\n3 días\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.443989",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 7,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Janet Rosario Chávez de Vargas\nCongratulaciones a los nuevos profesionales y éxitos en todos sus desafíos\n5 días\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.446062",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 8,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Justina Rodriguez\nSigue adelante querida sobrina\n5 días\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.448427",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 9,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Ana María Céspedes\nMuchas felicidades mi amada hija Maya Rafita Arteaga que Dios ilumine tu camino como hasta ahora, tu tarea es fuerte y digna por el bien de nuestro planeta, muchas felicidades ING Arteaga \n3 días\nMe gusta\nResponder",
+      "fecha": "2025-12-22T22:32:26.450522",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 10,
+      "post_id": 32,
+      "post_id_externo": "fb_EMI.UALP_7fbd222b3e489d5c",
+      "plataforma": "facebook",
+      "autor": "Anónimo",
+      "texto": "Edna Fernandez\nFelicidades mi hijito querido Ramiro Vega Quiroz exitos en tu camino...\n3 días\nMe gusta\nResponder\nEditado",
+      "fecha": "2025-12-22T22:32:26.452585",
+      "contexto_post": {
+        "autor_post": "3 días",
+        "texto_post": "Mucha felicidades hermano Carlos Andrés Vargas Quisbert te deseo lo mejor que este sea un día alegre ahora que ya eres profecional te deseo lo mejor para este nuevo inicio en otra parte de tu vida que",
+        "fecha_post": "2025-12-19 19:49:57.118742"
+      }
+    },
+    {
+      "comentario_id": 11,
+      "post_id": 41,
+      "post_id_externo": "tt_7574522070541995320",
+      "plataforma": "tiktok",
+      "autor": "eba",
+      "texto": "Es*",
+      "fecha": "2025-12-23T09:54:12.315074",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+        "fecha_post": "2025-11-19 15:34:17"
+      }
+    },
+    {
+      "comentario_id": 12,
+      "post_id": 41,
+      "post_id_externo": "tt_7574522070541995320",
+      "plataforma": "tiktok",
+      "autor": "eba",
+      "texto": "Hasta cuando rd",
+      "fecha": "2025-12-23T09:54:12.320230",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+        "fecha_post": "2025-11-19 15:34:17"
+      }
+    },
+    {
+      "comentario_id": 13,
+      "post_id": 41,
+      "post_id_externo": "tt_7574522070541995320",
+      "plataforma": "tiktok",
+      "autor": "Alicia",
+      "texto": "😳😳😳",
+      "fecha": "2025-12-23T09:54:12.325032",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+        "fecha_post": "2025-11-19 15:34:17"
+      }
+    },
+    {
+      "comentario_id": 14,
+      "post_id": 41,
+      "post_id_externo": "tt_7574522070541995320",
+      "plataforma": "tiktok",
+      "autor": "LH_Esmeralda",
+      "texto": "💕💕💕",
+      "fecha": "2025-12-23T09:54:12.329225",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "No te conformes. 🔵🟡 Prepárate para ser el mejor ingeniero. Prepárate ...",
+        "fecha_post": "2025-11-19 15:34:17"
+      }
+    },
+    {
+      "comentario_id": 15,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "Danny🧃",
+      "texto": "que habrá ???",
+      "fecha": "2025-12-23T09:55:14.489185",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 16,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "Gabriel Quino",
+      "texto": "No carrasco.........😫",
+      "fecha": "2025-12-23T09:55:14.494362",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 17,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "AOT hank",
+      "texto": "aña",
+      "fecha": "2025-12-23T09:55:14.499106",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 18,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "Paul Vaure",
+      "texto": "Un examen del Ing Pereira 😖😖😖",
+      "fecha": "2025-12-23T09:55:14.503474",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 19,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "mishi 😼",
+      "texto": "el terror: cálculo II",
+      "fecha": "2025-12-23T09:55:14.507338",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 20,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "KZYN",
+      "texto": "Y en Cochabamba no habrá nada?",
+      "fecha": "2025-12-23T09:55:14.511102",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 21,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "Queso996",
+      "texto": "Habrá Cañaso mortal",
+      "fecha": "2025-12-23T09:55:14.514594",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 22,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "Manuel Flores",
+      "texto": "Un examen de la Ing. Carrasco eso si da miedo de verdad ☠",
+      "fecha": "2025-12-23T09:55:14.518072",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 23,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "mao",
+      "texto": "los parciales 🗿🙏",
+      "fecha": "2025-12-23T09:55:14.521300",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 24,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "__jeanfer__",
+      "texto": "No siento ni un poquito de miedo 😭😂",
+      "fecha": "2025-12-23T09:55:14.525205",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 25,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "gaaaaa",
+      "texto": "Los optativos ☠",
+      "fecha": "2025-12-23T09:55:14.528880",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 26,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "chimba",
+      "texto": "10-27",
+      "fecha": "2025-12-23T09:55:14.532116",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 27,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "yun.txn",
+      "texto": "Pongan a la ingeniera Carrasco 😖",
+      "fecha": "2025-12-23T09:55:14.535043",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 28,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "Samuel Vargas",
+      "texto": "No me digas , solo básicas ?",
+      "fecha": "2025-12-23T09:55:14.537720",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 29,
+      "post_id": 43,
+      "post_id_externo": "tt_7566041149010431288",
+      "plataforma": "tiktok",
+      "autor": "MARVIN",
+      "texto": "Conozco esa calva ….",
+      "fecha": "2025-12-23T09:55:14.540511",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "¡Prepárate para lo que se viene!🎃🔵🟡 #selloemi💙💛 #fyp #EMI #hallloween ",
+        "fecha_post": "2025-10-27 19:04:01"
+      }
+    },
+    {
+      "comentario_id": 30,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "Reneco",
+      "texto": "el mejor paso el de ese crack de tumba la casa mami",
+      "fecha": "2025-12-23T09:55:50.543800",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 31,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "Varinia Delgado65",
+      "texto": "todos en su propia sintonía 😂✨",
+      "fecha": "2025-12-23T09:55:50.549086",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 32,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "silesalanezdaniel",
+      "texto": "😂😂😂Buena ahí",
+      "fecha": "2025-12-23T09:55:50.554814",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 33,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "𝒍𝒂𝒓𝒄𝒉➛",
+      "texto": "eso Rony eso Rony 🗣️",
+      "fecha": "2025-12-23T09:55:50.559110",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 34,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "Reneco",
+      "texto": "@Iván Carrasco el más crack como siempre",
+      "fecha": "2025-12-23T09:55:50.562917",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 35,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "Bertha Andrea Peredo Subieta",
+      "texto": "@Matty Matt :D salieron los prohibidos",
+      "fecha": "2025-12-23T09:55:50.566730",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 36,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "vanesthermart",
+      "texto": "😂😂😂",
+      "fecha": "2025-12-23T09:55:50.570336",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 37,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "lmirandarod",
+      "texto": "❣️❣️❣️",
+      "fecha": "2025-12-23T09:55:50.573696",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    },
+    {
+      "comentario_id": 38,
+      "post_id": 44,
+      "post_id_externo": "tt_7545247432431488261",
+      "plataforma": "tiktok",
+      "autor": "Liv.Cor.",
+      "texto": "tumba la casa mami Ja",
+      "fecha": "2025-12-23T09:55:50.577137",
+      "contexto_post": {
+        "autor_post": "emilapazoficial",
+        "texto_post": "Ser parte de la EMI es formarse con disciplina, pero también comparti...",
+        "fecha_post": "2025-09-01 18:13:47"
+      }
+    }
+  ],
+  "estadisticas": {
+    "facebook": {
+      "posts": 49,
+      "comentarios": 10
+    },
+    "tiktok": {
+      "videos": 20,
+      "comentarios": 28,
+      "views": 797088
+    }
+  }
+}
