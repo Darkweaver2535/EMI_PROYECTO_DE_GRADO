@@ -19,6 +19,7 @@ import {
   Collapse,
   useTheme,
 } from '@mui/material';
+import { useAuth } from '../../contexts';
 import {
   Dashboard as DashboardIcon,
   SentimentSatisfied as SentimentIcon,
@@ -30,9 +31,15 @@ import {
   ExpandLess,
   ExpandMore,
   Forum as PostsIcon,
+  TravelExplore as OSINTIcon,
+  Psychology as NLPIcon,
+  FactCheck as EvaluacionIcon,
+  PeopleAlt as UsersIcon,
 } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 260;
+
+type UserRole = 'administrador' | 'vicerrector' | 'uebu';
 
 interface MenuItem {
   id: string;
@@ -40,18 +47,28 @@ interface MenuItem {
   icon: React.ReactNode;
   path?: string;
   children?: MenuItem[];
+  /** Roles that can see this item. If empty/undefined, all roles can see it. */
+  roles?: UserRole[];
 }
 
 const menuItems: MenuItem[] = [
   {
+    id: 'osint',
+    label: 'Inteligencia OSINT',
+    icon: <OSINTIcon />,
+    path: '/dashboard/osint',
+    roles: ['administrador', 'vicerrector'],
+  },
+  {
     id: 'posts',
-    label: '📝 Posts y Comentarios',
+    label: 'Posts y Comentarios',
     icon: <PostsIcon />,
     path: '/dashboard/posts',
+    roles: ['administrador', 'vicerrector'],
   },
   {
     id: 'dashboards',
-    label: 'Análisis AI',
+    label: 'Analisis AI',
     icon: <DashboardIcon />,
     children: [
       {
@@ -80,20 +97,41 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+  {
+    id: 'nlp',
+    label: 'IA / ML / NLP',
+    icon: <NLPIcon />,
+    path: '/dashboard/nlp',
+  },
+  {
+    id: 'evaluacion',
+    label: 'Evaluacion Sistema',
+    icon: <EvaluacionIcon />,
+    path: '/dashboard/evaluacion',
+    roles: ['administrador', 'vicerrector'],
+  },
+  {
+    id: 'usuarios',
+    label: 'Gestion Usuarios',
+    icon: <UsersIcon />,
+    path: '/dashboard/usuarios',
+    roles: ['administrador'],
+  },
 ];
 
 const bottomMenuItems: MenuItem[] = [
   {
     id: 'settings',
-    label: 'Configuración',
+    label: 'Configuracion',
     icon: <SettingsIcon />,
-    path: '/settings',
+    path: '/dashboard/configuracion',
+    roles: ['administrador', 'vicerrector'],
   },
   {
     id: 'help',
     label: 'Ayuda',
     icon: <HelpIcon />,
-    path: '/help',
+    path: '/dashboard/ayuda',
   },
 ];
 
@@ -103,6 +141,21 @@ interface SidebarProps {
   variant?: 'permanent' | 'temporary';
 }
 
+/** Filter menu items based on user role */
+const filterMenuByRole = (items: MenuItem[], role: UserRole): MenuItem[] => {
+  return items
+    .filter(item => !item.roles || item.roles.includes(role))
+    .map(item => {
+      if (item.children) {
+        const filteredChildren = filterMenuByRole(item.children, role);
+        if (filteredChildren.length === 0) return null;
+        return { ...item, children: filteredChildren };
+      }
+      return item;
+    })
+    .filter(Boolean) as MenuItem[];
+};
+
 const Sidebar: React.FC<SidebarProps> = ({
   open,
   onClose,
@@ -111,6 +164,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
+  const { user } = useAuth();
+  
+  const userRole: UserRole = (user?.rol as UserRole) || 'uebu';
+  const visibleMenuItems = React.useMemo(() => filterMenuByRole(menuItems, userRole), [userRole]);
+  const visibleBottomItems = React.useMemo(() => filterMenuByRole(bottomMenuItems, userRole), [userRole]);
   
   const [expandedItems, setExpandedItems] = React.useState<string[]>(['dashboards']);
 
@@ -205,22 +263,22 @@ const Sidebar: React.FC<SidebarProps> = ({
           </Typography>
         </Box>
         <List>
-          {menuItems.map(item => renderMenuItem(item))}
+          {visibleMenuItems.map(item => renderMenuItem(item))}
         </List>
         
         <Divider sx={{ my: 2 }} />
         
         <List>
-          {bottomMenuItems.map(item => renderMenuItem(item))}
+          {visibleBottomItems.map(item => renderMenuItem(item))}
         </List>
       </Box>
       
       <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
         <Typography variant="caption" color="text.secondary" display="block" textAlign="center">
-          Sistema OSINT v1.0
+          SADUTO v1.0
         </Typography>
         <Typography variant="caption" color="text.secondary" display="block" textAlign="center">
-          © 2024 EMI Bolivia
+          © 2025 EMI Bolivia
         </Typography>
       </Box>
     </>

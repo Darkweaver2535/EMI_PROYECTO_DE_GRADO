@@ -63,7 +63,7 @@ export const HEATMAP_COLORS = {
 };
 
 export const CORRELATION_COLORS = {
-  strongPositive: '#1B5E20',
+  strongPositive: '#0D47A1',
   positive: '#4CAF50',
   weakPositive: '#A5D6A7',
   neutral: '#FFFFFF',

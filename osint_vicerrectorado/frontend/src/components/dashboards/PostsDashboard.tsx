@@ -332,19 +332,49 @@ const PostsDashboard: React.FC = () => {
         throw new Error(data.error || 'Error al iniciar scraping');
       }
 
-      setScrapingMessage(`Scraping iniciado para ${source.name}. Esto puede tardar unos minutos...`);
+      setScrapingMessage(`Scraping iniciado para ${source.name}. Esto puede tardar 1-2 minutos...`);
       
-      // Esperar y recargar datos
-      setTimeout(async () => {
-        await fetchInitialData();
-        if (selectedSource === sourceId) {
-          await fetchPosts(sourceId);
+      // Polling: verificar estado del scraping cada 5 segundos (máximo 3 minutos)
+      const maxAttempts = 36; // 36 * 5s = 180s = 3 min
+      let attempts = 0;
+      
+      const pollStatus = setInterval(async () => {
+        attempts++;
+        try {
+          const statusRes = await fetch(`${API_URL}/sources/${sourceId}/scrape/status`);
+          const statusData = await statusRes.json();
+          
+          if (statusData.status === 'completado' || statusData.status === 'error') {
+            clearInterval(pollStatus);
+            await fetchInitialData();
+            if (selectedSource === sourceId) {
+              await fetchPosts(sourceId);
+            }
+            setScrapingSource(null);
+            
+            if (statusData.status === 'completado') {
+              const records = statusData.recordsProcessed || 0;
+              setScrapingMessage(`✅ Scraping completado. ${records} registros procesados.`);
+            } else {
+              setScrapingMessage(`❌ Error en scraping: ${statusData.error || 'Error desconocido'}`);
+            }
+            setTimeout(() => setScrapingMessage(null), 8000);
+          } else if (attempts >= maxAttempts) {
+            clearInterval(pollStatus);
+            await fetchInitialData();
+            if (selectedSource === sourceId) {
+              await fetchPosts(sourceId);
+            }
+            setScrapingSource(null);
+            setScrapingMessage('Scraping tardó más de lo esperado. Recarga la página para ver resultados.');
+            setTimeout(() => setScrapingMessage(null), 8000);
+          } else {
+            setScrapingMessage(`Scraping en progreso para ${source.name}... (${attempts * 5}s)`);
+          }
+        } catch {
+          // Si falla el polling, seguir intentando
         }
-        setScrapingSource(null);
-        setScrapingMessage(`Scraping completado. Revisa los nuevos posts.`);
-        
-        setTimeout(() => setScrapingMessage(null), 5000);
-      }, 10000);
+      }, 5000);
 
     } catch (err) {
       setScrapingMessage(`Error: ${err instanceof Error ? err.message : 'Error desconocido'}`);
@@ -359,7 +389,7 @@ const PostsDashboard: React.FC = () => {
     if (tiktokScrapingModal && selectedSource === tiktokScrapingModal.sourceId) {
       await fetchPosts(tiktokScrapingModal.sourceId);
     }
-    setScrapingMessage('✅ Extracción de comentarios TikTok completada');
+    setScrapingMessage('Extracción de comentarios TikTok completada');
     setTimeout(() => setScrapingMessage(null), 5000);
   };
 

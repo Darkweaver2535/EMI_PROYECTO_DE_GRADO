@@ -64,7 +64,7 @@ import { ReportSchedule, ExecutionLog, CreateScheduleRequest } from '../types/re
 import reportsService, { formatFrequency, getReportTypeName } from '../services/reportsService';
 
 // Colores EMI
-const EMI_GREEN = '#1B5E20';
+const EMI_BLUE = '#0D47A1';
 const EMI_GOLD = '#FFD700';
 
 const ScheduledReports: React.FC = () => {
@@ -309,8 +309,8 @@ const ScheduledReports: React.FC = () => {
         {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box>
-            <Typography variant="h4" sx={{ color: EMI_GREEN, fontWeight: 700, mb: 1 }}>
-              🗓️ Reportes Programados
+            <Typography variant="h4" sx={{ color: EMI_BLUE, fontWeight: 700, mb: 1 }}>
+              Reportes Programados
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Configure la generación automática de reportes
@@ -322,8 +322,8 @@ const ScheduledReports: React.FC = () => {
             startIcon={<AddIcon />}
             onClick={handleCreateClick}
             sx={{
-              bgcolor: EMI_GREEN,
-              '&:hover': { bgcolor: '#2e7d32' }
+              bgcolor: EMI_BLUE,
+              '&:hover': { bgcolor: '#1565C0' }
             }}
           >
             Nueva Programación
@@ -335,7 +335,7 @@ const ScheduledReports: React.FC = () => {
           <Grid item xs={6} sm={4} md={2.4}>
             <Card elevation={1}>
               <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                <Typography variant="h4" sx={{ color: EMI_GREEN, fontWeight: 700 }}>
+                <Typography variant="h4" sx={{ color: EMI_BLUE, fontWeight: 700 }}>
                   {stats.total}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -347,7 +347,7 @@ const ScheduledReports: React.FC = () => {
           <Grid item xs={6} sm={4} md={2.4}>
             <Card elevation={1}>
               <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                <Typography variant="h4" sx={{ color: '#2e7d32', fontWeight: 700 }}>
+                <Typography variant="h4" sx={{ color: '#1565C0', fontWeight: 700 }}>
                   {stats.active}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -413,7 +413,7 @@ const ScheduledReports: React.FC = () => {
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={handleCreateClick}
-                sx={{ bgcolor: EMI_GREEN }}
+                sx={{ bgcolor: EMI_BLUE }}
               >
                 Crear Primera Programación
               </Button>
@@ -547,8 +547,8 @@ const ScheduledReports: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Card elevation={1}>
               <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ color: EMI_GREEN }}>
-                  ⚙️ Configuración de Frecuencias
+                <Typography variant="h6" gutterBottom sx={{ color: EMI_BLUE }}>
+                  Configuración de Frecuencias
                 </Typography>
                 <Divider sx={{ my: 1 }} />
                 <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>
@@ -569,8 +569,8 @@ const ScheduledReports: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Card elevation={1}>
               <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ color: EMI_GREEN }}>
-                  📧 Distribución por Email
+                <Typography variant="h6" gutterBottom sx={{ color: EMI_BLUE }}>
+                  Distribución por Email
                 </Typography>
                 <Divider sx={{ my: 1 }} />
                 <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>

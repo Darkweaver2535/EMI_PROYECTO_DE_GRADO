@@ -1,0 +1,689 @@
+% ============================================================================
+% REPORTE DEL SISTEMA — SADUTO
+% Sistema de Analítica de Datos Utilizando Técnicas Open Source Intelligence
+% Caso: Vicerrectorado de Grado — Escuela Militar de Ingeniería
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{colortbl}
+
+% ── Colores institucionales ───────────────────────────────────────────────
+\definecolor{emiblue}{HTML}{0D47A1}
+\definecolor{emiyellow}{HTML}{FFD700}
+\definecolor{emidark}{HTML}{002171}
+\definecolor{emigray}{HTML}{F5F5F5}
+\definecolor{emilightblue}{HTML}{E3F2FD}
+\definecolor{tableheader}{HTML}{0D47A1}
+\definecolor{tablerow}{HTML}{F0F7FF}
+\definecolor{successgreen}{HTML}{2E7D32}
+\definecolor{warningorange}{HTML}{E65100}
+\definecolor{dangerred}{HTML}{C62828}
+
+% ── Configuración de hipervínculos ────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=emiblue,
+  urlcolor=emiblue,
+  pdftitle={Reporte del Sistema — SADUTO},
+  pdfauthor={Alvaro Santiago Encinas Flores},
+}
+
+% ── Formato de títulos ────────────────────────────────────────────────────
+\titleformat{\section}{\LARGE\bfseries\color{emiblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\Large\bfseries\color{emidark}}{}{0em}{}
+\titleformat{\subsubsection}{\large\bfseries\color{emiblue}}{}{0em}{}
+
+% ── Encabezado y pie de página ────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{emiblue}\textbf{SADUTO} — Reporte del Sistema}
+\fancyhead[R]{\small\color{gray}v1.0}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\small\color{gray}EMI Bolivia — 2026}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{emiblue}\leaders\hrule height \headrulewidth\hfill}}
+
+% ── Macros ────────────────────────────────────────────────────────────────
+\newcommand{\tableheadrow}{\rowcolor{tableheader}}
+\newcommand{\tablehead}[1]{\textcolor{white}{\textbf{#1}}}
+
+\newtcolorbox{infobox}[1][]{
+  colback=emilightblue,
+  colframe=emiblue,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  boxrule=0.5pt
+}
+
+\newtcolorbox{successbox}[1][]{
+  colback=successgreen!5,
+  colframe=successgreen,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  boxrule=0.5pt
+}
+
+\newtcolorbox{warningbox}[1][]{
+  colback=warningorange!5,
+  colframe=warningorange,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  boxrule=0.5pt
+}
+
+% ── KPI badge ─────────────────────────────────────────────────────────────
+\newcommand{\kpi}[2]{%
+  \begin{tcolorbox}[colback=emiblue!5, colframe=emiblue, width=4.5cm,
+    halign=center, boxrule=0.4pt, arc=3pt, left=2pt, right=2pt, top=2pt, bottom=2pt]
+    {\LARGE\bfseries\color{emiblue}#1}\\[2pt]
+    {\footnotesize\color{gray}#2}
+  \end{tcolorbox}
+}
+
+% ══════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────────────────────
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries\color{emiblue}SADUTO\par}
+\vspace{0.3cm}
+{\large\color{emidark}Sistema de Analítica de Datos Utilizando\\Técnicas Open Source Intelligence\\Caso: Vicerrectorado de Grado\par}
+
+\vspace{1cm}
+\noindent\makebox[\textwidth]{\color{emiblue}\rule{0.6\textwidth}{2pt}}
+\vspace{1cm}
+
+{\LARGE\bfseries Reporte del Sistema\par}
+\vspace{0.3cm}
+{\large Evaluación de rendimiento, calidad y cumplimiento\\de los objetivos del sistema\par}
+
+\vfill
+
+\begin{tabular}{ll}
+\textbf{Autor:}          & Alvaro Santiago Encinas Flores \\
+\textbf{Carrera:}        & Ing.\ de Sistemas — EMI 2026 \\
+\textbf{Institución:}    & Escuela Militar de Ingeniería (EMI) \\
+\textbf{Unidad:}         & Vicerrectorado de Grado / UEBU \\
+\textbf{Periodo:}        & Enero -- Febrero 2026 \\
+\textbf{Puntuación:}     & \textbf{91.4 / 100} \\
+\textbf{Versión:}        & 1.0 \\
+\textbf{Fecha:}          & Febrero 2026 \\
+\end{tabular}
+
+\vspace{1cm}
+\noindent\makebox[\textwidth]{\color{emiyellow}\rule{0.4\textwidth}{3pt}}
+\end{titlepage}
+
+% ── Tabla de contenidos ───────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Resumen ejecutivo}
+
+\begin{successbox}[Puntuación global del sistema: 91.4 / 100]
+El sistema SADUTO ha sido evaluado en 22 métricas agrupadas en 5 categorías, obteniendo una puntuación ponderada de \textbf{91.4 sobre 100}. Las áreas de mayor fortaleza son el rendimiento de la API (99.9\%) y la completitud de la base de datos (100\%). El área de mayor oportunidad de mejora es la cobertura temporal de recolección (28\%).
+\end{successbox}
+
+\vspace{0.5cm}
+
+\noindent\textbf{Datos clave:}
+
+\begin{center}
+\begin{tabular}{cccc}
+\kpi{54}{Posts recolectados} &
+\kpi{61}{Comentarios} &
+\kpi{69}{Análisis de sent.} &
+\kpi{3}{Fuentes OSINT} \\
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tabular}{cccc}
+\kpi{4 ms}{Tiempo promedio API} &
+\kpi{23}{Tablas en BD} &
+\kpi{4}{Usuarios activos} &
+\kpi{9}{Alertas generadas} \\
+\end{tabular}
+\end{center}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Arquitectura del sistema}
+
+\subsection{Stack tecnológico}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Capa} & \textbf{Tecnología} & \textbf{Descripción} \\
+\midrule
+Frontend & React 18 + TypeScript + MUI 5 & SPA con 8+ dashboards interactivos \\
+\rowcolor{tablerow}
+Backend & Flask (Python 3.x) & API REST con 19+ endpoints \\
+Base de datos & SQLite 3 & 23 tablas, 576+ registros \\
+\rowcolor{tablerow}
+IA/ML & BETO + scikit-learn & Sentimiento, K-Means, LDA, TF-IDF, NER \\
+Scraping & Playwright + BeautifulSoup & Facebook y TikTok \\
+\rowcolor{tablerow}
+OSINT & Google Trends + News API & Tendencias y noticias \\
+Build & Vite 5 & Hot Module Replacement \\
+\bottomrule
+\end{tabularx}
+\caption{Stack tecnológico del sistema}
+\end{table}
+
+\subsection{Diagrama de flujo de datos}
+
+\begin{center}
+\fbox{\textbf{Fuentes OSINT}} $\longrightarrow$
+\fbox{\textbf{Scraper}} $\longrightarrow$
+\fbox{\textbf{Pipeline ETL}} $\longrightarrow$
+\fbox{\textbf{NLP/ML}}
+
+\vspace{0.3cm}
+$\downarrow$
+\vspace{0.3cm}
+
+\fbox{\textbf{Base de datos (SQLite)}} $\longrightarrow$
+\fbox{\textbf{API REST (Flask)}} $\longrightarrow$
+\fbox{\textbf{Dashboards (React)}}
+\end{center}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Fuentes de datos OSINT}
+
+\subsection{Fuentes activas}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l r X}
+\toprule
+\textbf{Fuente} & \textbf{Plataforma} & \textbf{Registros} & \textbf{Descripción} \\
+\midrule
+EMI Oficial Facebook & Facebook & 34 & Página oficial de la EMI. \\
+\rowcolor{tablerow}
+EMI UALP Facebook & Facebook & 15 & Página de la Unidad Académica La Paz. \\
+TikTok & TikTok & 10 & Videos virales y contenido estudiantil. \\
+\midrule
+\textbf{Total} & — & \textbf{59} & — \\
+\bottomrule
+\end{tabularx}
+\caption{Fuentes OSINT activas}
+\end{table}
+
+\subsection{Fuentes complementarias}
+
+\begin{itemize}
+  \item \textbf{Google Trends:} 24 registros de tendencias sobre términos como ``Escuela Militar de Ingeniería'', ``EMI Bolivia'', ``universidad militar Bolivia''.
+  \item \textbf{Noticias web:} 40 artículos de medios digitales bolivianos e internacionales.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Módulo de recolección}
+
+\subsection{KPIs operativos}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{X r l}
+\toprule
+\textbf{Métrica} & \textbf{Valor} & \textbf{Estado} \\
+\midrule
+Volumen total de datos recolectados & 54 posts + 61 comentarios & \textcolor{successgreen}{\textbf{Aceptable}} \\
+\rowcolor{tablerow}
+Calidad de datos (contenido limpio) & 100\% (49/49) & \textcolor{successgreen}{\textbf{Excelente}} \\
+Diversidad de fuentes OSINT & 3 fuentes activas (75\%) & \textcolor{successgreen}{\textbf{Bueno}} \\
+\rowcolor{tablerow}
+Cobertura temporal & 14 días (28\%) & \textcolor{warningorange}{\textbf{A mejorar}} \\
+Completitud de la base de datos & 100\% (12/12 tablas) & \textcolor{successgreen}{\textbf{Excelente}} \\
+\bottomrule
+\end{tabularx}
+\caption{KPIs del módulo de recolección}
+\end{table}
+
+\begin{warningbox}[Oportunidad de mejora]
+La cobertura temporal actual es de 14 días. Se recomienda programar ejecuciones automáticas (cron) para mantener un flujo continuo de datos y aumentar este indicador por encima del 80\%.
+\end{warningbox}
+
+\subsection{Historial de ejecuciones}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l r r r}
+\toprule
+\textbf{Tipo de operación} & \textbf{Ejecuciones} & \textbf{Registros procesados} & \textbf{Tiempo promedio} \\
+\midrule
+Scraping (Facebook/TikTok) & 6 & 10 & variable \\
+\rowcolor{tablerow}
+Recolección completa & 15 & 155 & 273.2 s \\
+ETL (limpieza y enriquecimiento) & 7 & 189 & < 1 s \\
+\midrule
+\textbf{Total} & \textbf{28} & \textbf{354} & — \\
+\bottomrule
+\end{tabularx}
+\caption{Historial de ejecuciones del pipeline}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Módulo de análisis de sentimiento}
+
+\subsection{Modelo utilizado}
+
+\begin{infobox}[Modelo de IA: BETO]
+\textbf{BETO} (Bidirectional Encoder Transformations for Spanish) es un modelo de lenguaje basado en la arquitectura BERT, pre-entrenado en un corpus de 12 GB de texto en español. Se utilizó la versión fine-tuned para clasificación de sentimiento con 3 clases: positivo, neutral y negativo, complementado con un léxico de sentimiento en español (versión 1.0).
+\end{infobox}
+
+\subsection{KPIs de sentimiento}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{X r l}
+\toprule
+\textbf{Métrica} & \textbf{Valor} & \textbf{Estado} \\
+\midrule
+Cobertura de análisis & 100\% (69/69) & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+Confianza promedio del modelo & 64.3\% & \textcolor{warningorange}{\textbf{Aceptable}} \\
+Confianza mínima & 50.0\% & \textcolor{warningorange}{\textbf{Aceptable}} \\
+\rowcolor{tablerow}
+Confianza máxima & 95.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+Modelo Deep Learning & BETO + Léxico ES 1.0 & \textcolor{successgreen}{\textbf{Operativo}} \\
+\bottomrule
+\end{tabularx}
+\caption{KPIs del módulo de sentimiento}
+\end{table}
+
+\subsection{Distribución de sentimientos}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{0.7\textwidth}{l r r}
+\toprule
+\textbf{Sentimiento} & \textbf{Cantidad} & \textbf{Porcentaje} \\
+\midrule
+\textcolor{successgreen}{\textbf{Positivo}} & 18 & 26.1\% \\
+\rowcolor{tablerow}
+\textcolor{emiblue}{\textbf{Neutral}} & 47 & 68.1\% \\
+\textcolor{dangerred}{\textbf{Negativo}} & 4 & 5.8\% \\
+\midrule
+\textbf{Total} & \textbf{69} & \textbf{100\%} \\
+\bottomrule
+\end{tabularx}
+\caption{Distribución de sentimientos detectados}
+\end{table}
+
+\begin{successbox}[Índice de Sentimiento General (ISG)]
+\textbf{ISG = 0.72 (positivo).} El 26.1\% de las publicaciones son positivas, 68.1\% neutrales y solo 5.8\% negativas. Esto indica una percepción generalmente favorable de la EMI en redes sociales.
+\end{successbox}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Módulo de NLP y Machine Learning}
+
+\subsection{Técnicas implementadas}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l r l}
+\toprule
+\textbf{Técnica} & \textbf{Algoritmo} & \textbf{Resultados} & \textbf{Estado} \\
+\midrule
+Extracción de keywords & TF-IDF & 50 keywords & \textcolor{successgreen}{\textbf{100\%}} \\
+\rowcolor{tablerow}
+Modelado de tópicos & LDA & 6 tópicos & \textcolor{successgreen}{\textbf{100\%}} \\
+Clustering de documentos & K-Means & 6 clusters & \textcolor{successgreen}{\textbf{100\%}} \\
+\rowcolor{tablerow}
+Reconocimiento de entidades & NER & 15 entidades & \textcolor{successgreen}{\textbf{75\%}} \\
+Clasificación temática & Basada en reglas + ML & 53 clasificaciones & \textcolor{successgreen}{\textbf{100\%}} \\
+\rowcolor{tablerow}
+Detección de patrones & Análisis temporal & 10 patrones & \textcolor{successgreen}{\textbf{100\%}} \\
+\bottomrule
+\end{tabularx}
+\caption{Técnicas NLP/ML implementadas}
+\end{table}
+
+\subsection{KPIs analíticos NLP/ML}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{X r l}
+\toprule
+\textbf{Métrica} & \textbf{Valor} & \textbf{Estado} \\
+\midrule
+Keywords TF-IDF & 100\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+Topic Modeling LDA & 100\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+K-Means Clustering & 100\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+NER Entidades & 75\% & \textcolor{successgreen}{\textbf{Bueno}} \\
+Clasificación temática & 100\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+Patrones identificados & 100\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\bottomrule
+\end{tabularx}
+\caption{KPIs del módulo NLP/ML}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Rendimiento de la API}
+
+\subsection{Tiempos de respuesta}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{X r r}
+\toprule
+\textbf{Endpoint} & \textbf{Tiempo (ms)} & \textbf{HTTP} \\
+\midrule
+Lista de fuentes OSINT & 3 & 200 \\
+\rowcolor{tablerow}
+Temas de reputación & 3 & 200 \\
+KPIs de sentimiento & 4 & 200 \\
+\rowcolor{tablerow}
+Resumen OSINT & 4 & 200 \\
+Nube de palabras & 5 & 200 \\
+\rowcolor{tablerow}
+Distribución de sentimientos & 6 & 200 \\
+\midrule
+\textbf{Promedio general} & \textbf{4 ms} & \textbf{200} \\
+\bottomrule
+\end{tabularx}
+\caption{Tiempos de respuesta de la API}
+\end{table}
+
+\begin{successbox}[Rendimiento sobresaliente: 99.9\%]
+Todos los endpoints responden en menos de 10 ms con código HTTP 200. El tiempo promedio de respuesta de \textbf{4 ms} supera ampliamente los estándares de la industria (< 200 ms para APIs REST). No se registraron errores HTTP 5xx durante el periodo de evaluación.
+\end{successbox}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Módulo de alertas}
+
+\subsection{Estadísticas de alertas}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l r X}
+\toprule
+\textbf{Severidad} & \textbf{Cantidad} & \textbf{Descripción} \\
+\midrule
+\textcolor{dangerred}{\textbf{Crítica}} & 4 & Publicaciones con sentimiento negativo de alta confianza o alto engagement. \\
+\rowcolor{tablerow}
+\textcolor{warningorange}{\textbf{Media}} & 5 & Detecciones de patrones anómalos o cambios de tendencia. \\
+\midrule
+\textbf{Total} & \textbf{9} & — \\
+\bottomrule
+\end{tabularx}
+\caption{Distribución de alertas por severidad}
+\end{table}
+
+\subsection{Configuración de reglas}
+El sistema cuenta con 4 reglas de alerta configuradas:
+\begin{itemize}
+  \item Detección de sentimiento negativo con confianza $\geq 0.7$
+  \item Engagement anormalmente alto (picos)
+  \item Cambio brusco de tendencia de sentimiento
+  \item Detección de contenido crítico sobre la EMI
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Dashboards implementados}
+
+El sistema cuenta con 8+ dashboards interactivos en React + Material-UI:
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{r X l}
+\toprule
+\textbf{\#} & \textbf{Dashboard} & \textbf{Tipo} \\
+\midrule
+1 & OSINT — Visión general de fuentes y publicaciones & Estratégico \\
+\rowcolor{tablerow}
+2 & Publicaciones (Posts) — Detalle de contenido con filtros & Operativo \\
+3 & Análisis de Sentimiento — Distribución y evolución & Analítico \\
+\rowcolor{tablerow}
+4 & Reputación — Temas y índice reputacional & Estratégico \\
+5 & IA / ML / NLP — Keywords, tópicos, clusters, NER & Analítico \\
+\rowcolor{tablerow}
+6 & Alertas — Centro de detecciones y resolución & Operativo \\
+7 & Benchmarking / Evaluación — Métricas del sistema & Auditoría \\
+\rowcolor{tablerow}
+8 & Gestión de Usuarios — CRUD con roles & Administrativo \\
+9 & Centro de Reportes — Generación PDF/Excel & Estratégico \\
+\bottomrule
+\end{tabularx}
+\caption{Dashboards del sistema}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Evaluación global del sistema}
+
+\subsection{Métricas por categoría}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X r l}
+\toprule
+\textbf{Categoría} & \textbf{Métrica} & \textbf{Valor} & \textbf{Estado} \\
+\midrule
+Completitud & Completitud de la BD & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\midrule
+\rowcolor{tablerow}
+\multirow{4}{*}{Recolección} & Volumen de datos & 98.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+  & Calidad de datos & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+  & Diversidad de fuentes & 75.0\% & \textcolor{successgreen}{\textbf{Bueno}} \\
+\rowcolor{tablerow}
+  & Cobertura temporal & 28.0\% & \textcolor{warningorange}{\textbf{A mejorar}} \\
+\midrule
+\multirow{4}{*}{Sentimiento} & Cobertura de análisis & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+  & Confianza promedio & 64.3\% & \textcolor{warningorange}{\textbf{Aceptable}} \\
+  & Balance sentimiento & 63.8\% & \textcolor{warningorange}{\textbf{Aceptable}} \\
+  & Modelo DL utilizado & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\midrule
+\rowcolor{tablerow}
+\multirow{6}{*}{NLP / ML} & Keywords TF-IDF & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+  & Topic Modeling LDA & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+  & K-Means Clustering & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+  & NER Entidades & 75.0\% & \textcolor{successgreen}{\textbf{Bueno}} \\
+\rowcolor{tablerow}
+  & Clasificación temática & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\rowcolor{tablerow}
+  & Patrones & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\midrule
+\multirow{2}{*}{Rendimiento} & Tiempo promedio API & 99.9\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+  & Todos los endpoints & 100.0\% & \textcolor{successgreen}{\textbf{Excelente}} \\
+\bottomrule
+\end{tabularx}
+\caption{Evaluación detallada por métrica (22 métricas)}
+\end{table}
+
+\subsection{Resumen de cumplimiento por objetivo}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X r}
+\toprule
+\textbf{Objetivo} & \textbf{Descripción} & \textbf{Cumplimiento} \\
+\midrule
+OE1 & Recolectar datos de múltiples fuentes OSINT (Facebook, TikTok, Google Trends, noticias) & \textcolor{successgreen}{\textbf{100\%}} \\
+\rowcolor{tablerow}
+OE2 & Implementar dashboards interactivos de visualización con filtros, gráficos y KPIs & \textcolor{successgreen}{\textbf{100\%}} \\
+OE3 & Aplicar técnicas de IA/ML/NLP: sentimiento (BETO), TF-IDF, LDA, K-Means, NER & \textcolor{successgreen}{\textbf{100\%}} \\
+\rowcolor{tablerow}
+OE4 & Evaluar el desempeño del sistema con métricas objetivas y automatizadas & \textcolor{successgreen}{\textbf{100\%}} \\
+\bottomrule
+\end{tabularx}
+\caption{Cumplimiento de objetivos específicos}
+\end{table}
+
+\subsection{Puntuación global}
+
+\begin{center}
+\begin{tcolorbox}[colback=emiblue!5, colframe=emiblue, width=6cm, halign=center, boxrule=1pt, arc=5pt]
+  {\fontsize{48}{52}\selectfont\bfseries\color{emiblue}91.4}\\[4pt]
+  {\Large\color{gray}de 100 puntos}
+\end{tcolorbox}
+\end{center}
+
+\begin{infobox}[Interpretación de la puntuación]
+\begin{itemize}
+  \item \textbf{90--100:} Excelente — Sistema completamente funcional y optimizado.
+  \item \textbf{75--89:} Bueno — Funcional con oportunidades menores de mejora.
+  \item \textbf{50--74:} Aceptable — Funcional pero con áreas significativas de mejora.
+  \item \textbf{< 50:} Insuficiente — Requiere intervención inmediata.
+\end{itemize}
+La puntuación de \textbf{91.4} clasifica al sistema como \textcolor{successgreen}{\textbf{EXCELENTE}}.
+\end{infobox}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Módulo de reportes}
+
+El sistema incluye un módulo completo de generación de reportes con las siguientes características:
+
+\subsection{Tipos de reporte}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Tipo} & \textbf{Contenido} & \textbf{Formatos} \\
+\midrule
+Informe Ejecutivo Semanal & Resumen de KPIs, sentimiento, alertas y tendencias de la semana & PDF \\
+\rowcolor{tablerow}
+Reporte de Alertas Críticas & Detalle de alertas críticas, resolución y recomendaciones & PDF, Excel \\
+Anuario Estadístico & Datos acumulados del año: publicaciones, sentimiento, engagement & PDF, Excel \\
+\rowcolor{tablerow}
+Reporte Personalizado & Selección libre de métricas, periodo y formato & PDF, Excel \\
+\bottomrule
+\end{tabularx}
+\caption{Tipos de reporte disponibles}
+\end{table}
+
+\subsection{Formatos de salida}
+
+\begin{itemize}
+  \item \textbf{PDF}: Gráficos vectoriales, tablas paginadas, colores institucionales (azul/blanco/amarillo), logo SADUTO.
+  \item \textbf{Excel}: Datos tabulados con formatos condicionales, múltiples hojas, fórmulas de resumen.
+\end{itemize}
+
+\subsection{KPIs incluidos en reportes}
+
+\begin{enumerate}
+  \item \textbf{KPIs Operativos:} Volumen diario de datos, tasa de éxito de recolección, tiempo de procesamiento.
+  \item \textbf{KPIs Analíticos de Sentimiento:} ISG (Índice de Sentimiento General), ratio positivo/negativo, confianza promedio.
+  \item \textbf{KPIs Estratégicos de Tendencias:} Evolución del sentimiento por periodo, engagement por fuente.
+  \item \textbf{KPIs de Categorías Temáticas:} Top 5 temas mencionados, distribución por carreras.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Seguridad y gestión de usuarios}
+
+\subsection{Sistema de roles}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Rol} & \textbf{Usuarios} & \textbf{Permisos} \\
+\midrule
+Administrador & 1 & Acceso total: CRUD usuarios, configuración, todos los dashboards \\
+\rowcolor{tablerow}
+Vicerrector & 1 & Dashboards estratégicos, reportes, alertas (solo lectura) \\
+UEBU & 2 & Dashboards operativos, análisis de sentimiento, alertas \\
+\bottomrule
+\end{tabularx}
+\caption{Roles y permisos del sistema}
+\end{table}
+
+\subsection{Medidas de seguridad}
+
+\begin{itemize}
+  \item Contraseñas almacenadas como hash SHA-256 (nunca en texto plano).
+  \item Registro de actividad (\texttt{log\_actividad}) con IP, acción y timestamp.
+  \item Control de sesiones con último login registrado.
+  \item Activación/desactivación de cuentas sin eliminar datos.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Recomendaciones de mejora}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{c l X l}
+\toprule
+\textbf{Prioridad} & \textbf{Área} & \textbf{Recomendación} & \textbf{Impacto} \\
+\midrule
+1 & Recolección & Automatizar scraping con cron jobs (cada 6h) para aumentar cobertura temporal & Alto \\
+\rowcolor{tablerow}
+2 & Sentimiento & Fine-tuning de BETO con datos etiquetados de la EMI para mejorar confianza promedio & Alto \\
+3 & Fuentes & Agregar Instagram y X (Twitter) como fuentes OSINT adicionales & Medio \\
+\rowcolor{tablerow}
+4 & NER & Entrenar modelo NER personalizado con entidades de la EMI (carreras, sedes, docentes) & Medio \\
+5 & Backend & Migrar a PostgreSQL para soportar concurrencia alta & Bajo \\
+\rowcolor{tablerow}
+6 & Seguridad & Implementar JWT con refresh tokens y 2FA & Medio \\
+\bottomrule
+\end{tabularx}
+\caption{Recomendaciones priorizadas}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Conclusiones}
+
+\begin{enumerate}
+  \item El sistema SADUTO cumple al \textbf{100\%} con los cuatro objetivos específicos planteados (OE1--OE4).
+  \item La puntuación global de \textbf{91.4/100} demuestra un nivel \textbf{excelente} de implementación.
+  \item El módulo de \textbf{rendimiento} es el más destacado, con tiempos de respuesta de la API de 4 ms promedio (99.9\%).
+  \item El módulo de \textbf{NLP/ML} implementa exitosamente 6 técnicas: TF-IDF, LDA, K-Means, NER, clasificación temática y detección de patrones.
+  \item El modelo \textbf{BETO} para análisis de sentimiento opera con confianza promedio de 64.3\%, con margen de mejora mediante fine-tuning.
+  \item La principal oportunidad de mejora es la \textbf{cobertura temporal} (28\%), resoluble con automatización de las tareas de recolección.
+  \item El sistema de \textbf{alertas} funciona correctamente, con 9 alertas generadas y 4 reglas configurables.
+  \item Los \textbf{8+ dashboards} proporcionan visibilidad completa al Vicerrectorado y la UEBU para la toma de decisiones informada.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════
+\newpage
+\section*{Control de versiones del documento}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{c c l X}
+\toprule
+\textbf{Versión} & \textbf{Fecha} & \textbf{Autor} & \textbf{Cambios} \\
+\midrule
+1.0 & Feb 2026 & Alvaro Santiago Encinas Flores & Versión inicial del reporte del sistema. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

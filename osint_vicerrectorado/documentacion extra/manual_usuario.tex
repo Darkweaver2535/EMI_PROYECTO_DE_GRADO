@@ -1,0 +1,737 @@
+% ============================================================================
+% MANUAL DE USUARIO — SADUTO
+% Sistema de Analítica de Datos Utilizando Técnicas Open Source Intelligence
+% Caso: Vicerrectorado de Grado — Escuela Militar de Ingeniería
+% ============================================================================
+\documentclass[12pt,a4paper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{tcolorbox}
+\usepackage{fontawesome5}
+\usepackage{array}
+\usepackage{pifont}
+
+% ── Colores institucionales ───────────────────────────────────────────────
+\definecolor{emiblue}{HTML}{0D47A1}
+\definecolor{emiyellow}{HTML}{FFD700}
+\definecolor{emidark}{HTML}{002171}
+\definecolor{emigray}{HTML}{F5F5F5}
+\definecolor{emilightblue}{HTML}{E3F2FD}
+
+% ── Configuración de hipervínculos ────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=emiblue,
+  urlcolor=emiblue,
+  citecolor=emiblue,
+  pdftitle={Manual de Usuario — SADUTO},
+  pdfauthor={Alvaro Santiago Encinas Flores},
+}
+
+% ── Formato de títulos ────────────────────────────────────────────────────
+\titleformat{\section}{\LARGE\bfseries\color{emiblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\Large\bfseries\color{emidark}}{}{0em}{}
+\titleformat{\subsubsection}{\large\bfseries\color{emiblue}}{}{0em}{}
+
+% ── Encabezado y pie de página ────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{emiblue}\textbf{SADUTO} — Manual de Usuario}
+\fancyhead[R]{\small\color{gray}v1.0}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\small\color{gray}EMI Bolivia — 2026}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{emiblue}\leaders\hrule height \headrulewidth\hfill}}
+
+% ── Cajas de información ─────────────────────────────────────────────────
+\newtcolorbox{infobox}[1][]{
+  colback=emilightblue,
+  colframe=emiblue,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  boxrule=0.5pt
+}
+
+\newtcolorbox{warningbox}[1][]{
+  colback=yellow!10,
+  colframe=emiyellow!80!black,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  boxrule=0.5pt
+}
+
+\newtcolorbox{tipbox}[1][]{
+  colback=green!5,
+  colframe=green!60!black,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  boxrule=0.5pt
+}
+
+% ══════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────────────────────
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries\color{emiblue}SADUTO\par}
+\vspace{0.3cm}
+{\large\color{emidark}Sistema de Analítica de Datos Utilizando\\Técnicas Open Source Intelligence\\Caso: Vicerrectorado de Grado\par}
+
+\vspace{1cm}
+\noindent\makebox[\textwidth]{\color{emiblue}\rule{0.6\textwidth}{2pt}}
+\vspace{1cm}
+
+{\LARGE\bfseries Manual de Usuario\par}
+\vspace{0.3cm}
+{\large Guía completa para usuarios finales y administradores\par}
+
+\vfill
+
+\begin{tabular}{ll}
+\textbf{Autor:}         & Alvaro Santiago Encinas Flores \\
+\textbf{Carrera:}       & Ing.\ de Sistemas — EMI 2026 \\
+\textbf{Institución:}   & Escuela Militar de Ingeniería (EMI) \\
+\textbf{Dependencia:}   & Vicerrectorado de Grado \\
+\textbf{Unidad:}        & Unidad de Evaluación y Bienestar Universitario (UEBU) \\
+\textbf{Versión:}       & 1.0 \\
+\textbf{Fecha:}         & Febrero 2026 \\
+\textbf{Clasificación:} & Uso Interno \\
+\end{tabular}
+
+\vspace{1cm}
+\noindent\makebox[\textwidth]{\color{emiyellow}\rule{0.4\textwidth}{3pt}}
+\end{titlepage}
+
+% ── Tabla de contenidos ───────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════
+% PARTE I — MANUAL DE USUARIO FINAL
+% ══════════════════════════════════════════════════════════════════════════
+
+\section{Introducción}
+
+\subsection{Propósito del documento}
+Este manual proporciona instrucciones detalladas para el uso del sistema \textbf{SADUTO} (Sistema de Analítica de Datos Utilizando Técnicas Open Source Intelligence — Caso: Vicerrectorado de Grado). Está dirigido a:
+
+\begin{itemize}[leftmargin=2cm]
+  \item[\faUserShield] \textbf{Administradores del sistema} — Gestión técnica y configuración.
+  \item[\faUserTie] \textbf{Vicerrector de Grado} — Consulta de reportes ejecutivos y KPIs estratégicos.
+  \item[\faUsers] \textbf{Coordinadores y Analistas UEBU} — Operación diaria, análisis de datos e interpretación de dashboards.
+\end{itemize}
+
+\subsection{Descripción del sistema}
+SADUTO es una plataforma web que recolecta, procesa y analiza datos de fuentes abiertas (OSINT) sobre la percepción institucional de la EMI en redes sociales y medios digitales. El sistema utiliza inteligencia artificial para:
+
+\begin{enumerate}
+  \item Extraer publicaciones y comentarios de Facebook y TikTok.
+  \item Clasificar el sentimiento (positivo, neutral, negativo) mediante modelos de Deep Learning.
+  \item Detectar temas, tendencias y anomalías con técnicas NLP/ML.
+  \item Generar reportes ejecutivos en PDF y Excel.
+  \item Emitir alertas automáticas ante situaciones críticas.
+\end{enumerate}
+
+\subsection{Requisitos del navegador}
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Navegador} & \textbf{Versión mínima} & \textbf{Recomendado} \\
+\midrule
+Google Chrome & 90+ & \ding{51} \\
+Mozilla Firefox & 88+ & \ding{51} \\
+Microsoft Edge & 90+ & \ding{51} \\
+Safari & 14+ & — \\
+\bottomrule
+\end{tabular}
+\caption{Navegadores compatibles}
+\end{table}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Acceso al sistema}
+
+\subsection{Inicio de sesión}
+\begin{enumerate}
+  \item Abra su navegador y acceda a la URL del sistema: \texttt{http://[servidor]:3000/login}
+  \item Ingrese su \textbf{correo electrónico institucional} (ej.\ \texttt{admin@emi.edu.bo}).
+  \item Ingrese su \textbf{contraseña} asignada por el administrador.
+  \item Haga clic en el botón \textbf{``Iniciar Sesión''}.
+\end{enumerate}
+
+\begin{infobox}[\faInfoCircle\ Nota]
+La pantalla de login muestra el logo institucional SADUTO sobre un fondo con overlay azul. Los campos de texto están resaltados con el color institucional azul (\texttt{\#0D47A1}).
+\end{infobox}
+
+\subsection{Roles de usuario}
+El sistema maneja tres perfiles de acceso con diferentes niveles de permisos:
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Rol} & \textbf{Código} & \textbf{Permisos} \\
+\midrule
+Administrador & \texttt{administrador} & Acceso completo: CRUD de usuarios, configuración de alertas, todos los dashboards, logs del sistema. \\
+\addlinespace
+Vicerrector & \texttt{vicerrector} & Consulta de dashboards, reportes ejecutivos, KPIs estratégicos. Sin acceso a gestión de usuarios. \\
+\addlinespace
+Analista UEBU & \texttt{uebu} & Operación de dashboards, extracción de datos, generación de reportes, configuración de alertas propias. \\
+\bottomrule
+\end{tabularx}
+\caption{Roles y permisos del sistema}
+\end{table}
+
+\subsection{Recuperación de contraseña}
+Si olvidó su contraseña, contacte al administrador del sistema para que le asigne una nueva desde el módulo de Gestión de Usuarios.
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Navegación general}
+
+\subsection{Estructura de la interfaz}
+La interfaz de SADUTO se compone de tres áreas principales:
+
+\begin{enumerate}
+  \item \textbf{Barra superior (Header)}: Muestra el logo SADUTO, el título de la sección actual, controles de tema claro/oscuro, notificaciones y menú de perfil de usuario.
+  \item \textbf{Panel lateral (Sidebar)}: Menú de navegación con las siguientes secciones:
+  \begin{itemize}
+    \item Inteligencia OSINT
+    \item Posts y Comentarios
+    \item Análisis AI (submenú: Sentimientos, Reputación, Alertas, Benchmarking)
+    \item IA / ML / NLP
+    \item Evaluación del Sistema
+    \item Gestión de Usuarios
+    \item Configuración
+  \end{itemize}
+  \item \textbf{Área principal}: Espacio de contenido donde se muestran los dashboards, tablas y formularios.
+\end{enumerate}
+
+\subsection{Tema visual}
+El sistema soporta dos modos de visualización:
+\begin{itemize}
+  \item \textbf{Modo claro}: Fondo claro con texto oscuro (recomendado para uso diurno).
+  \item \textbf{Modo oscuro}: Fondo oscuro con texto claro (reduce fatiga visual en uso nocturno).
+\end{itemize}
+Puede alternar entre ambos modos usando el ícono de sol/luna en la barra superior.
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Inteligencia OSINT}
+
+\subsection{Descripción}
+Este dashboard presenta una visión consolidada de toda la inteligencia recolectada de fuentes abiertas. Incluye:
+
+\begin{itemize}
+  \item \textbf{KPIs principales}: Total de fuentes activas, datos recolectados, patrones identificados y noticias monitoreadas.
+  \item \textbf{Noticias relevantes}: Feed de noticias sobre la EMI extraídas de medios digitales, con indicador de relevancia y sentimiento.
+  \item \textbf{Tendencias Google}: Gráficos de interés de búsqueda de términos relacionados con la EMI en Bolivia.
+  \item \textbf{Patrones identificados}: Patrones de comportamiento detectados por los algoritmos de IA.
+\end{itemize}
+
+\subsection{Interpretación de KPIs OSINT}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{KPI} & \textbf{Descripción} & \textbf{Valor ideal} \\
+\midrule
+Fuentes activas & Número de plataformas monitoreadas & $\geq 3$ \\
+Datos recolectados & Volumen total de publicaciones/comentarios & Creciente \\
+Patrones detectados & Conductas repetitivas identificadas & Variable \\
+Noticias & Artículos sobre la EMI en medios & Monitoreo \\
+\bottomrule
+\end{tabularx}
+\caption{KPIs del módulo OSINT}
+\end{table}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Posts y Comentarios}
+
+\subsection{Descripción}
+Permite gestionar y visualizar las publicaciones (posts) extraídas de las fuentes OSINT configuradas (Facebook y TikTok), así como sus comentarios asociados.
+
+\subsection{Funcionalidades}
+\begin{enumerate}
+  \item \textbf{Lista de fuentes}: Panel izquierdo con las fuentes OSINT configuradas.
+  \item \textbf{Visualización de posts}: Lista central con títulos, fechas, engagement y sentimiento.
+  \item \textbf{Detalle de comentarios}: Al seleccionar un post, se despliegan sus comentarios con análisis de sentimiento individual.
+  \item \textbf{Extracción de comentarios TikTok}: Botón para iniciar scraping en tiempo real de comentarios de TikTok.
+\end{enumerate}
+
+\begin{warningbox}[\faExclamationTriangle\ Precaución]
+La extracción de comentarios de TikTok puede tardar varios minutos dependiendo de la cantidad de comentarios. No cierre el navegador durante este proceso.
+\end{warningbox}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Análisis de Sentimientos}
+
+\subsection{Descripción}
+Dashboard central de inteligencia artificial que muestra los resultados del análisis de sentimiento sobre todos los datos recolectados.
+
+\subsection{Componentes del dashboard}
+\begin{enumerate}
+  \item \textbf{KPIs de sentimiento}:
+  \begin{itemize}
+    \item \textbf{Índice de Satisfacción General (ISG)}: Porcentaje calculado como:
+    $$ISG = \frac{\text{Publicaciones positivas}}{\text{Total publicaciones}} \times 100$$
+    \item \textbf{Ratio positivo/negativo}: Proporción entre comentarios positivos y negativos.
+    \item \textbf{Confianza promedio del modelo}: Nivel de certeza del clasificador de sentimiento.
+  \end{itemize}
+  \item \textbf{Gráfico de distribución}: Gráfico circular (pie chart) con la proporción de sentimientos positivo, neutral y negativo.
+  \item \textbf{Gráfico de tendencia temporal}: Línea de tiempo mostrando la evolución del sentimiento.
+  \item \textbf{Nube de palabras}: Palabras más frecuentes en los comentarios, ponderadas por TF-IDF.
+  \item \textbf{Posts recientes}: Lista de las últimas publicaciones con su clasificación de sentimiento.
+\end{enumerate}
+
+\subsection{Interpretación de colores de sentimiento}
+\begin{table}[H]
+\centering
+\begin{tabular}{lcl}
+\toprule
+\textbf{Sentimiento} & \textbf{Color} & \textbf{Significado} \\
+\midrule
+Positivo & \textcolor{green!60!black}{\rule{1cm}{0.4cm}} & La publicación expresa satisfacción o aprobación. \\
+Neutral  & \textcolor{gray}{\rule{1cm}{0.4cm}} & La publicación es informativa, sin carga emocional clara. \\
+Negativo & \textcolor{red!70!black}{\rule{1cm}{0.4cm}} & La publicación expresa insatisfacción o queja. \\
+\bottomrule
+\end{tabular}
+\caption{Código de colores para sentimiento}
+\end{table}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Reputación}
+
+\subsection{Descripción}
+Proporciona una visión integral de la reputación digital de la EMI, comparando el desempeño institucional frente a competidores y mostrando los temas más relevantes.
+
+\subsection{Componentes}
+\begin{itemize}
+  \item \textbf{Score de Reputación}: Indicador compuesto (0--100) que pondera sentimiento, volumen y engagement.
+  \item \textbf{Temas de reputación}: Categorías temáticas identificadas (infraestructura, académico, becas, etc.).
+  \item \textbf{Competidores}: Comparativa de menciones y sentimiento vs.\ otras universidades bolivianas.
+\end{itemize}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Alertas y Anomalías}
+
+\subsection{Descripción}
+Gestiona las alertas generadas automáticamente por el sistema cuando se detectan situaciones que requieren atención.
+
+\subsection{Tipos de alertas}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Severidad} & \textbf{Color} & \textbf{Criterio de activación} \\
+\midrule
+Crítica & \textcolor{red}{\textbf{Rojo}} & Sentimiento negativo $>70\%$ con alta confianza, picos de quejas. \\
+Alta & \textcolor{orange}{\textbf{Naranja}} & Incremento significativo de menciones negativas. \\
+Media & \textcolor{yellow!80!black}{\textbf{Amarillo}} & Tendencias descendentes moderadas en sentimiento. \\
+Baja & \textcolor{blue}{\textbf{Azul}} & Cambios menores que requieren monitoreo. \\
+\bottomrule
+\end{tabularx}
+\caption{Niveles de severidad de alertas}
+\end{table}
+
+\subsection{Gestión de alertas}
+\begin{enumerate}
+  \item Las alertas aparecen en el dashboard con su severidad, título y descripción.
+  \item Haga clic en una alerta para ver su detalle completo.
+  \item Use el botón \textbf{``Resolver''} para marcar una alerta como resuelta, incluyendo notas de resolución.
+  \item Las alertas resueltas se mueven al historial.
+\end{enumerate}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Benchmarking}
+
+\subsection{Descripción}
+Compara métricas de percepción digital de las diferentes carreras de la EMI, permitiendo identificar las que tienen mejor y peor desempeño en redes sociales.
+
+\subsection{Métricas comparativas}
+\begin{itemize}
+  \item \textbf{Menciones}: Volumen de publicaciones que mencionan cada carrera.
+  \item \textbf{Sentimiento}: Porcentaje de percepción positiva por carrera.
+  \item \textbf{Engagement}: Nivel de interacción (likes, comentarios, compartidos) normalizado.
+\end{itemize}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: IA / ML / NLP}
+
+\subsection{Descripción}
+Dashboard técnico que muestra los resultados de los algoritmos de Procesamiento de Lenguaje Natural y Machine Learning.
+
+\subsection{Componentes}
+\begin{enumerate}
+  \item \textbf{Palabras clave (TF-IDF)}: Las 50 palabras más relevantes extraídas por el algoritmo Term Frequency -- Inverse Document Frequency.
+  \item \textbf{Modelado de tópicos (LDA)}: Agrupaciones temáticas generadas por Latent Dirichlet Allocation.
+  \item \textbf{Clustering (K-Means)}: Agrupación de documentos por similitud semántica, visualizado con etiquetas y sentimiento predominante.
+  \item \textbf{Entidades nombradas (NER)}: Personas, organizaciones y lugares mencionados en los datos.
+  \item \textbf{Clasificación temática}: Distribución de contenido por categorías (académico, infraestructura, becas, etc.).
+  \item \textbf{Resumen ejecutivo}: Texto generado automáticamente que sintetiza los hallazgos principales.
+\end{enumerate}
+
+\begin{tipbox}[\faLightbulb\ Consejo]
+Los resultados de NLP se actualizan cada vez que se ejecuta el pipeline de análisis. Consulte con el administrador la frecuencia de actualización configurada.
+\end{tipbox}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Evaluación del Sistema}
+
+\subsection{Descripción}
+Presenta métricas de rendimiento y calidad del sistema SADUTO, alineadas con los objetivos específicos de la investigación.
+
+\subsection{Categorías de evaluación}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{Categoría} & \textbf{Peso} & \textbf{Qué mide} \\
+\midrule
+Recolección & 20\% & Volumen, diversidad de fuentes, calidad de datos, cobertura temporal. \\
+Sentimiento & 25\% & Cobertura del análisis, balance, confianza del modelo, uso de Deep Learning. \\
+NLP/ML & 25\% & Keywords, Topic Modeling, Clustering, NER, clasificación temática. \\
+Rendimiento & 15\% & Tiempos de respuesta de la API ($<2$ seg). \\
+Completitud & 15\% & Estructura completa de la base de datos. \\
+\bottomrule
+\end{tabularx}
+\caption{Categorías de evaluación del sistema}
+\end{table}
+
+\subsection{Objetivos específicos evaluados}
+\begin{description}
+  \item[OE1] Implementar recolección multi-fuente OSINT (Facebook, TikTok, Google News).
+  \item[OE2] Desarrollar dashboards interactivos (8 dashboards implementados).
+  \item[OE3] Aplicar AI/ML/NLP para análisis de sentimiento y detección de patrones.
+  \item[OE4] Evaluar la calidad del sistema con métricas cuantitativas ($\geq 90/100$).
+\end{description}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Gestión de Usuarios}
+
+\subsection{Descripción}
+\textit{(Solo disponible para rol Administrador)}. Permite realizar operaciones CRUD sobre las cuentas de usuario del sistema.
+
+\subsection{Operaciones disponibles}
+\begin{enumerate}
+  \item \textbf{Listar usuarios}: Tabla con todos los usuarios, su rol, estado y último acceso.
+  \item \textbf{Crear usuario}: Formulario para agregar nuevos usuarios con asignación de rol.
+  \item \textbf{Editar usuario}: Modificar nombre, correo, rol y estado (activo/inactivo).
+  \item \textbf{Eliminar usuario}: Desactivar una cuenta de usuario.
+  \item \textbf{Buscar}: Filtro de búsqueda por nombre, email o rol.
+\end{enumerate}
+
+\begin{infobox}[\faInfoCircle\ Seguridad]
+Las contraseñas se almacenan con hash SHA-256. La contraseña por defecto para nuevos usuarios es \texttt{emi2024} y debe cambiarse en el primer inicio de sesión.
+\end{infobox}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Módulo: Configuración}
+
+\subsection{Configuración de alertas}
+Permite definir reglas personalizadas para la generación de alertas automáticas:
+\begin{itemize}
+  \item \textbf{Nombre de la regla}: Identificador descriptivo.
+  \item \textbf{Tipo de alerta}: Sentimiento negativo, anomalía de volumen, etc.
+  \item \textbf{Umbral de valor}: Porcentaje que activa la alerta (ej.\ 0.7 = 70\%).
+  \item \textbf{Severidad mínima}: Nivel mínimo para generar la alerta.
+  \item \textbf{Notificación por email}: Opción de envío automático.
+\end{itemize}
+
+\subsection{Perfil de usuario}
+Cada usuario puede actualizar desde esta sección:
+\begin{itemize}
+  \item Su nombre completo y cargo.
+  \item Su contraseña (requiere la contraseña actual).
+\end{itemize}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Centro de Reportes}
+
+\subsection{Generación de reportes}
+El sistema permite generar dos tipos de reportes:
+
+\subsubsection{Reportes PDF}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Tipo} & \textbf{Contenido} & \textbf{Páginas} \\
+\midrule
+Reporte Ejecutivo & Resumen semanal con KPIs, gráficos de tendencias y recomendaciones. & 8--12 \\
+Reporte de Alertas & Detalle de alertas críticas con timeline y acciones recomendadas. & 4--6 \\
+Anuario Estadístico & Análisis semestral completo con todos los indicadores. & 30--50 \\
+Reporte por Carrera & Análisis específico de una carrera con comparativas. & 10--15 \\
+\bottomrule
+\end{tabularx}
+\caption{Tipos de reportes PDF}
+\end{table}
+
+\subsubsection{Reportes Excel}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Tipo} & \textbf{Contenido} \\
+\midrule
+Dataset de Sentimientos & Datos completos con múltiples hojas de análisis y gráficos. \\
+Tabla Pivote & Análisis agregado por carrera, fuente o periodo. \\
+Reporte de Anomalías & Detección de patrones anómalos con alertas. \\
+Reporte Combinado & Todas las métricas consolidadas en un solo archivo. \\
+\bottomrule
+\end{tabularx}
+\caption{Tipos de reportes Excel}
+\end{table}
+
+\subsection{Historial de reportes}
+Todos los reportes generados se almacenan y pueden:
+\begin{itemize}
+  \item Descargarse nuevamente desde el historial.
+  \item Filtrarse por tipo, formato y fecha.
+  \item Eliminarse si ya no son necesarios.
+\end{itemize}
+
+\subsection{Reportes programados}
+Los administradores pueden configurar la generación automática de reportes:
+\begin{itemize}
+  \item \textbf{Frecuencia}: Diaria, semanal o mensual.
+  \item \textbf{Distribución}: Envío automático por email a destinatarios configurados.
+  \item \textbf{Formato}: PDF o Excel según configuración.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════
+% PARTE II — MANUAL DE OPERACIONES / ADMINISTRADOR
+% ══════════════════════════════════════════════════════════════════════════
+\newpage
+\section{Manual de Operaciones (Administrador)}
+
+\subsection{Arquitectura del sistema}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Componente} & \textbf{Tecnología} & \textbf{Descripción} \\
+\midrule
+Backend API & Flask (Python 3.11) & API REST en puerto 5001, $\sim$3.350 líneas. \\
+Frontend & React 18 + TypeScript + MUI 5 & Aplicación SPA en puerto 3000 con Vite. \\
+Base de datos & SQLite 3 & Archivo \texttt{data/osint\_emi.db}, 23 tablas. \\
+NLP/ML & NLTK, scikit-learn, transformers & Pipeline de análisis con modelos pre-entrenados. \\
+Scraping & Selenium, requests & Extracción de Facebook y TikTok. \\
+Reportes & ReportLab, openpyxl & Generación de PDF y Excel. \\
+\bottomrule
+\end{tabularx}
+\caption{Stack tecnológico del sistema}
+\end{table}
+
+\subsection{Instalación desde cero}
+
+\subsubsection{Prerrequisitos}
+\begin{itemize}
+  \item Python 3.11 o superior
+  \item Node.js 18+ y npm
+  \item Git
+  \item Google Chrome (para Selenium)
+\end{itemize}
+
+\subsubsection{Paso 1: Clonar el repositorio}
+\begin{verbatim}
+git clone [URL_REPOSITORIO]
+cd osint_vicerrectorado
+\end{verbatim}
+
+\subsubsection{Paso 2: Configurar el backend}
+\begin{verbatim}
+python3 -m venv venv
+source venv/bin/activate        # macOS/Linux
+venv\Scripts\activate           # Windows
+pip install -r requirements.txt
+\end{verbatim}
+
+\subsubsection{Paso 3: Inicializar la base de datos}
+\begin{verbatim}
+python crear_bd.py
+python seed_data.py     # Datos iniciales (fuentes, usuarios)
+\end{verbatim}
+
+\subsubsection{Paso 4: Configurar el frontend}
+\begin{verbatim}
+cd frontend
+npm install
+\end{verbatim}
+
+\subsubsection{Paso 5: Iniciar los servicios}
+\begin{verbatim}
+# Terminal 1 — Backend
+cd osint_vicerrectorado
+./venv/bin/python api_real.py
+
+# Terminal 2 — Frontend
+cd osint_vicerrectorado/frontend
+npm run dev
+\end{verbatim}
+
+\begin{infobox}[\faInfoCircle\ Verificación]
+Acceda a \texttt{http://localhost:3000/login} para verificar que la instalación fue exitosa. Use las credenciales: \texttt{admin@emi.edu.bo} / \texttt{emi2024}.
+\end{infobox}
+
+\subsection{Variables de entorno}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Variable} & \textbf{Valor por defecto} & \textbf{Descripción} \\
+\midrule
+\texttt{FLASK\_PORT} & 5001 & Puerto de la API Flask. \\
+\texttt{VITE\_API\_URL} & http://localhost:5001 & URL del backend para el frontend. \\
+\texttt{DB\_PATH} & data/osint\_emi.db & Ruta de la base de datos SQLite. \\
+\texttt{SECRET\_KEY} & osint-emi-secret-2024 & Clave secreta para tokens JWT. \\
+\texttt{DEBUG} & True & Modo debug (False en producción). \\
+\bottomrule
+\end{tabularx}
+\caption{Variables de entorno del sistema}
+\end{table}
+
+\subsection{Troubleshooting}
+
+\begin{longtable}{p{3.5cm} p{3cm} p{7cm}}
+\toprule
+\textbf{Error} & \textbf{Código} & \textbf{Solución} \\
+\midrule
+\endhead
+
+Vite chunk not found & ERR\_FILE\_NOT\_FOUND & Ejecutar: \texttt{rm -rf node\_modules/.vite \&\& npm run dev} \\
+\addlinespace
+
+\texttt{dispatcher.useContext} is null & TypeError & Limpiar caché de Vite y hacer hard refresh (Cmd+Shift+R). \\
+\addlinespace
+
+API no responde & Connection refused & Verificar que el backend está corriendo: \texttt{curl http://localhost:5001/api/health} \\
+\addlinespace
+
+Error de autenticación & 401 Unauthorized & Verificar token en header: \texttt{Authorization: Bearer <token>} \\
+\addlinespace
+
+Base de datos bloqueada & SQLITE\_BUSY & Cerrar otros procesos que accedan a la BD. Reiniciar la API. \\
+\addlinespace
+
+Selenium no encuentra Chrome & WebDriverError & Instalar Chrome y chromedriver compatible. \\
+\addlinespace
+
+Módulos Python no encontrados & ModuleNotFoundError & Activar el entorno virtual: \texttt{source venv/bin/activate} \\
+
+\bottomrule
+\caption{Guía de troubleshooting}
+\end{longtable}
+
+\subsection{Backup y restauración}
+
+\subsubsection{Backup de la base de datos}
+\begin{verbatim}
+# Crear backup con timestamp
+cp data/osint_emi.db data/backup/osint_emi_$(date +%Y%m%d_%H%M%S).db
+
+# Backup programado (agregar a crontab)
+0 2 * * * cp /ruta/data/osint_emi.db /ruta/data/backup/osint_emi_$(date +\%Y\%m\%d).db
+\end{verbatim}
+
+\subsubsection{Restauración}
+\begin{verbatim}
+# Detener el servicio API
+pkill -f "python.*api_real"
+
+# Restaurar desde backup
+cp data/backup/osint_emi_20250223.db data/osint_emi.db
+
+# Reiniciar la API
+./venv/bin/python api_real.py
+\end{verbatim}
+
+\begin{warningbox}[\faExclamationTriangle\ Importante]
+Siempre detenga el servicio API antes de restaurar la base de datos para evitar corrupción de datos.
+\end{warningbox}
+
+\subsection{Endpoints principales de la API}
+\begin{longtable}{l l p{6cm}}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\
+\midrule
+\endhead
+
+POST & \texttt{/api/auth/login} & Autenticación de usuario \\
+GET & \texttt{/api/auth/me} & Información del usuario autenticado \\
+GET & \texttt{/api/usuarios} & Listar todos los usuarios \\
+POST & \texttt{/api/usuarios} & Crear nuevo usuario \\
+PUT & \texttt{/api/usuarios/:id} & Actualizar usuario \\
+DELETE & \texttt{/api/usuarios/:id} & Eliminar usuario \\
+GET & \texttt{/api/sentiment/distribution} & Distribución de sentimientos \\
+GET & \texttt{/api/sentiment/kpis} & KPIs de sentimiento \\
+GET & \texttt{/api/sentiment/wordcloud} & Nube de palabras \\
+GET & \texttt{/api/ai/alerts} & Listar alertas \\
+GET & \texttt{/api/ai/alerts/stats} & Estadísticas de alertas \\
+PUT & \texttt{/api/ai/alerts/:id/resolve} & Resolver alerta \\
+GET & \texttt{/api/nlp/keywords} & Palabras clave TF-IDF \\
+GET & \texttt{/api/nlp/topics} & Tópicos LDA \\
+GET & \texttt{/api/nlp/clusters} & Clusters K-Means \\
+GET & \texttt{/api/osint/summary} & Resumen OSINT \\
+POST & \texttt{/api/reports/generate} & Generar reporte \\
+GET & \texttt{/api/configuracion-alertas} & Configuración de alertas \\
+GET & \texttt{/api/logs} & Logs de actividad \\
+
+\bottomrule
+\caption{Endpoints principales de la API REST}
+\end{longtable}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Glosario}
+
+\begin{description}[style=nextline, leftmargin=3cm]
+  \item[OSINT] \textit{Open Source Intelligence} — Inteligencia de fuentes abiertas.
+  \item[NLP] \textit{Natural Language Processing} — Procesamiento de Lenguaje Natural.
+  \item[ML] \textit{Machine Learning} — Aprendizaje automático.
+  \item[TF-IDF] \textit{Term Frequency -- Inverse Document Frequency} — Algoritmo de ponderación de palabras.
+  \item[LDA] \textit{Latent Dirichlet Allocation} — Modelo generativo para extracción de tópicos.
+  \item[K-Means] Algoritmo de clustering por partición en $k$ grupos.
+  \item[NER] \textit{Named Entity Recognition} — Reconocimiento de entidades nombradas.
+  \item[KPI] \textit{Key Performance Indicator} — Indicador Clave de Rendimiento.
+  \item[UEBU] Unidad de Evaluación y Bienestar Universitario.
+  \item[SADUTO] Sistema de Analítica de Datos Utilizando Técnicas Open Source Intelligence — Caso: Vicerrectorado de Grado.
+  \item[ISG] Índice de Satisfacción General.
+  \item[CRUD] \textit{Create, Read, Update, Delete} — Operaciones básicas sobre datos.
+  \item[API REST] Interfaz de programación basada en arquitectura REST.
+  \item[JWT] \textit{JSON Web Token} — Estándar de autenticación basado en tokens.
+\end{description}
+
+% ══════════════════════════════════════════════════════════════════════════
+\newpage
+\section*{Control de versiones del documento}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{c c l X}
+\toprule
+\textbf{Versión} & \textbf{Fecha} & \textbf{Autor} & \textbf{Cambios} \\
+\midrule
+1.0 & Feb 2026 & Alvaro Santiago Encinas Flores & Versión inicial del manual de usuario. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

@@ -31,11 +31,16 @@ export interface User {
   username: string;
   email: string;
   nombre: string;
+  nombre_completo?: string;
   name: string;
-  rol: 'admin' | 'analista' | 'viewer';
+  rol: 'administrador' | 'vicerrector' | 'uebu';
+  cargo?: string;
+  activo?: boolean;
   avatar?: string;
   avatarUrl?: string;
   lastLogin?: string;
+  ultimo_login?: string;
+  fecha_creacion?: string;
 }
 
 export interface AuthTokens {
@@ -64,11 +69,11 @@ export interface SourceOption {
 }
 
 export const OSINT_SOURCES: SourceOption[] = [
-  { value: 'all', label: 'Todas las fuentes', icon: '🌐' },
-  { value: 'facebook', label: 'Facebook', icon: '📘' },
-  { value: 'twitter', label: 'Twitter/X', icon: '🐦' },
-  { value: 'news', label: 'Noticias', icon: '📰' },
-  { value: 'forums', label: 'Foros', icon: '💬' },
+  { value: 'all', label: 'Todas las fuentes', icon: 'public' },
+  { value: 'facebook', label: 'Facebook', icon: 'facebook' },
+  { value: 'twitter', label: 'Twitter/X', icon: 'twitter' },
+  { value: 'news', label: 'Noticias', icon: 'article' },
+  { value: 'forums', label: 'Foros', icon: 'forum' },
 ];
 
 export interface Career {

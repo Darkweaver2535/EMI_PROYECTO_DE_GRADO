@@ -1,19 +1,26 @@
 """
 SentimentAnalyzer - Análisis de Sentimientos con BETO
-Sistema de Analítica EMI - Sprint 3
+Sistema SADUTO - Sprint 3
 
 Este módulo implementa análisis de sentimientos utilizando BETO
-(BERT pre-entrenado en español) con capacidad de fine-tuning.
+(Bidirectional Encoder Representations from Transformers for Spanish)
+
+Modelo base: dccuchile/bert-base-spanish-wwm-uncased (BETO)
+Modelo fine-tuned: finiteautomata/beto-sentiment-analysis (TASS dataset)
 
 Características:
-- Fine-tuning con datos anotados manualmente
+- Modelo BETO pre-entrenado en español, fine-tuned para sentimiento
 - Clasificación en 3 categorías: Positivo, Negativo, Neutral
-- Predicción batch eficiente
+- Predicción batch eficiente con PyTorch
+- Fine-tuning adicional con datos específicos del dominio
 - Evaluación con métricas estándar (accuracy, F1, precision, recall)
-- Persistencia de modelos entrenados
+- Soporte para CUDA, MPS (Apple Silicon) y CPU
 
-Autor: Sistema OSINT EMI
-Fecha: Enero 2025
+Referencia: Pérez, J.M., Giudici, J.C., & Luque, F. (2021)
+            pysentimiento: A Python Toolkit for Sentiment Analysis
+
+Autor: Sistema SADUTO
+Fecha: Febrero 2026
 """
 
 import os
@@ -113,22 +120,29 @@ class SentimentAnalyzer:
         {'sentiment': 'Positivo', 'confidence': 0.95, 'probabilities': {...}}
     """
     
-    # Mapeo de etiquetas
+    # Mapeo de etiquetas (dinámico según modelo cargado)
     LABEL_MAP = {
-        0: "Negativo",
-        1: "Neutral", 
-        2: "Positivo"
+        0: "Positivo",
+        1: "Negativo", 
+        2: "Neutral"
+    }
+    
+    # Normalización de labels del modelo finiteautomata/beto-sentiment-analysis
+    LABEL_NORMALIZE = {
+        "POS": "Positivo", "NEG": "Negativo", "NEU": "Neutral",
+        "Positivo": "Positivo", "Negativo": "Negativo", "Neutral": "Neutral",
+        "positivo": "Positivo", "negativo": "Negativo", "neutral": "Neutral"
     }
     
     LABEL_TO_ID = {
-        "Negativo": 0, "negativo": 0,
-        "Neutral": 1, "neutral": 1,
-        "Positivo": 2, "positivo": 2
+        "Negativo": 0, "negativo": 0, "NEG": 0,
+        "Neutral": 1, "neutral": 1, "NEU": 1,
+        "Positivo": 2, "positivo": 2, "POS": 2
     }
     
     def __init__(
         self,
-        model_name: str = "dccuchile/bert-base-spanish-wwm-uncased",
+        model_name: str = "finiteautomata/beto-sentiment-analysis",
         models_dir: str = None,
         device: str = None,
         max_length: int = 512,
@@ -212,15 +226,16 @@ class SentimentAnalyzer:
                 )
                 self.is_trained = True
             else:
-                self.logger.info(f"Cargando modelo base: {self.model_name}")
+                self.logger.info(f"Cargando modelo: {self.model_name}")
                 self.model = AutoModelForSequenceClassification.from_pretrained(
-                    self.model_name,
-                    num_labels=3,
-                    id2label=self.LABEL_MAP,
-                    label2id={v: k for k, v in self.LABEL_MAP.items()}
+                    self.model_name
                 )
                 self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
                 self.is_trained = False
+                
+                # Actualizar LABEL_MAP desde modelo si disponible
+                if hasattr(self.model.config, 'id2label'):
+                    self.LABEL_MAP = self.model.config.id2label
             
             self.model.to(self.device)
             self.model.eval()
@@ -426,15 +441,24 @@ class SentimentAnalyzer:
         predicted_label = int(np.argmax(probs))
         confidence = float(probs[predicted_label])
         
+        # Normalizar etiqueta del modelo
+        id2label = getattr(self.model.config, 'id2label', self.LABEL_MAP)
+        raw_label = id2label.get(predicted_label, str(predicted_label))
+        sentiment = self.LABEL_NORMALIZE.get(raw_label, raw_label)
+        
+        # Probabilidades normalizadas
+        prob_map = {}
+        for idx in range(len(probs)):
+            lbl = id2label.get(idx, str(idx))
+            norm_lbl = self.LABEL_NORMALIZE.get(lbl, lbl)
+            prob_map[norm_lbl] = float(probs[idx])
+        
         return {
             "text": text[:200] + "..." if len(text) > 200 else text,
-            "sentiment": self.LABEL_MAP[predicted_label],
+            "sentiment": sentiment,
             "sentiment_id": predicted_label,
             "confidence": confidence,
-            "probabilities": {
-                self.LABEL_MAP[i]: float(probs[i]) 
-                for i in range(3)
-            }
+            "probabilities": prob_map
         }
     
     def predict_batch(
@@ -491,23 +515,29 @@ class SentimentAnalyzer:
             
             # Procesar resultados
             probs = probabilities.cpu().numpy()
+            id2label = getattr(self.model.config, 'id2label', self.LABEL_MAP)
             
             for j, text in enumerate(batch_texts):
                 predicted_label = int(np.argmax(probs[j]))
                 confidence = float(probs[j][predicted_label])
                 
+                raw_label = id2label.get(predicted_label, str(predicted_label))
+                sentiment = self.LABEL_NORMALIZE.get(raw_label, raw_label)
+                
                 result = {
                     "text": text[:200] + "..." if len(text) > 200 else text,
-                    "sentiment": self.LABEL_MAP[predicted_label],
+                    "sentiment": sentiment,
                     "sentiment_id": predicted_label,
                     "confidence": confidence
                 }
                 
                 if return_probabilities:
-                    result["probabilities"] = {
-                        self.LABEL_MAP[k]: float(probs[j][k])
-                        for k in range(3)
-                    }
+                    prob_map = {}
+                    for idx in range(len(probs[j])):
+                        lbl = id2label.get(idx, str(idx))
+                        norm_lbl = self.LABEL_NORMALIZE.get(lbl, lbl)
+                        prob_map[norm_lbl] = float(probs[j][idx])
+                    result["probabilities"] = prob_map
                 
                 results.append(result)
         
@@ -646,11 +676,11 @@ class SentimentAnalyzer:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     
-    # Crear analizador
+    # Crear analizador con modelo BETO fine-tuned para sentimiento
     analyzer = SentimentAnalyzer()
     
     # Cargar modelo
-    print("Cargando modelo BETO...")
+    print("Cargando modelo BETO (finiteautomata/beto-sentiment-analysis)...")
     analyzer.load_model()
     
     # Ejemplo de predicción
@@ -659,14 +689,17 @@ if __name__ == "__main__":
         "El servicio de atención es pésimo, nadie responde",
         "La biblioteca está abierta de 8 a 20 horas",
         "Me encanta estudiar aquí, los profesores son muy buenos",
-        "Las instalaciones están en mal estado, necesitan reparación"
+        "Las instalaciones están en mal estado, necesitan reparación",
+        "La Escuela Militar de Ingeniería otorga títulos de gran prestigio",
+        "Estudiantes denuncian la falta de atención del Vicerrectorado"
     ]
     
-    print("\n--- Predicciones ---")
+    print("\n--- Predicciones BETO ---")
     for text in test_texts:
         result = analyzer.predict(text)
         print(f"\nTexto: {text}")
         print(f"Sentimiento: {result['sentiment']} ({result['confidence']:.2%})")
+        print(f"Probabilidades: {result['probabilities']}")
     
     # Info del modelo
     print("\n--- Info del Modelo ---")

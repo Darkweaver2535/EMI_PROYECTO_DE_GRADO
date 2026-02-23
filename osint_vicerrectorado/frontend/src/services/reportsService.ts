@@ -339,15 +339,15 @@ export const formatFileSize = (bytes: number): string => {
  */
 export const getReportIcon = (reportType: string): string => {
   const icons: Record<string, string> = {
-    executive: '📊',
-    alerts: '🚨',
-    statistical: '📚',
-    career: '🎓',
-    sentiment_dataset: '📈',
-    pivot_table: '🔄',
-    anomalies: '⚠️',
-    combined: '📋',
-    other: '📄'
+    executive: 'assessment',
+    alerts: 'warning',
+    statistical: 'library_books',
+    career: 'school',
+    sentiment_dataset: 'trending_up',
+    pivot_table: 'pivot_table_chart',
+    anomalies: 'report_problem',
+    combined: 'assignment',
+    other: 'description'
   };
   return icons[reportType] || icons.other;
 };

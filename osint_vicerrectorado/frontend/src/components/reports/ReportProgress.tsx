@@ -39,7 +39,7 @@ import { TaskStatusResponse } from '../../types/reports.types';
 import reportsService, { getStatusColor, getReportIcon, getReportTypeName } from '../../services/reportsService';
 
 // Colores EMI
-const EMI_GREEN = '#1B5E20';
+const EMI_BLUE = '#0D47A1';
 const EMI_GOLD = '#FFD700';
 
 interface TaskInfo {
@@ -118,7 +118,7 @@ const ReportProgress: React.FC<ReportProgressProps> = ({
     
     switch (status.status) {
       case 'SUCCESS':
-        return <SuccessIcon sx={{ color: EMI_GREEN }} />;
+        return <SuccessIcon sx={{ color: EMI_BLUE }} />;
       case 'FAILURE':
         return <ErrorIcon color="error" />;
       case 'PROGRESS':
@@ -144,7 +144,7 @@ const ReportProgress: React.FC<ReportProgressProps> = ({
     <Card elevation={2} sx={{ mb: 3 }}>
       <CardContent sx={{ pb: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-          <Typography variant="h6" sx={{ color: EMI_GREEN, fontWeight: 600 }}>
+          <Typography variant="h6" sx={{ color: EMI_BLUE, fontWeight: 600 }}>
             ⏳ Tareas en Progreso ({tasks.length})
           </Typography>
           <IconButton size="small" onClick={() => setExpanded(!expanded)}>
@@ -205,7 +205,7 @@ const ReportProgress: React.FC<ReportProgressProps> = ({
                                   borderRadius: 4,
                                   bgcolor: 'rgba(0,0,0,0.1)',
                                   '& .MuiLinearProgress-bar': {
-                                    bgcolor: EMI_GREEN
+                                    bgcolor: EMI_BLUE
                                   }
                                 }}
                               />
@@ -228,7 +228,7 @@ const ReportProgress: React.FC<ReportProgressProps> = ({
                           startIcon={<DownloadIcon />}
                           onClick={() => handleDownload(task.taskId)}
                           disabled={downloading === task.taskId}
-                          sx={{ bgcolor: EMI_GREEN, '&:hover': { bgcolor: '#0d3f14' } }}
+                          sx={{ bgcolor: EMI_BLUE, '&:hover': { bgcolor: '#002171' } }}
                         >
                           {downloading === task.taskId ? 'Descargando...' : 'Descargar'}
                         </Button>

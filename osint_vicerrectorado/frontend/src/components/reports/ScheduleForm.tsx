@@ -52,7 +52,7 @@ import {
 import reportsService from '../../services/reportsService';
 
 // Colores EMI
-const EMI_GREEN = '#1B5E20';
+const EMI_BLUE = '#0D47A1';
 
 interface ScheduleFormProps {
   open: boolean;
@@ -335,7 +335,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
         sx: { maxHeight: '90vh' }
       }}
     >
-      <DialogTitle sx={{ bgcolor: EMI_GREEN, color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}>
+      <DialogTitle sx={{ bgcolor: EMI_BLUE, color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}>
         <ScheduleIcon />
         {editSchedule ? 'Editar Programación' : 'Nueva Programación'}
         <Box sx={{ flex: 1 }} />
@@ -348,7 +348,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
         <Grid container spacing={3}>
           {/* Información básica */}
           <Grid item xs={12}>
-            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_GREEN, fontWeight: 600 }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_BLUE, fontWeight: 600 }}>
               Información Básica
             </Typography>
             
@@ -384,7 +384,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
 
           {/* Tipo de reporte */}
           <Grid item xs={12}>
-            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_GREEN, fontWeight: 600 }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_BLUE, fontWeight: 600 }}>
               Tipo de Reporte
             </Typography>
             
@@ -423,7 +423,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
 
           {/* Programación */}
           <Grid item xs={12}>
-            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_GREEN, fontWeight: 600 }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_BLUE, fontWeight: 600 }}>
               Frecuencia y Horario
             </Typography>
             
@@ -507,7 +507,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
 
           {/* Destinatarios */}
           <Grid item xs={12}>
-            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_GREEN, fontWeight: 600 }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_BLUE, fontWeight: 600 }}>
               Destinatarios
             </Typography>
             
@@ -524,7 +524,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
                 variant="outlined"
                 startIcon={<AddIcon />}
                 onClick={handleAddEmail}
-                sx={{ borderColor: EMI_GREEN, color: EMI_GREEN }}
+                sx={{ borderColor: EMI_BLUE, color: EMI_BLUE }}
               >
                 Agregar
               </Button>
@@ -565,7 +565,7 @@ const ScheduleForm: React.FC<ScheduleFormProps> = ({
           startIcon={<SaveIcon />}
           onClick={handleSave}
           disabled={saving}
-          sx={{ bgcolor: EMI_GREEN, '&:hover': { bgcolor: '#0d3f14' } }}
+          sx={{ bgcolor: EMI_BLUE, '&:hover': { bgcolor: '#002171' } }}
         >
           {saving ? 'Guardando...' : 'Guardar'}
         </Button>

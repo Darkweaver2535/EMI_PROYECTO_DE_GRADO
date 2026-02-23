@@ -51,7 +51,7 @@ import { ReportFile, ReportsHistoryResponse } from '../../types/reports.types';
 import reportsService, { formatFileSize, getReportIcon, getReportTypeName } from '../../services/reportsService';
 
 // Colores EMI
-const EMI_GREEN = '#1B5E20';
+const EMI_BLUE = '#0D47A1';
 const EMI_GOLD = '#FFD700';
 
 interface ReportHistoryProps {
@@ -162,8 +162,8 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({ onSendEmail }) => {
     <Card elevation={2}>
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h6" sx={{ color: EMI_GREEN, fontWeight: 600 }}>
-            📂 Historial de Reportes
+          <Typography variant="h6" sx={{ color: EMI_BLUE, fontWeight: 600 }}>
+            Historial de Reportes
           </Typography>
           
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -281,7 +281,7 @@ const ReportHistory: React.FC<ReportHistoryProps> = ({ onSendEmail }) => {
                             size="small"
                             onClick={() => handleDownload(report.filename)}
                             disabled={downloading === report.filename}
-                            sx={{ color: EMI_GREEN }}
+                            sx={{ color: EMI_BLUE }}
                           >
                             <DownloadIcon fontSize="small" />
                           </IconButton>

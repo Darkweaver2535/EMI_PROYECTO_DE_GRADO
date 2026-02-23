@@ -36,7 +36,7 @@ import { TaskStatusResponse, ReportsStats } from '../types/reports.types';
 import reportsService from '../services/reportsService';
 
 // Colores EMI
-const EMI_GREEN = '#1B5E20';
+const EMI_BLUE = '#0D47A1';
 const EMI_GOLD = '#FFD700';
 
 interface TabPanelProps {
@@ -155,8 +155,8 @@ const ReportsCenter: React.FC = () => {
       <Container maxWidth="xl">
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ color: EMI_GREEN, fontWeight: 700, mb: 1 }}>
-            📊 Centro de Reportes
+          <Typography variant="h4" sx={{ color: EMI_BLUE, fontWeight: 700, mb: 1 }}>
+            Centro de Reportes
           </Typography>
           <Typography variant="body1" color="text.secondary">
             Genere reportes PDF y Excel del análisis de percepción institucional
@@ -169,7 +169,7 @@ const ReportsCenter: React.FC = () => {
             <Grid item xs={6} md={3}>
               <Card elevation={1}>
                 <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                  <Typography variant="h4" sx={{ color: EMI_GREEN, fontWeight: 700 }}>
+                  <Typography variant="h4" sx={{ color: EMI_BLUE, fontWeight: 700 }}>
                     {stats.reports.total_count}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -193,7 +193,7 @@ const ReportsCenter: React.FC = () => {
             <Grid item xs={6} md={3}>
               <Card elevation={1}>
                 <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                  <Typography variant="h4" sx={{ color: '#2e7d32', fontWeight: 700 }}>
+                  <Typography variant="h4" sx={{ color: '#1565C0', fontWeight: 700 }}>
                     {stats.reports.excel_count}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -238,10 +238,10 @@ const ReportsCenter: React.FC = () => {
                 fontWeight: 600
               },
               '& .Mui-selected': {
-                color: EMI_GREEN
+                color: EMI_BLUE
               },
               '& .MuiTabs-indicator': {
-                bgcolor: EMI_GREEN
+                bgcolor: EMI_BLUE
               }
             }}
           >
@@ -276,8 +276,8 @@ const ReportsCenter: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Card elevation={1}>
               <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ color: EMI_GREEN }}>
-                  📄 Tipos de Reportes PDF
+                <Typography variant="h6" gutterBottom sx={{ color: EMI_BLUE }}>
+                  Tipos de Reportes PDF
                 </Typography>
                 <Divider sx={{ my: 1 }} />
                 <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>
@@ -301,8 +301,8 @@ const ReportsCenter: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Card elevation={1}>
               <CardContent>
-                <Typography variant="h6" gutterBottom sx={{ color: EMI_GREEN }}>
-                  📊 Tipos de Reportes Excel
+                <Typography variant="h6" gutterBottom sx={{ color: EMI_BLUE }}>
+                  Tipos de Reportes Excel
                 </Typography>
                 <Divider sx={{ my: 1 }} />
                 <Box component="ul" sx={{ pl: 2, '& li': { mb: 1 } }}>

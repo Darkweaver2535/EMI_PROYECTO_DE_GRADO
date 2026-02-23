@@ -9,7 +9,7 @@ import { Box, Typography, Tooltip, useTheme, Fade } from '@mui/material';
 import { WordCloudWord } from '../../types';
 
 // Colores por defecto para las palabras
-const defaultColors = ['#1B5E20', '#2E7D32', '#388E3C', '#43A047', '#4CAF50', '#66BB6A', '#81C784'];
+const defaultColors = ['#0D47A1', '#1565C0', '#1976D2', '#1E88E5', '#42A5F5', '#64B5F6', '#90CAF9'];
 
 interface WordCloudChartProps {
   data: WordCloudWord[];

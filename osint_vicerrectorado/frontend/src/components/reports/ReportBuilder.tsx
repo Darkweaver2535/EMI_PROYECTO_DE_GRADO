@@ -58,7 +58,7 @@ import {
 import reportsService from '../../services/reportsService';
 
 // Colores EMI
-const EMI_GREEN = '#1B5E20';
+const EMI_BLUE = '#0D47A1';
 const EMI_GOLD = '#FFD700';
 
 interface ReportBuilderProps {
@@ -209,7 +209,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
 
     return (
       <Box sx={{ mt: 3 }}>
-        <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_GREEN, fontWeight: 600 }}>
+        <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_BLUE, fontWeight: 600 }}>
           Configuración del Reporte
         </Typography>
 
@@ -432,8 +432,8 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
   return (
     <Card elevation={2}>
       <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ color: EMI_GREEN, fontWeight: 600 }}>
-          🛠️ Generador de Reportes
+        <Typography variant="h6" gutterBottom sx={{ color: EMI_BLUE, fontWeight: 600 }}>
+          Generador de Reportes
         </Typography>
 
         {/* Selector de formato */}
@@ -443,11 +443,11 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
             startIcon={<PdfIcon />}
             onClick={() => handleFormatChange('pdf')}
             sx={{
-              bgcolor: reportFormat === 'pdf' ? EMI_GREEN : 'transparent',
-              color: reportFormat === 'pdf' ? 'white' : EMI_GREEN,
-              borderColor: EMI_GREEN,
+              bgcolor: reportFormat === 'pdf' ? EMI_BLUE : 'transparent',
+              color: reportFormat === 'pdf' ? 'white' : EMI_BLUE,
+              borderColor: EMI_BLUE,
               '&:hover': {
-                bgcolor: reportFormat === 'pdf' ? '#0d3f14' : 'rgba(27, 94, 32, 0.1)'
+                bgcolor: reportFormat === 'pdf' ? '#002171' : 'rgba(13, 71, 161, 0.1)'
               }
             }}
           >
@@ -458,11 +458,11 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
             startIcon={<ExcelIcon />}
             onClick={() => handleFormatChange('excel')}
             sx={{
-              bgcolor: reportFormat === 'excel' ? EMI_GREEN : 'transparent',
-              color: reportFormat === 'excel' ? 'white' : EMI_GREEN,
-              borderColor: EMI_GREEN,
+              bgcolor: reportFormat === 'excel' ? EMI_BLUE : 'transparent',
+              color: reportFormat === 'excel' ? 'white' : EMI_BLUE,
+              borderColor: EMI_BLUE,
               '&:hover': {
-                bgcolor: reportFormat === 'excel' ? '#0d3f14' : 'rgba(27, 94, 32, 0.1)'
+                bgcolor: reportFormat === 'excel' ? '#002171' : 'rgba(13, 71, 161, 0.1)'
               }
             }}
           >
@@ -471,7 +471,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
         </Box>
 
         {/* Selector de tipo de reporte */}
-        <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_GREEN }}>
+        <Typography variant="subtitle2" gutterBottom sx={{ color: EMI_BLUE }}>
           Tipo de Reporte
         </Typography>
         <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -482,11 +482,11 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
                 sx={{
                   p: 2,
                   cursor: 'pointer',
-                  border: selectedReport === option.value ? `2px solid ${EMI_GREEN}` : '2px solid transparent',
+                  border: selectedReport === option.value ? `2px solid ${EMI_BLUE}` : '2px solid transparent',
                   bgcolor: selectedReport === option.value ? 'rgba(27, 94, 32, 0.05)' : 'white',
                   transition: 'all 0.2s',
                   '&:hover': {
-                    borderColor: EMI_GREEN,
+                    borderColor: EMI_BLUE,
                     bgcolor: 'rgba(27, 94, 32, 0.05)'
                   }
                 }}
@@ -530,8 +530,8 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
             onClick={handleGenerate}
             disabled={isGenerating || !selectedReport}
             sx={{
-              bgcolor: EMI_GREEN,
-              '&:hover': { bgcolor: '#0d3f14' },
+              bgcolor: EMI_BLUE,
+              '&:hover': { bgcolor: '#002171' },
               '&:disabled': { bgcolor: '#ccc' }
             }}
           >
@@ -547,7 +547,7 @@ const ReportBuilder: React.FC<ReportBuilderProps> = ({ onReportGenerated, onErro
               setError(null);
               setSuccess(null);
             }}
-            sx={{ borderColor: EMI_GREEN, color: EMI_GREEN }}
+            sx={{ borderColor: EMI_BLUE, color: EMI_BLUE }}
           >
             Limpiar
           </Button>

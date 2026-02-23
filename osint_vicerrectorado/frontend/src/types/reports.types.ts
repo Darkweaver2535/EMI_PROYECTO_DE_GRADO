@@ -237,7 +237,7 @@ export const PDF_REPORT_OPTIONS: ReportOption[] = [
     label: 'Reporte Ejecutivo',
     description: 'Resumen semanal con KPIs, gráficos y recomendaciones (8-12 páginas)',
     format: 'pdf',
-    icon: '📊',
+    icon: 'assessment',
     requiredParams: ['start_date', 'end_date']
   },
   {
@@ -245,7 +245,7 @@ export const PDF_REPORT_OPTIONS: ReportOption[] = [
     label: 'Reporte de Alertas',
     description: 'Alertas críticas con detalle y acciones recomendadas (4-6 páginas)',
     format: 'pdf',
-    icon: '🚨',
+    icon: 'warning',
     requiredParams: []
   },
   {
@@ -253,7 +253,7 @@ export const PDF_REPORT_OPTIONS: ReportOption[] = [
     label: 'Anuario Estadístico',
     description: 'Análisis semestral completo con todos los indicadores (30-50 páginas)',
     format: 'pdf',
-    icon: '📚',
+    icon: 'library_books',
     requiredParams: ['semester']
   },
   {
@@ -261,7 +261,7 @@ export const PDF_REPORT_OPTIONS: ReportOption[] = [
     label: 'Reporte por Carrera',
     description: 'Análisis detallado de una carrera específica (10-15 páginas)',
     format: 'pdf',
-    icon: '🎓',
+    icon: 'school',
     requiredParams: ['career_id', 'career_name']
   }
 ];
@@ -272,7 +272,7 @@ export const EXCEL_REPORT_OPTIONS: ReportOption[] = [
     label: 'Dataset de Sentimientos',
     description: 'Datos completos de sentimiento con múltiples hojas de análisis',
     format: 'excel',
-    icon: '📈',
+    icon: 'trending_up',
     requiredParams: []
   },
   {
@@ -280,7 +280,7 @@ export const EXCEL_REPORT_OPTIONS: ReportOption[] = [
     label: 'Tabla Pivote',
     description: 'Análisis agregado por dimensión (carrera, fuente o mes)',
     format: 'excel',
-    icon: '🔄',
+    icon: 'pivot_table_chart',
     requiredParams: ['dimension']
   },
   {
@@ -288,7 +288,7 @@ export const EXCEL_REPORT_OPTIONS: ReportOption[] = [
     label: 'Reporte de Anomalías',
     description: 'Detección de patrones anómalos en los datos',
     format: 'excel',
-    icon: '⚠️',
+    icon: 'report_problem',
     requiredParams: []
   },
   {
@@ -296,7 +296,7 @@ export const EXCEL_REPORT_OPTIONS: ReportOption[] = [
     label: 'Reporte Combinado',
     description: 'Análisis completo con todas las métricas en un solo archivo',
     format: 'excel',
-    icon: '📋',
+    icon: 'assignment',
     requiredParams: []
   }
 ];

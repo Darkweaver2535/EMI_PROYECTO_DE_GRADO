@@ -27,16 +27,16 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const THEME_STORAGE_KEY = 'emi-osint-theme';
 
-// Colores institucionales EMI
+// Colores institucionales SADUTO / EMI
 const EMI_COLORS = {
   primary: {
-    main: '#1B5E20',      // Verde EMI
-    light: '#4C8C4A',
-    dark: '#003300',
+    main: '#0D47A1',      // Azul institucional
+    light: '#5472D3',
+    dark: '#002171',
     contrastText: '#ffffff',
   },
   secondary: {
-    main: '#FFD700',      // Dorado
+    main: '#FFD700',      // Amarillo / Dorado
     light: '#FFFF52',
     dark: '#C7A600',
     contrastText: '#000000',

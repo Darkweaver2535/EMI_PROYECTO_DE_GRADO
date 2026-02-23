@@ -1,0 +1,867 @@
+% ============================================================================
+% DICCIONARIO DE DATOS — SADUTO
+% Sistema de Analítica de Datos Utilizando Técnicas Open Source Intelligence
+% Caso: Vicerrectorado de Grado — Escuela Militar de Ingeniería
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{colortbl}
+
+% ── Colores institucionales ───────────────────────────────────────────────
+\definecolor{emiblue}{HTML}{0D47A1}
+\definecolor{emiyellow}{HTML}{FFD700}
+\definecolor{emidark}{HTML}{002171}
+\definecolor{emigray}{HTML}{F5F5F5}
+\definecolor{emilightblue}{HTML}{E3F2FD}
+\definecolor{tableheader}{HTML}{0D47A1}
+\definecolor{tablerow}{HTML}{F0F7FF}
+
+% ── Configuración de hipervínculos ────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=emiblue,
+  urlcolor=emiblue,
+  pdftitle={Diccionario de Datos — SADUTO},
+  pdfauthor={Alvaro Santiago Encinas Flores},
+}
+
+% ── Formato de títulos ────────────────────────────────────────────────────
+\titleformat{\section}{\LARGE\bfseries\color{emiblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\Large\bfseries\color{emidark}}{}{0em}{}
+\titleformat{\subsubsection}{\large\bfseries\color{emiblue}}{}{0em}{}
+
+% ── Encabezado y pie de página ────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{emiblue}\textbf{SADUTO} — Diccionario de Datos}
+\fancyhead[R]{\small\color{gray}v1.0}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\small\color{gray}EMI Bolivia — 2026}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{emiblue}\leaders\hrule height \headrulewidth\hfill}}
+
+% ── Macro para cabecera de tabla ──────────────────────────────────────────
+\newcommand{\tableheadrow}{\rowcolor{tableheader}}
+\newcommand{\tablehead}[1]{\textcolor{white}{\textbf{#1}}}
+\newcommand{\pk}{\textcolor{emiblue}{\textbf{PK}}}
+\newcommand{\fk}{\textcolor{orange!80!black}{\textbf{FK}}}
+\newcommand{\nn}{\textcolor{red!70!black}{\textbf{NN}}}
+
+% ── Caja informativa ─────────────────────────────────────────────────────
+\newtcolorbox{infobox}[1][]{
+  colback=emilightblue,
+  colframe=emiblue,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  boxrule=0.5pt
+}
+
+% ══════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────────────────────
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries\color{emiblue}SADUTO\par}
+\vspace{0.3cm}
+{\large\color{emidark}Sistema de Analítica de Datos Utilizando\\Técnicas Open Source Intelligence\\Caso: Vicerrectorado de Grado\par}
+
+\vspace{1cm}
+\noindent\makebox[\textwidth]{\color{emiblue}\rule{0.6\textwidth}{2pt}}
+\vspace{1cm}
+
+{\LARGE\bfseries Diccionario de Datos\par}
+\vspace{0.3cm}
+{\large Catálogo técnico de la estructura de la base de datos\par}
+
+\vfill
+
+\begin{tabular}{ll}
+\textbf{Autor:}         & Alvaro Santiago Encinas Flores \\
+\textbf{Carrera:}       & Ing.\ de Sistemas — EMI 2026 \\
+\textbf{Institución:}   & Escuela Militar de Ingeniería (EMI) \\
+\textbf{Motor BD:}      & SQLite 3 \\
+\textbf{Archivo:}       & \texttt{data/osint\_emi.db} \\
+\textbf{Total tablas:}  & 23 tablas \\
+\textbf{Versión:}       & 1.0 \\
+\textbf{Fecha:}         & Febrero 2026 \\
+\end{tabular}
+
+\vspace{1cm}
+\noindent\makebox[\textwidth]{\color{emiyellow}\rule{0.4\textwidth}{3pt}}
+\end{titlepage}
+
+% ── Tabla de contenidos ───────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Introducción}
+
+\subsection{Propósito}
+Este documento cataloga la estructura completa de la base de datos del sistema \textbf{SADUTO} (Sistema de Analítica de Datos Utilizando Técnicas Open Source Intelligence — Caso: Vicerrectorado de Grado). Para cada tabla se especifica: nombre del campo, tipo de dato, restricciones de nulidad (\nn), claves primarias (\pk), claves foráneas (\fk) y una descripción funcional del campo.
+
+\subsection{Convenciones}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Símbolo} & \textbf{Significado} & \textbf{Descripción} \\
+\midrule
+\pk & Primary Key & Identificador único de la fila. Auto-incremental. \\
+\fk & Foreign Key & Referencia a la clave primaria de otra tabla. \\
+\nn & Not Null & El campo no admite valores nulos. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Diagrama de relaciones (resumen)}
+Las principales relaciones entre tablas son:
+
+\begin{itemize}
+  \item \texttt{dato\_recolectado} $\rightarrow$ \texttt{fuente\_osint} (origen de cada dato).
+  \item \texttt{dato\_procesado} $\rightarrow$ \texttt{dato\_recolectado} (dato limpio del crudo).
+  \item \texttt{analisis\_sentimiento} $\rightarrow$ \texttt{dato\_procesado} (resultado de IA).
+  \item \texttt{comentario} $\rightarrow$ \texttt{dato\_recolectado} (comentarios de un post).
+  \item \texttt{comentario} $\rightarrow$ \texttt{fuente\_osint} (fuente del comentario).
+  \item \texttt{analisis\_comentario} $\rightarrow$ \texttt{comentario} (sentimiento del comentario).
+  \item \texttt{alerta} $\rightarrow$ \texttt{usuario} (asignación y resolución).
+  \item \texttt{configuracion\_alerta} $\rightarrow$ \texttt{usuario} (quién creó la regla).
+  \item \texttt{log\_actividad} $\rightarrow$ \texttt{usuario} (registro de acciones).
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo OSINT — Recolección}
+
+% ── Tabla: fuente_osint ───────────────────────────────────────────────────
+\subsection{Tabla: fuente\_osint}
+\textit{Configuración de las redes sociales y plataformas de origen de datos OSINT.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_fuente & INTEGER & \pk & & & Identificador único de la fuente. \\
+\rowcolor{tablerow}
+nombre\_fuente & VARCHAR(100) & & & \nn & Nombre descriptivo (ej.\ ``EMI Oficial Facebook''). \\
+tipo\_fuente & VARCHAR(50) & & & \nn & Tipo de plataforma: Facebook, TikTok, Web. \\
+\rowcolor{tablerow}
+url\_fuente & VARCHAR(255) & & & \nn & URL de la fuente. \\
+identificador & VARCHAR(100) & & & & ID interno de la plataforma. \\
+\rowcolor{tablerow}
+puntuacion\_confiabilidad & DECIMAL(3,2) & & & & Confiabilidad de la fuente (0.00--1.00). Defecto: 0.80. \\
+activa & BOOLEAN & & & & Estado activo/inactivo. Defecto: 1. \\
+\rowcolor{tablerow}
+fecha\_creacion & TIMESTAMP & & & & Fecha de registro de la fuente. \\
+fecha\_ultima\_recoleccion & TIMESTAMP & & & & Última vez que se extrajeron datos. \\
+\rowcolor{tablerow}
+total\_registros\_recolectados & INTEGER & & & & Contador acumulado de datos extraídos. \\
+metadata\_json & TEXT & & & & Metadatos adicionales en formato JSON. \\
+\bottomrule
+\caption{Tabla \texttt{fuente\_osint} — Fuentes OSINT (3 registros)}
+\end{longtable}
+
+% ── Tabla: dato_recolectado ───────────────────────────────────────────────
+\subsection{Tabla: dato\_recolectado}
+\textit{Datos extraídos crudos de cada fuente, con fechas y métricas de interacción (engagement).}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_dato & INTEGER & \pk & & & Identificador único del dato. \\
+\rowcolor{tablerow}
+id\_fuente & INTEGER & & \fk & \nn & Referencia a \texttt{fuente\_osint}. \\
+id\_externo & VARCHAR(100) & & & \nn & ID de la publicación en la plataforma original. \\
+\rowcolor{tablerow}
+fecha\_publicacion & TIMESTAMP & & & \nn & Fecha original de la publicación. \\
+fecha\_recoleccion & TIMESTAMP & & & & Fecha de extracción por el scraper. \\
+\rowcolor{tablerow}
+contenido\_original & TEXT & & & \nn & Texto íntegro de la publicación. \\
+autor & VARCHAR(100) & & & & Autor/cuenta que publicó. \\
+\rowcolor{tablerow}
+engagement\_likes & INTEGER & & & & Cantidad de ``me gusta''. Defecto: 0. \\
+engagement\_comments & INTEGER & & & & Cantidad de comentarios. Defecto: 0. \\
+\rowcolor{tablerow}
+engagement\_shares & INTEGER & & & & Cantidad de veces compartido. Defecto: 0. \\
+engagement\_views & INTEGER & & & & Cantidad de visualizaciones. Defecto: 0. \\
+\rowcolor{tablerow}
+tipo\_contenido & VARCHAR(30) & & & & Tipo: post, comentario, video, etc. \\
+url\_publicacion & VARCHAR(500) & & & & URL directa a la publicación. \\
+\rowcolor{tablerow}
+metadata\_json & TEXT & & & & Datos adicionales en JSON. \\
+procesado & BOOLEAN & & & & Indica si fue procesado por el ETL. Defecto: 0. \\
+\rowcolor{tablerow}
+fecha\_procesamiento & TIMESTAMP & & & & Fecha del procesamiento ETL. \\
+\bottomrule
+\caption{Tabla \texttt{dato\_recolectado} — Datos crudos (54 registros)}
+\end{longtable}
+
+% ── Tabla: comentario ─────────────────────────────────────────────────────
+\subsection{Tabla: comentario}
+\textit{Comentarios extraídos de publicaciones, con soporte para hilos (respuestas a otros comentarios).}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_comentario & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+id\_post & INTEGER & & \fk & \nn & Ref.\ a \texttt{dato\_recolectado} (post padre). \\
+id\_fuente & INTEGER & & \fk & \nn & Ref.\ a \texttt{fuente\_osint}. \\
+\rowcolor{tablerow}
+id\_externo & VARCHAR(100) & & & & ID en la plataforma original. \\
+autor & VARCHAR(100) & & & & Nombre del autor. \\
+\rowcolor{tablerow}
+contenido & TEXT & & & \nn & Texto del comentario. \\
+fecha\_publicacion & TIMESTAMP & & & & Fecha de publicación. \\
+\rowcolor{tablerow}
+fecha\_recoleccion & TIMESTAMP & & & & Fecha de extracción. \\
+likes & INTEGER & & & & Likes del comentario. Defecto: 0. \\
+\rowcolor{tablerow}
+respuestas & INTEGER & & & & Cantidad de respuestas. Defecto: 0. \\
+es\_respuesta & BOOLEAN & & & & Si es respuesta a otro comentario. \\
+\rowcolor{tablerow}
+id\_comentario\_padre & INTEGER & & \fk & & Ref.\ a \texttt{comentario} (auto-referencia). \\
+procesado & BOOLEAN & & & & Si fue analizado. Defecto: 0. \\
+\rowcolor{tablerow}
+metadata\_json & TEXT & & & & Metadatos adicionales. \\
+\bottomrule
+\caption{Tabla \texttt{comentario} — Comentarios (61 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo ETL — Procesamiento}
+
+% ── Tabla: dato_procesado ─────────────────────────────────────────────────
+\subsection{Tabla: dato\_procesado}
+\textit{Datos limpios y enriquecidos tras pasar por el pipeline ETL. Incluye métricas temporales y de engagement normalizadas.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_dato\_procesado & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+id\_dato\_original & INTEGER & & \fk & \nn & Ref.\ a \texttt{dato\_recolectado}. \\
+contenido\_limpio & TEXT & & & \nn & Texto normalizado y limpio. \\
+\rowcolor{tablerow}
+longitud\_texto & INTEGER & & & & Longitud en caracteres. \\
+cantidad\_palabras & INTEGER & & & & Número de palabras. \\
+\rowcolor{tablerow}
+fecha\_publicacion\_iso & TIMESTAMP & & & \nn & Fecha normalizada ISO 8601. \\
+anio & INTEGER & & & & Año de publicación. \\
+\rowcolor{tablerow}
+mes & INTEGER & & & & Mes (1--12). \\
+dia\_semana & INTEGER & & & & Día de la semana (0=lunes). \\
+\rowcolor{tablerow}
+hora & INTEGER & & & & Hora de publicación (0--23). \\
+semestre & VARCHAR(10) & & & & Semestre académico (ej.\ ``2024-II''). \\
+\rowcolor{tablerow}
+es\_horario\_laboral & BOOLEAN & & & & Si fue publicado en horario laboral. \\
+engagement\_total & INTEGER & & & & Suma de likes + comments + shares. \\
+\rowcolor{tablerow}
+engagement\_normalizado & DECIMAL(5,2) & & & & Engagement escalado 0--100. \\
+ratio\_engagement & DECIMAL(8,4) & & & & Engagement / alcance. \\
+\rowcolor{tablerow}
+categoria\_preliminar & VARCHAR(50) & & & & Categoría inicial asignada. \\
+idioma\_detectado & VARCHAR(10) & & & & Idioma. Defecto: ``es''. \\
+\rowcolor{tablerow}
+contiene\_mencion\_emi & BOOLEAN & & & & Si menciona a la EMI. Defecto: 0. \\
+sentimiento\_basico & VARCHAR(20) & & & & Sentimiento por reglas simples. \\
+\rowcolor{tablerow}
+fecha\_procesamiento & TIMESTAMP & & & & Fecha del procesamiento ETL. \\
+version\_etl & VARCHAR(20) & & & & Versión del pipeline. Defecto: ``1.0.0''. \\
+\bottomrule
+\caption{Tabla \texttt{dato\_procesado} — Datos procesados (49 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo IA — Análisis de Sentimiento}
+
+% ── Tabla: analisis_sentimiento ───────────────────────────────────────────
+\subsection{Tabla: analisis\_sentimiento}
+\textit{Resultados del modelo de IA para análisis de sentimiento sobre datos procesados. Incluye puntajes de probabilidad para cada clase y nivel de confianza.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_analisis & INTEGER & \pk & & & Identificador único del análisis. \\
+\rowcolor{tablerow}
+id\_dato\_procesado & INTEGER & & \fk & \nn & Ref.\ a \texttt{dato\_procesado}. \\
+sentimiento\_predicho & VARCHAR(20) & & & \nn & Resultado: positivo, neutral, negativo. \\
+\rowcolor{tablerow}
+confianza & DECIMAL(5,4) & & & \nn & Nivel de confianza del modelo (0--1). \\
+probabilidad\_positivo & DECIMAL(5,4) & & & & P(positivo). \\
+\rowcolor{tablerow}
+probabilidad\_neutral & DECIMAL(5,4) & & & & P(neutral). \\
+probabilidad\_negativo & DECIMAL(5,4) & & & & P(negativo). \\
+\rowcolor{tablerow}
+modelo\_version & VARCHAR(50) & & & & Versión del modelo. Defecto: ``1.0.0''. \\
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{analisis\_sentimiento} — Sentimientos (69 registros)}
+\end{longtable}
+
+% ── Tabla: analisis_comentario ────────────────────────────────────────────
+\subsection{Tabla: analisis\_comentario}
+\textit{Sentimiento calculado para comentarios individuales.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_analisis & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+id\_comentario & INTEGER & & \fk & \nn & Ref.\ a \texttt{comentario}. \\
+sentimiento & VARCHAR(20) & & & \nn & Resultado: positivo, neutral, negativo. \\
+\rowcolor{tablerow}
+confianza & DECIMAL(5,4) & & & \nn & Confianza del modelo. \\
+probabilidad\_positivo & DECIMAL(5,4) & & & & P(positivo). \\
+\rowcolor{tablerow}
+probabilidad\_neutral & DECIMAL(5,4) & & & & P(neutral). \\
+probabilidad\_negativo & DECIMAL(5,4) & & & & P(negativo). \\
+\rowcolor{tablerow}
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{analisis\_comentario} — Sentimiento de comentarios (57 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo NLP / ML}
+
+% ── Tabla: clasificacion_tematica ─────────────────────────────────────────
+\subsection{Tabla: clasificacion\_tematica}
+\textit{Clasificaciones temáticas: quejas, sugerencias, felicitaciones, información académica, etc.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+id\_contenido & INTEGER & & & \nn & ID del contenido analizado. \\
+tipo\_contenido & VARCHAR(50) & & & \nn & Tipo: ``post'' o ``comentario''. \\
+\rowcolor{tablerow}
+tema\_principal & VARCHAR(100) & & & \nn & Tema principal detectado. \\
+tema\_secundario & VARCHAR(100) & & & & Tema secundario opcional. \\
+\rowcolor{tablerow}
+palabras\_clave & TEXT & & & & Keywords asociadas al tema. \\
+confianza & DECIMAL(5,4) & & & & Confianza de la clasificación. \\
+\rowcolor{tablerow}
+es\_academico & BOOLEAN & & & & Si el contenido es académico. \\
+es\_relevante\_uebu & BOOLEAN & & & & Si es relevante para la UEBU. \\
+\rowcolor{tablerow}
+fecha\_clasificacion & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{clasificacion\_tematica} — Clasificación temática (53 registros)}
+\end{longtable}
+
+% ── Tabla: nlp_keywords ───────────────────────────────────────────────────
+\subsection{Tabla: nlp\_keywords}
+\textit{Palabras clave extraídas mediante TF-IDF.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+palabra & TEXT & & & \nn & Palabra o término clave. \\
+tfidf\_score & REAL & & & & Puntaje TF-IDF. \\
+\rowcolor{tablerow}
+frecuencia & INTEGER & & & & Frecuencia absoluta en el corpus. \\
+tipo & TEXT & & & & Tipo: unigrama, bigrama, entidad. \\
+\rowcolor{tablerow}
+contexto & TEXT & & & & Fragmentos de texto donde aparece. \\
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis NLP. \\
+\bottomrule
+\caption{Tabla \texttt{nlp\_keywords} — Palabras clave (50 registros)}
+\end{longtable}
+
+% ── Tabla: nlp_topicos ────────────────────────────────────────────────────
+\subsection{Tabla: nlp\_topicos}
+\textit{Tópicos generados por Latent Dirichlet Allocation (LDA).}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+metodo & TEXT & & & \nn & Método utilizado (``lda''). \\
+topico\_id & INTEGER & & & & Número del tópico. \\
+\rowcolor{tablerow}
+nombre\_topico & TEXT & & & & Etiqueta asignada al tópico. \\
+palabras\_clave & TEXT & & & & Palabras representativas del tópico. \\
+\rowcolor{tablerow}
+peso\_topico & REAL & & & & Proporción del corpus cubierta. \\
+num\_documentos & INTEGER & & & & Documentos asignados al tópico. \\
+\rowcolor{tablerow}
+coherencia & REAL & & & & Coherencia semántica del tópico. \\
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{nlp\_topicos} — Tópicos LDA (6 registros)}
+\end{longtable}
+
+% ── Tabla: nlp_clusters ───────────────────────────────────────────────────
+\subsection{Tabla: nlp\_clusters}
+\textit{Resultados de agrupamiento K-Means sobre documentos.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+cluster\_id & INTEGER & & & & Número del cluster. \\
+etiqueta & TEXT & & & & Etiqueta descriptiva del cluster. \\
+\rowcolor{tablerow}
+palabras\_clave & TEXT & & & & Keywords representativas. \\
+num\_documentos & INTEGER & & & & Documentos en el cluster. \\
+\rowcolor{tablerow}
+sentimiento\_predominante & TEXT & & & & Sentimiento mayoritario. \\
+textos\_representativos & TEXT & & & & Ejemplos de textos del cluster. \\
+\rowcolor{tablerow}
+silhouette\_score & REAL & & & & Métrica de calidad del cluster. \\
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{nlp\_clusters} — Clusters K-Means (6 registros)}
+\end{longtable}
+
+% ── Tabla: nlp_entidades ──────────────────────────────────────────────────
+\subsection{Tabla: nlp\_entidades}
+\textit{Entidades nombradas extraídas por NER (Named Entity Recognition).}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+texto\_original & TEXT & & & & Texto donde se encontró la entidad. \\
+entidad & TEXT & & & & Nombre de la entidad detectada. \\
+\rowcolor{tablerow}
+tipo\_entidad & TEXT & & & & Tipo: PER, ORG, LOC, MISC. \\
+frecuencia & INTEGER & & & & Número de ocurrencias. \\
+\rowcolor{tablerow}
+contextos & TEXT & & & & Fragmentos contextuales. \\
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{nlp\_entidades} — Entidades NER (15 registros)}
+\end{longtable}
+
+% ── Tabla: nlp_resumen_ejecutivo ──────────────────────────────────────────
+\subsection{Tabla: nlp\_resumen\_ejecutivo}
+\textit{Resúmenes ejecutivos generados automáticamente.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+tipo\_resumen & TEXT & & & & Tipo: general, semanal, temático. \\
+contenido & TEXT & & & & Texto del resumen. \\
+\rowcolor{tablerow}
+datos\_soporte & TEXT & & & & Datos JSON de respaldo. \\
+fecha\_generacion & TIMESTAMP & & & & Fecha de generación. \\
+\bottomrule
+\caption{Tabla \texttt{nlp\_resumen\_ejecutivo} — Resúmenes (1 registro)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo OSINT — Inteligencia}
+
+\subsection{Tabla: osint\_noticias}
+\textit{Noticias sobre la EMI extraídas de medios digitales.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+titulo & TEXT & & & \nn & Título de la noticia. \\
+resumen & TEXT & & & & Resumen del artículo. \\
+\rowcolor{tablerow}
+fuente & VARCHAR(200) & & & & Medio de comunicación. \\
+url & VARCHAR(500) & & & & Enlace al artículo. \\
+\rowcolor{tablerow}
+fecha\_publicacion & TIMESTAMP & & & & Fecha de la publicación. \\
+fecha\_recoleccion & TIMESTAMP & & & & Fecha de extracción. \\
+\rowcolor{tablerow}
+termino\_busqueda & VARCHAR(200) & & & & Término usado en la búsqueda. \\
+relevancia\_score & DECIMAL(5,4) & & & & Puntaje de relevancia (0--1). \\
+\rowcolor{tablerow}
+temas\_json & TEXT & & & & Temas en JSON. \\
+sentimiento & VARCHAR(20) & & & & Sentimiento detectado. \\
+\rowcolor{tablerow}
+procesado & BOOLEAN & & & & Si fue procesado. \\
+\bottomrule
+\caption{Tabla \texttt{osint\_noticias} — Noticias (40 registros)}
+\end{longtable}
+
+\subsection{Tabla: osint\_tendencias}
+\textit{Datos de Google Trends sobre términos relacionados con la EMI.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+termino & VARCHAR(200) & & & \nn & Término de búsqueda. \\
+region & VARCHAR(50) & & & & País/región. Defecto: ``Bolivia''. \\
+\rowcolor{tablerow}
+periodo & VARCHAR(50) & & & & Periodo del dato. \\
+valor\_interes & INTEGER & & & & Índice de interés (0--100). \\
+\rowcolor{tablerow}
+fecha\_dato & DATE & & & & Fecha del dato. \\
+fecha\_recoleccion & TIMESTAMP & & & & Fecha de extracción. \\
+\rowcolor{tablerow}
+tipo & VARCHAR(50) & & & & Tipo: google\_trends. \\
+metadata\_json & TEXT & & & & Metadatos JSON. \\
+\bottomrule
+\caption{Tabla \texttt{osint\_tendencias} — Tendencias (24 registros)}
+\end{longtable}
+
+\subsection{Tabla: osint\_fuente\_resumen}
+\textit{Resumen de técnicas OSINT aplicadas.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+tipo\_tecnica & VARCHAR(50) & & & \nn & Tipo de técnica OSINT. \\
+nombre\_fuente & VARCHAR(200) & & & \nn & Nombre de la fuente. \\
+\rowcolor{tablerow}
+descripcion & TEXT & & & & Descripción de la técnica. \\
+url\_base & VARCHAR(500) & & & & URL base de la fuente. \\
+\rowcolor{tablerow}
+total\_datos\_recolectados & INTEGER & & & & Datos recolectados. \\
+ultima\_recoleccion & TIMESTAMP & & & & Última recolección. \\
+\rowcolor{tablerow}
+estado & VARCHAR(20) & & & & Estado: activo, inactivo. \\
+metadata\_json & TEXT & & & & Metadatos JSON. \\
+\bottomrule
+\caption{Tabla \texttt{osint\_fuente\_resumen} — Resumen de fuentes OSINT (4 registros)}
+\end{longtable}
+
+\subsection{Tabla: patron\_identificado}
+\textit{Patrones de comportamiento detectados por los algoritmos de IA.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+nombre\_patron & VARCHAR(200) & & & \nn & Nombre del patrón. \\
+tipo\_patron & VARCHAR(100) & & & \nn & Tipo: temporal, estacional, engagement. \\
+\rowcolor{tablerow}
+descripcion & TEXT & & & & Descripción del patrón. \\
+fuentes\_involucradas & TEXT & & & & Fuentes donde se detectó. \\
+\rowcolor{tablerow}
+frecuencia & INTEGER & & & & Veces detectado. \\
+impacto & VARCHAR(20) & & & & Nivel de impacto. \\
+\rowcolor{tablerow}
+fecha\_primera\_deteccion & TIMESTAMP & & & & Primera detección. \\
+fecha\_ultima\_deteccion & TIMESTAMP & & & & Última detección. \\
+\rowcolor{tablerow}
+datos\_soporte\_json & TEXT & & & & Datos de soporte. \\
+recomendacion\_accion & TEXT & & & & Acción recomendada. \\
+\rowcolor{tablerow}
+estado & VARCHAR(20) & & & & Estado: activo. \\
+relevancia\_vicerrectorado & BOOLEAN & & & & Si es relevante para el Vicerrectorado. \\
+\bottomrule
+\caption{Tabla \texttt{patron\_identificado} — Patrones (10 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo de Usuarios y Seguridad}
+
+% ── Tabla: usuario ────────────────────────────────────────────────────────
+\subsection{Tabla: usuario}
+\textit{Gestión de roles, emails y estado de los usuarios del sistema.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_usuario & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+username & TEXT & & & \nn & Nombre de usuario único. \\
+email & TEXT & & & \nn & Correo electrónico institucional. \\
+\rowcolor{tablerow}
+password\_hash & TEXT & & & \nn & Hash SHA-256 de la contraseña. \\
+nombre\_completo & TEXT & & & \nn & Nombre completo del usuario. \\
+\rowcolor{tablerow}
+rol & TEXT & & & \nn & Rol: administrador, vicerrector, uebu. \\
+cargo & TEXT & & & & Cargo institucional. \\
+\rowcolor{tablerow}
+activo & INTEGER & & & & Estado activo (1) o inactivo (0). \\
+ultimo\_login & TEXT & & & & Fecha del último inicio de sesión. \\
+\rowcolor{tablerow}
+fecha\_creacion & TEXT & & & & Fecha de creación de la cuenta. \\
+\bottomrule
+\caption{Tabla \texttt{usuario} — Usuarios del sistema (4 registros)}
+\end{longtable}
+
+\subsection{Tabla: log\_actividad}
+\textit{Registro de acciones realizadas por los usuarios en el sistema.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_log & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+id\_usuario & INTEGER & & \fk & & Ref.\ a \texttt{usuario}. \\
+accion & TEXT & & & \nn & Tipo de acción realizada. \\
+\rowcolor{tablerow}
+detalle & TEXT & & & & Descripción detallada. \\
+ip\_address & TEXT & & & & Dirección IP del usuario. \\
+\rowcolor{tablerow}
+fecha & TEXT & & & & Fecha y hora de la acción. \\
+\bottomrule
+\caption{Tabla \texttt{log\_actividad} — Logs de actividad (7 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo de Alertas}
+
+\subsection{Tabla: alerta}
+\textit{Alertas generadas automáticamente por el sistema ante situaciones críticas.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_alerta & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+tipo & TEXT & & & \nn & Tipo de alerta. \\
+severidad & TEXT & & & \nn & Niveles: critica, alta, media, baja. \\
+\rowcolor{tablerow}
+titulo & TEXT & & & \nn & Título descriptivo de la alerta. \\
+descripcion & TEXT & & & & Descripción detallada. \\
+\rowcolor{tablerow}
+fuente & TEXT & & & & Fuente que originó la alerta. Defecto: ``facebook''. \\
+estado & TEXT & & & \nn & Estado: nueva, en\_proceso, resuelta. \\
+\rowcolor{tablerow}
+id\_dato\_procesado & INTEGER & & & & Referencia al dato que activó la alerta. \\
+confianza & REAL & & & & Confianza de la detección. \\
+\rowcolor{tablerow}
+engagement & INTEGER & & & & Engagement asociado. \\
+asignado\_a & INTEGER & & \fk & & Ref.\ a \texttt{usuario} asignado. \\
+\rowcolor{tablerow}
+resolucion & TEXT & & & & Notas de resolución. \\
+resuelto\_por & INTEGER & & \fk & & Ref.\ a \texttt{usuario} que resolvió. \\
+\rowcolor{tablerow}
+fecha\_creacion & TEXT & & & & Fecha de creación. \\
+fecha\_resolucion & TEXT & & & & Fecha de resolución. \\
+\bottomrule
+\caption{Tabla \texttt{alerta} — Alertas (9 registros)}
+\end{longtable}
+
+\subsection{Tabla: configuracion\_alerta}
+\textit{Reglas configurables para la generación automática de alertas.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_config & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+nombre & TEXT & & & \nn & Nombre de la regla. \\
+tipo\_alerta & TEXT & & & \nn & Tipo de alerta que genera. \\
+\rowcolor{tablerow}
+umbral\_valor & REAL & & & & Valor umbral de activación. Defecto: 0.7. \\
+umbral\_confianza & REAL & & & & Confianza mínima. Defecto: 0.5. \\
+\rowcolor{tablerow}
+severidad\_minima & TEXT & & & & Severidad mínima. Defecto: ``media''. \\
+activa & INTEGER & & & & Si la regla está activa. Defecto: 1. \\
+\rowcolor{tablerow}
+notificar\_email & INTEGER & & & & Si envía email. Defecto: 0. \\
+creado\_por & INTEGER & & \fk & & Ref.\ a \texttt{usuario} que creó la regla. \\
+\rowcolor{tablerow}
+fecha\_creacion & TEXT & & & & Fecha de creación. \\
+\bottomrule
+\caption{Tabla \texttt{configuracion\_alerta} — Configuraciones de alerta (4 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas de Evaluación y Auditoría}
+
+\subsection{Tabla: evaluacion\_sistema}
+\textit{Métricas de evaluación de calidad y rendimiento del sistema.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+metrica & TEXT & & & \nn & Nombre de la métrica. \\
+categoria & TEXT & & & & Categoría: recolección, sentimiento, nlp\_ml, rendimiento. \\
+\rowcolor{tablerow}
+valor & REAL & & & & Valor de la métrica (0--100). \\
+detalle & TEXT & & & & Descripción detallada. \\
+\rowcolor{tablerow}
+fecha\_evaluacion & TIMESTAMP & & & & Fecha de evaluación. \\
+\bottomrule
+\caption{Tabla \texttt{evaluacion\_sistema} — Evaluación del sistema (22 registros)}
+\end{longtable}
+
+\subsection{Tabla: log\_ejecucion}
+\textit{Historial de ejecuciones de los procesos de recolección y análisis.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_log & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+tipo\_operacion & VARCHAR(50) & & & \nn & Tipo: scraping, etl, nlp, evaluación. \\
+fuente & VARCHAR(100) & & & & Fuente asociada. \\
+\rowcolor{tablerow}
+fecha\_inicio & TIMESTAMP & & & \nn & Inicio de la ejecución. \\
+fecha\_fin & TIMESTAMP & & & & Fin de la ejecución. \\
+\rowcolor{tablerow}
+duracion\_segundos & DECIMAL(10,2) & & & & Duración en segundos. \\
+registros\_procesados & INTEGER & & & & Total de registros procesados. \\
+\rowcolor{tablerow}
+registros\_exitosos & INTEGER & & & & Registros procesados con éxito. \\
+registros\_fallidos & INTEGER & & & & Registros fallidos. \\
+\rowcolor{tablerow}
+estado & VARCHAR(20) & & & & Estado: completado, error. \\
+mensaje\_error & TEXT & & & & Mensaje de error si aplica. \\
+\rowcolor{tablerow}
+detalles\_json & TEXT & & & & Detalles adicionales JSON. \\
+\bottomrule
+\caption{Tabla \texttt{log\_ejecucion} — Logs de ejecución (28 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Resumen estadístico}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{l r X}
+\toprule
+\textbf{Tabla} & \textbf{Registros} & \textbf{Módulo} \\
+\midrule
+fuente\_osint & 3 & Recolección OSINT \\
+dato\_recolectado & 54 & Recolección OSINT \\
+comentario & 61 & Recolección OSINT \\
+dato\_procesado & 49 & ETL / Procesamiento \\
+analisis\_sentimiento & 69 & IA — Sentimiento \\
+analisis\_comentario & 57 & IA — Sentimiento \\
+clasificacion\_tematica & 53 & NLP / ML \\
+nlp\_keywords & 50 & NLP / ML \\
+nlp\_topicos & 6 & NLP / ML \\
+nlp\_clusters & 6 & NLP / ML \\
+nlp\_entidades & 15 & NLP / ML \\
+nlp\_resumen\_ejecutivo & 1 & NLP / ML \\
+osint\_noticias & 40 & Inteligencia OSINT \\
+osint\_tendencias & 24 & Inteligencia OSINT \\
+osint\_fuente\_resumen & 4 & Inteligencia OSINT \\
+patron\_identificado & 10 & Inteligencia OSINT \\
+usuario & 4 & Seguridad \\
+log\_actividad & 7 & Seguridad \\
+alerta & 9 & Alertas \\
+configuracion\_alerta & 4 & Alertas \\
+evaluacion\_sistema & 22 & Evaluación \\
+log\_ejecucion & 28 & Auditoría \\
+\midrule
+\textbf{Total} & \textbf{576} & \textbf{23 tablas} \\
+\bottomrule
+\end{tabularx}
+\caption{Resumen de registros por tabla}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════
+\newpage
+\section*{Control de versiones del documento}
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{c c l X}
+\toprule
+\textbf{Versión} & \textbf{Fecha} & \textbf{Autor} & \textbf{Cambios} \\
+\midrule
+1.0 & Feb 2026 & Alvaro Santiago Encinas Flores & Versión inicial del diccionario de datos. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

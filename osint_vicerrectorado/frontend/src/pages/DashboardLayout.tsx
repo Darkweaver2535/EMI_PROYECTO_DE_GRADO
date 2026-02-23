@@ -3,12 +3,13 @@
  * Sistema OSINT EMI - Sprint 4
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Box, Toolbar, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
 import { Header, Sidebar, DRAWER_WIDTH, ErrorBoundary } from '../components/common';
 import { useAuth } from '../contexts';
 import { alertsService } from '../services';
+import { Alert } from '../types';
 
 const DashboardLayout: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -18,29 +19,40 @@ const DashboardLayout: React.FC = () => {
   
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
   const [alertCount, setAlertCount] = useState(0);
+  const [activeAlerts, setActiveAlerts] = useState<Alert[]>([]);
 
   useEffect(() => {
     setSidebarOpen(!isMobile);
   }, [isMobile]);
 
-  // Cargar contador de alertas activas
-  useEffect(() => {
-    const loadAlertCount = async () => {
-      try {
-        const alerts = await alertsService.getActiveAlerts(100);
-        setAlertCount(alerts.length);
-      } catch (err) {
-        console.error('Error loading alert count:', err);
-      }
-    };
+  const loadAlerts = useCallback(async () => {
+    try {
+      const alerts = await alertsService.getActiveAlerts(100);
+      setActiveAlerts(alerts);
+      setAlertCount(alerts.length);
+    } catch (err) {
+      console.error('Error loading alerts:', err);
+    }
+  }, []);
 
+  // Cargar alertas activas
+  useEffect(() => {
     if (isAuthenticated) {
-      loadAlertCount();
+      loadAlerts();
       // Actualizar cada 5 minutos
-      const interval = setInterval(loadAlertCount, 5 * 60 * 1000);
+      const interval = setInterval(loadAlerts, 5 * 60 * 1000);
       return () => clearInterval(interval);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, loadAlerts]);
+
+  const handleMarkAlertRead = async (alertId: string) => {
+    try {
+      await alertsService.markAsRead(alertId);
+      await loadAlerts();
+    } catch (err) {
+      console.error('Error marking alert as read:', err);
+    }
+  };
 
   const handleSidebarToggle = () => {
     setSidebarOpen(!sidebarOpen);
@@ -72,6 +84,8 @@ const DashboardLayout: React.FC = () => {
       <Header
         onMenuToggle={handleSidebarToggle}
         notificationCount={alertCount}
+        alerts={activeAlerts}
+        onMarkAlertRead={handleMarkAlertRead}
       />
       
       <Sidebar
