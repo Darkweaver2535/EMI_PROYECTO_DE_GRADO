@@ -93,9 +93,9 @@ const BenchmarkingDashboard: React.FC = () => {
       setRankings(rankingsData);
       setCorrelations(correlationsData);
 
-      // Cargar perfiles radar de las top 3 carreras para comparación
-      if (rankingsData.length >= 3) {
-        const profilePromises = rankingsData.slice(0, 3).map(career =>
+      // Cargar perfiles radar de las carreras encontradas para comparación
+      if (rankingsData.length > 0) {
+        const profilePromises = rankingsData.slice(0, Math.min(3, rankingsData.length)).map(career =>
           benchmarkingService.getRadarProfile({
             careerId: career.careerId,
             startDate: params.startDate,
@@ -108,43 +108,6 @@ const BenchmarkingDashboard: React.FC = () => {
     } catch (err) {
       console.error('Error loading benchmarking data:', err);
       setError('Error al cargar los datos de benchmarking. Por favor, intente de nuevo.');
-      
-      // Datos de demostración
-      setRankings([
-        { careerId: '1', careerName: 'Ing. de Sistemas', mentions: 450, sentiment: 0.72, engagement: 1250, rank: 1 },
-        { careerId: '2', careerName: 'Ing. Civil', mentions: 380, sentiment: 0.65, engagement: 980, rank: 2 },
-        { careerId: '3', careerName: 'Ing. Comercial', mentions: 320, sentiment: 0.58, engagement: 850, rank: 3 },
-        { careerId: '4', careerName: 'Administración', mentions: 280, sentiment: 0.62, engagement: 720, rank: 4 },
-        { careerId: '5', careerName: 'Derecho', mentions: 250, sentiment: 0.55, engagement: 680, rank: 5 },
-      ]);
-      
-      setCorrelations({
-        variables: ['Menciones', 'Sentimiento', 'Engagement', 'Alcance'],
-        values: [
-          [1.0, 0.45, 0.78, 0.82],
-          [0.45, 1.0, 0.32, 0.28],
-          [0.78, 0.32, 1.0, 0.65],
-          [0.82, 0.28, 0.65, 1.0],
-        ],
-      });
-      
-      setComparisonProfiles([
-        {
-          careerId: '1',
-          careerName: 'Ing. de Sistemas',
-          metrics: { sentiment: 72, mentions: 85, engagement: 78, visibility: 82, reputation: 75 },
-        },
-        {
-          careerId: '2',
-          careerName: 'Ing. Civil',
-          metrics: { sentiment: 65, mentions: 72, engagement: 68, visibility: 70, reputation: 68 },
-        },
-        {
-          careerId: '3',
-          careerName: 'Ing. Comercial',
-          metrics: { sentiment: 58, mentions: 60, engagement: 55, visibility: 58, reputation: 62 },
-        },
-      ]);
     } finally {
       setLoading(false);
     }
@@ -290,12 +253,11 @@ const BenchmarkingDashboard: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <KPICard
-            title="Mayor Crecimiento"
-            value="+15.3%"
+            title="Total Menciones"
+            value={rankings.reduce((sum, r) => sum + (r.mentions || 0), 0)}
             icon={<TrendingUpIcon />}
             color="info"
-            subtitle="vs período anterior"
-            trend="up"
+            subtitle="en posts y comentarios"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>

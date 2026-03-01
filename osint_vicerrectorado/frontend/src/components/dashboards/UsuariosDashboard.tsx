@@ -37,6 +37,7 @@ import {
   Divider,
   InputAdornment,
   alpha,
+  Collapse,
 } from '@mui/material';
 import {
   PersonAdd as AddIcon,
@@ -51,6 +52,9 @@ import {
   Search as SearchIcon,
   History as HistoryIcon,
   Security as SecurityIcon,
+  RestoreFromTrash as RestoreIcon,
+  ExpandMore as ExpandMoreIcon,
+  PersonOff as PersonOffIcon,
   TravelExplore as OsintModIcon,
   Comment as PostsModIcon,
   Psychology as AiModIcon,
@@ -138,6 +142,9 @@ const UsuariosDashboard: React.FC = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingUser, setDeletingUser] = useState<UsuarioData | null>(null);
 
+  // Inactive users section
+  const [showInactive, setShowInactive] = useState(false);
+
   // Logs dialog
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [logs, setLogs] = useState<Array<{
@@ -164,13 +171,17 @@ const UsuariosDashboard: React.FC = () => {
     loadData();
   }, [loadData]);
 
+  // Split active vs inactive
+  const activeUsuarios = React.useMemo(() => usuarios.filter(u => u.activo !== false), [usuarios]);
+  const inactiveUsuarios = React.useMemo(() => usuarios.filter(u => u.activo === false), [usuarios]);
+
   useEffect(() => {
     if (!searchTerm) {
-      setFilteredUsuarios(usuarios);
+      setFilteredUsuarios(activeUsuarios);
     } else {
       const term = searchTerm.toLowerCase();
       setFilteredUsuarios(
-        usuarios.filter(
+        activeUsuarios.filter(
           (u) =>
             u.username.toLowerCase().includes(term) ||
             u.nombre_completo.toLowerCase().includes(term) ||
@@ -179,7 +190,7 @@ const UsuariosDashboard: React.FC = () => {
         )
       );
     }
-  }, [searchTerm, usuarios]);
+  }, [searchTerm, activeUsuarios]);
 
   const handleOpenCreate = () => {
     setDialogMode('create');
@@ -264,12 +275,23 @@ const UsuariosDashboard: React.FC = () => {
     if (!deletingUser?.id) return;
     try {
       await usuariosService.deleteUsuario(deletingUser.id);
-      setSuccess(`Usuario "${deletingUser.username}" desactivado`);
+      setSuccess(`Usuario "${deletingUser.username}" desactivado y movido a la lista de eliminados`);
       setDeleteDialogOpen(false);
       setDeletingUser(null);
       loadData();
     } catch (err) {
       setError('Error al desactivar usuario');
+    }
+  };
+
+  const handleRestore = async (user: UsuarioData) => {
+    if (!user.id) return;
+    try {
+      await usuariosService.updateUsuario(user.id, { activo: true });
+      setSuccess(`Usuario "${user.username}" restaurado exitosamente`);
+      loadData();
+    } catch (err) {
+      setError('Error al restaurar usuario');
     }
   };
 
@@ -283,11 +305,11 @@ const UsuariosDashboard: React.FC = () => {
     }
   };
 
-  // Stats
-  const totalUsers = usuarios.length;
-  const activeUsers = usuarios.filter((u) => u.activo !== false).length;
-  const adminCount = usuarios.filter((u) => u.rol === 'administrador').length;
-  const viceCount = usuarios.filter((u) => u.rol === 'vicerrector').length;
+  // Stats (only active users)
+  const totalUsers = activeUsuarios.length;
+  const activeUsers = activeUsuarios.length;
+  const adminCount = activeUsuarios.filter((u) => u.rol === 'administrador').length;
+  const viceCount = activeUsuarios.filter((u) => u.rol === 'vicerrector').length;
 
   if (loading && usuarios.length === 0) {
     return <LoadingSpinner message="Cargando usuarios..." />;
@@ -419,7 +441,6 @@ const UsuariosDashboard: React.FC = () => {
                   <TableCell>Nombre Completo</TableCell>
                   <TableCell>Rol</TableCell>
                   <TableCell>Módulos</TableCell>
-                  <TableCell>Estado</TableCell>
                   <TableCell>Último Acceso</TableCell>
                   <TableCell align="right">Acciones</TableCell>
                 </TableRow>
@@ -462,13 +483,6 @@ const UsuariosDashboard: React.FC = () => {
                       </Tooltip>
                     </TableCell>
                     <TableCell>
-                      <Chip
-                        label={user.activo !== false ? 'Activo' : 'Inactivo'}
-                        size="small"
-                        color={user.activo !== false ? 'success' : 'default'}
-                      />
-                    </TableCell>
-                    <TableCell>
                       <Typography variant="caption">
                         {user.ultimo_login || 'Nunca'}
                       </Typography>
@@ -494,7 +508,7 @@ const UsuariosDashboard: React.FC = () => {
                 })}
                 {filteredUsuarios.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={8} align="center">
+                    <TableCell colSpan={7} align="center">
                       <Typography variant="body2" color="text.secondary" py={4}>
                         No se encontraron usuarios
                       </Typography>
@@ -506,6 +520,94 @@ const UsuariosDashboard: React.FC = () => {
           </TableContainer>
         </CardContent>
       </Card>
+
+      {/* Usuarios Desactivados */}
+      {inactiveUsuarios.length > 0 && (
+        <Card sx={{ mt: 3, border: '1px solid', borderColor: 'divider', opacity: 0.9 }}>
+          <CardContent sx={{ pb: showInactive ? 2 : '16px !important' }}>
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+              onClick={() => setShowInactive(!showInactive)}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <PersonOffIcon color="disabled" />
+                <Typography variant="h6" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                  Usuarios Eliminados ({inactiveUsuarios.length})
+                </Typography>
+              </Box>
+              <IconButton size="small">
+                <ExpandMoreIcon sx={{ transform: showInactive ? 'rotate(180deg)' : 'none', transition: '0.3s' }} />
+              </IconButton>
+            </Box>
+            <Collapse in={showInactive}>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5, mb: 2 }}>
+                Estos usuarios han sido desactivados y no pueden acceder al sistema. Puedes restaurarlos para devolverles el acceso.
+              </Typography>
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell>Usuario</TableCell>
+                      <TableCell>Nombre Completo</TableCell>
+                      <TableCell>Rol</TableCell>
+                      <TableCell>Fecha de desactivación</TableCell>
+                      <TableCell align="right">Restaurar</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {inactiveUsuarios.map((user) => (
+                      <TableRow key={user.id} sx={{ opacity: 0.7 }}>
+                        <TableCell>{user.id}</TableCell>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight={500} color="text.secondary">
+                            {user.username}
+                          </Typography>
+                          <Typography variant="caption" color="text.disabled">
+                            {user.email}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" color="text.secondary">
+                            {user.nombre_completo}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            icon={rolIcons[user.rol] as React.ReactElement}
+                            label={rolLabels[user.rol] || user.rol}
+                            size="small"
+                            color="default"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="caption" color="text.secondary">
+                            {user.ultimo_login || 'N/A'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Tooltip title="Restaurar usuario">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="success"
+                              startIcon={<RestoreIcon />}
+                              onClick={() => handleRestore(user)}
+                            >
+                              Restaurar
+                            </Button>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Collapse>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Roles info */}
       <Card sx={{ mt: 3 }}>

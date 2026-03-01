@@ -25,6 +25,31 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+
+# ============== FILTRO INTELIGENTE DE FUENTES ==============
+# Las fuentes oficiales de la EMI (es_oficial=1) publican contenido propio.
+# Para OSINT/análisis, solo interesa lo que dice la GENTE:
+#   - Posts de fuentes externas (Confesiones, noticias, etc.)
+#   - Comentarios de TODAS las fuentes (son opiniones del público)
+# Esto se aplica a: sentimientos, benchmarking, KPIs, NLP, etc.
+
+# Filtro SQL para excluir posts de fuentes oficiales
+EXTERNAL_POSTS_FILTER = """
+    JOIN fuente_osint fo_filter ON dr.id_fuente = fo_filter.id_fuente
+    AND (fo_filter.es_oficial = 0 OR fo_filter.es_oficial IS NULL)
+"""
+
+# Subconsulta para IDs de dato_procesado que vienen de fuentes externas
+EXTERNAL_PROCESADOS_SUBQUERY = """
+    dp.id_dato_procesado IN (
+        SELECT dp2.id_dato_procesado
+        FROM dato_procesado dp2
+        JOIN dato_recolectado dr2 ON dp2.id_dato_original = dr2.id_dato
+        JOIN fuente_osint fo2 ON dr2.id_fuente = fo2.id_fuente
+        WHERE fo2.es_oficial = 0 OR fo2.es_oficial IS NULL
+    )
+"""
+
 # ============== AUTH (DB-backed) ==============
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -306,17 +331,19 @@ def get_role_default_permisos(rol):
 # ============== SENTIMIENTOS ==============
 @app.route('/api/ai/sentiments/distribution')
 def sentiment_distribution():
-    """Distribución de sentimientos REAL de la BD"""
+    """Distribución de sentimientos REAL - solo contenido externo (no posts oficiales EMI)"""
     conn = get_db()
     cursor = conn.cursor()
     
-    cursor.execute('''
+    cursor.execute(f'''
         SELECT 
-            sentimiento_predicho,
+            a.sentimiento_predicho,
             COUNT(*) as cantidad,
-            AVG(confianza) as confianza_promedio
-        FROM analisis_sentimiento
-        GROUP BY sentimiento_predicho
+            AVG(a.confianza) as confianza_promedio
+        FROM analisis_sentimiento a
+        JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+        GROUP BY a.sentimiento_predicho
     ''')
     
     result = {'Positivo': 0, 'Negativo': 0, 'Neutral': 0}
@@ -342,13 +369,14 @@ def sentiment_trend():
     conn = get_db()
     cursor = conn.cursor()
     
-    cursor.execute('''
+    cursor.execute(f'''
         SELECT 
             DATE(dp.fecha_publicacion_iso) as fecha,
             a.sentimiento_predicho,
             COUNT(*) as cantidad
         FROM analisis_sentimiento a
         JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
         GROUP BY DATE(dp.fecha_publicacion_iso), a.sentimiento_predicho
         ORDER BY fecha
     ''')
@@ -379,11 +407,11 @@ def sentiment_trend():
 
 @app.route('/api/ai/sentiments/posts')
 def top_posts():
-    """Posts con mayor engagement REAL"""
+    """Posts con mayor engagement - solo contenido externo (no posts oficiales EMI)"""
     conn = get_db()
     cursor = conn.cursor()
     
-    cursor.execute('''
+    cursor.execute(f'''
         SELECT 
             dp.id_dato_procesado as id,
             dp.contenido_limpio as text,
@@ -394,6 +422,7 @@ def top_posts():
             dp.engagement_total as engagement
         FROM dato_procesado dp
         LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
         ORDER BY dp.engagement_total DESC
         LIMIT 20
     ''')
@@ -424,7 +453,7 @@ def sentiment_top_posts():
     conn = get_db()
     cursor = conn.cursor()
     
-    cursor.execute('''
+    cursor.execute(f'''
         SELECT 
             dp.id_dato_procesado as id,
             dp.contenido_limpio as text,
@@ -436,6 +465,7 @@ def sentiment_top_posts():
         FROM dato_procesado dp
         JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
         WHERE a.sentimiento_predicho = ?
+        AND {EXTERNAL_PROCESADOS_SUBQUERY}
         ORDER BY a.confianza DESC, dp.engagement_total DESC
         LIMIT ?
     ''', (sentiment_filter, limit))
@@ -461,14 +491,16 @@ def sentiment_kpis():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Totales
-    cursor.execute('''
+    # Totales - solo contenido externo
+    cursor.execute(f'''
         SELECT 
-            sentimiento_predicho,
+            a.sentimiento_predicho,
             COUNT(*) as cantidad,
-            AVG(confianza) as confianza_promedio
-        FROM analisis_sentimiento
-        GROUP BY sentimiento_predicho
+            AVG(a.confianza) as confianza_promedio
+        FROM analisis_sentimiento a
+        JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+        GROUP BY a.sentimiento_predicho
     ''')
     
     result = {'Positivo': 0, 'Negativo': 0, 'Neutral': 0}
@@ -479,8 +511,8 @@ def sentiment_kpis():
     
     total = sum(result.values())
     
-    # Tendencia (comparar última semana con anterior)
-    cursor.execute('''
+    # Tendencia (comparar última semana con anterior) - solo contenido externo
+    cursor.execute(f'''
         SELECT 
             CASE WHEN DATE(dp.fecha_publicacion_iso) >= DATE('now', '-7 days') THEN 'current' ELSE 'previous' END as period,
             a.sentimiento_predicho,
@@ -488,6 +520,7 @@ def sentiment_kpis():
         FROM analisis_sentimiento a
         JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
         WHERE DATE(dp.fecha_publicacion_iso) >= DATE('now', '-14 days')
+        AND {EXTERNAL_PROCESADOS_SUBQUERY}
         GROUP BY period, a.sentimiento_predicho
     ''')
     
@@ -531,16 +564,30 @@ def stats():
     cursor.execute('SELECT COUNT(*) FROM dato_procesado')
     total_procesados = cursor.fetchone()[0]
     
-    cursor.execute('SELECT COUNT(*) FROM analisis_sentimiento')
+    # Contar también comentarios (son contenido externo valioso)
+    try:
+        cursor.execute('SELECT COUNT(*) FROM comentario')
+        total_comentarios = cursor.fetchone()[0]
+    except Exception:
+        total_comentarios = 0
+    
+    # Sentimientos: solo de contenido externo (no posts oficiales EMI)
+    cursor.execute(f'''
+        SELECT COUNT(*) FROM analisis_sentimiento a
+        JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+    ''')
     total_analizados = cursor.fetchone()[0]
     
-    cursor.execute('SELECT SUM(engagement_total) FROM dato_procesado')
+    cursor.execute(f'SELECT SUM(engagement_total) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
     total_engagement = cursor.fetchone()[0] or 0
     
-    cursor.execute('''
-        SELECT sentimiento_predicho, COUNT(*) as c 
-        FROM analisis_sentimiento 
-        GROUP BY sentimiento_predicho
+    cursor.execute(f'''
+        SELECT a.sentimiento_predicho, COUNT(*) as c 
+        FROM analisis_sentimiento a
+        JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+        GROUP BY a.sentimiento_predicho
     ''')
     sentiments = {row[0]: row[1] for row in cursor.fetchall()}
     
@@ -548,6 +595,7 @@ def stats():
     
     return jsonify({
         'totalPosts': total_recolectados,
+        'totalComments': total_comentarios,
         'processedPosts': total_procesados,
         'analyzedPosts': total_analizados,
         'totalEngagement': total_engagement,
@@ -1012,74 +1060,230 @@ def get_ai_analysis_anomalies():
 
 # ============== BENCHMARKING ACADÉMICO ==============
 
+import re as _re
+
+# -------------------------------------------------------------------
+# Las 14 carreras oficiales de la EMI, con keywords inteligentes.
+#
+# Cada carrera tiene:
+#   - exact  : frases que se buscan con substring (alta confianza)
+#   - regex  : patrones regex compilados (para evitar falsos positivos,
+#              p.ej. "civil" suelto podría coincidir con "civilización",
+#              así que usamos \bcivil\b).
+#
+# El matcher prueba primero exact, luego regex. Una coincidencia basta.
+# -------------------------------------------------------------------
+
+EMI_CAREERS = {
+    '1': {
+        'name': 'Ingeniería Civil',
+        'exact': [
+            'ingeniería civil', 'ingenieria civil', 'ing. civil', 'ing civil',
+        ],
+        'regex': [r'\bcivil\b'],
+    },
+    '2': {
+        'name': 'Ingeniería Geográfica',
+        'exact': [
+            'ingeniería geográfica', 'ingenieria geografica', 'ing. geográfica',
+            'ing. geografica', 'ing geográfica', 'ing geografica',
+            'geodesia', 'topografía', 'topografia', 'cartografía', 'cartografia',
+            'geomática', 'geomatica',
+        ],
+        'regex': [r'\bgeográfica\b', r'\bgeografica\b'],
+    },
+    '3': {
+        'name': 'Ingeniería Ambiental',
+        'exact': [
+            'ingeniería ambiental', 'ingenieria ambiental', 'ing. ambiental',
+            'ing ambiental', 'medio ambiente', 'gestión ambiental',
+            'gestion ambiental',
+        ],
+        'regex': [r'\bambiental\b'],
+    },
+    '4': {
+        'name': 'Ingeniería de Sistemas',
+        'exact': [
+            'ingeniería de sistemas', 'ingenieria de sistemas',
+            'ing. de sistemas', 'ing de sistemas', 'ing. sistemas',
+            'ing sistemas', 'carrera de sistemas',
+        ],
+        'regex': [r'\bsistemas\b'],
+    },
+    '5': {
+        'name': 'Ingeniería en Telecomunicaciones',
+        'exact': [
+            'ingeniería en telecomunicaciones', 'ingenieria en telecomunicaciones',
+            'ing. telecomunicaciones', 'ing telecomunicaciones',
+            'ing. en telecomunicaciones', 'ing en telecomunicaciones',
+        ],
+        'regex': [r'\btelecomunicaciones\b', r'\btelecom\b'],
+    },
+    '6': {
+        'name': 'Ingeniería en Sistemas Electrónicos',
+        'exact': [
+            'sistemas electrónicos', 'sistemas electronicos',
+            'ingeniería en sistemas electrónicos', 'ingenieria en sistemas electronicos',
+            'ing. sistemas electrónicos', 'ing sistemas electronicos',
+        ],
+        'regex': [r'\belectrónic[ao]s?\b', r'\belectronic[ao]s?\b'],
+    },
+    '7': {
+        'name': 'Ingeniería Industrial',
+        'exact': [
+            'ingeniería industrial', 'ingenieria industrial',
+            'ing. industrial', 'ing industrial',
+        ],
+        'regex': [r'\bindustrial\b', r'\bindus\b'],
+    },
+    '8': {
+        'name': 'Ingeniería Petrolera',
+        'exact': [
+            'ingeniería petrolera', 'ingenieria petrolera',
+            'ing. petrolera', 'ing petrolera',
+            'petróleo', 'petroleo', 'hidrocarburos',
+        ],
+        'regex': [r'\bpetrolera\b'],
+    },
+    '9': {
+        'name': 'Ingeniería Mecatrónica',
+        'exact': [
+            'ingeniería mecatrónica', 'ingenieria mecatronica',
+            'ing. mecatrónica', 'ing. mecatronica', 'ing mecatronica',
+            'ing mecatrónica',
+            'electromecánica', 'electromecanica', 'automotriz',
+            'robótica', 'robotica',
+        ],
+        'regex': [r'\bmecatrónica\b', r'\bmecatronica\b'],
+    },
+    '10': {
+        'name': 'Ingeniería Comercial',
+        'exact': [
+            'ingeniería comercial', 'ingenieria comercial',
+            'ing. comercial', 'ing comercial',
+        ],
+        'regex': [r'\bcomercial\b'],
+    },
+    '11': {
+        'name': 'Ingeniería Financiera',
+        'exact': [
+            'ingeniería financiera', 'ingenieria financiera',
+            'ing. financiera', 'ing financiera',
+            'finanzas',
+        ],
+        'regex': [r'\bfinanciera\b'],
+    },
+    '12': {
+        'name': 'Derecho',
+        'exact': [
+            'carrera de derecho', 'estudia derecho', 'estudiar derecho',
+            'lic. en derecho', 'licenciatura en derecho',
+        ],
+        'regex': [r'\bderecho\b'],
+    },
+    '13': {
+        'name': 'Ingeniería Agronómica',
+        'exact': [
+            'ingeniería agronómica', 'ingenieria agronomica',
+            'ing. agronómica', 'ing. agronomica', 'ing agronomica',
+            'agronomía', 'agronomia',
+        ],
+        'regex': [r'\bagronómica\b', r'\bagronomica\b', r'\bagronomía\b', r'\bagronomia\b'],
+    },
+    '14': {
+        'name': 'Ingeniería Agroindustrial',
+        'exact': [
+            'ingeniería agroindustrial', 'ingenieria agroindustrial',
+            'ing. agroindustrial', 'ing agroindustrial',
+            'agroindustria',
+        ],
+        'regex': [r'\bagroindustrial\b'],
+    },
+}
+
+# Pre-compilar regex una sola vez al importar
+for _cid, _info in EMI_CAREERS.items():
+    _info['_compiled'] = [_re.compile(p, _re.IGNORECASE) for p in _info.get('regex', [])]
+
+
+def _match_careers_in_text(text):
+    """Retorna set de career IDs mencionados en un texto.
+
+    Usa primero coincidencias exactas (substring) por velocidad,
+    luego regex con word-boundaries para evitar falsos positivos.
+    """
+    if not text:
+        return set()
+    text_lower = text.lower()
+    matched = set()
+    for cid, info in EMI_CAREERS.items():
+        # Fase 1: exact substring (rápido)
+        found = False
+        for kw in info.get('exact', []):
+            if kw in text_lower:
+                matched.add(cid)
+                found = True
+                break
+        if found:
+            continue
+        # Fase 2: regex con word boundaries (preciso)
+        for pat in info.get('_compiled', []):
+            if pat.search(text_lower):
+                matched.add(cid)
+                break
+    return matched
+
+
 @app.route('/api/ai/benchmarking/careers')
 def get_career_rankings():
-    """Ranking de carreras basado en datos reales de sentimientos"""
+    """Ranking de carreras reales de la EMI basado en menciones en posts externos y comentarios"""
     conn = get_db()
     cursor = conn.cursor()
-
-    # Extraer carreras mencionadas en los datos recolectados
-    cursor.execute('''
-        SELECT dr.id_dato, dr.contenido_original, a.sentimiento_predicho, a.confianza,
-               dr.engagement_likes, dr.engagement_shares, dr.engagement_comments
-        FROM dato_recolectado dr
-        JOIN dato_procesado dp ON dr.id_dato = dp.id_dato_original
-        LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
-    ''')
-    rows = cursor.fetchall()
-
-    # Mapear carreras conocidas de la EMI
-    career_keywords = {
-        'sistemas': {'id': '1', 'name': 'Ing. de Sistemas'},
-        'civil': {'id': '2', 'name': 'Ing. Civil'},
-        'comercial': {'id': '3', 'name': 'Ing. Comercial'},
-        'industrial': {'id': '4', 'name': 'Ing. Industrial'},
-        'mecánica': {'id': '5', 'name': 'Ing. Mecánica'},
-        'mecanica': {'id': '5', 'name': 'Ing. Mecánica'},
-        'electrónica': {'id': '6', 'name': 'Ing. Electrónica'},
-        'electronica': {'id': '6', 'name': 'Ing. Electrónica'},
-        'ambiental': {'id': '7', 'name': 'Ing. Ambiental'},
-        'petrolera': {'id': '8', 'name': 'Ing. Petrolera'},
-    }
 
     career_data = {}
     sent_map = {'Positivo': 1, 'Neutral': 0, 'Negativo': -1}
 
-    for r in rows:
-        content = (r['contenido_original'] or '').lower()
-        for kw, info in career_keywords.items():
-            if kw in content:
-                cid = info['id']
-                if cid not in career_data:
-                    career_data[cid] = {'name': info['name'], 'mentions': 0,
-                                        'sentiment_sum': 0, 'engagement': 0}
-                career_data[cid]['mentions'] += 1
-                career_data[cid]['sentiment_sum'] += sent_map.get(r['sentimiento_predicho'], 0)
-                career_data[cid]['engagement'] += (r['engagement_likes'] or 0) + (r['engagement_shares'] or 0) + (r['engagement_comments'] or 0)
-
-    # Siempre agregar ranking por fuentes OSINT (complementa las carreras encontradas)
+    # 1) Buscar menciones de carreras en POSTS EXTERNOS (no oficiales EMI)
     cursor.execute('''
-        SELECT fo.nombre_fuente, fo.id_fuente, COUNT(*) as n,
-               AVG(CASE WHEN a.sentimiento_predicho='Positivo' THEN 1
-                        WHEN a.sentimiento_predicho='Negativo' THEN -1 ELSE 0 END) as avg_sent,
-               SUM(COALESCE(dr.engagement_likes,0)+COALESCE(dr.engagement_shares,0)+COALESCE(dr.engagement_comments,0)) as eng
+        SELECT dr.id_dato, dr.contenido_original, a.sentimiento_predicho, a.confianza,
+               dr.engagement_likes, dr.engagement_shares, dr.engagement_comments
         FROM dato_recolectado dr
         JOIN fuente_osint fo ON dr.id_fuente = fo.id_fuente
         JOIN dato_procesado dp ON dr.id_dato = dp.id_dato_original
         LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
-        GROUP BY fo.nombre_fuente
-        ORDER BY n DESC
+        WHERE fo.es_oficial = 0 OR fo.es_oficial IS NULL
     ''')
     for r in cursor.fetchall():
-        fid = f'f{r["id_fuente"]}'
-        if fid not in career_data:
-            career_data[fid] = {
-                'name': r['nombre_fuente'],
-                'mentions': r['n'],
-                'sentiment_sum': round(r['avg_sent'] * r['n']) if r['avg_sent'] else 0,
-                'engagement': r['eng'] or 0,
-            }
+        matched = _match_careers_in_text(r['contenido_original'])
+        for cid in matched:
+            if cid not in career_data:
+                career_data[cid] = {'name': EMI_CAREERS[cid]['name'], 'mentions': 0,
+                                    'sentiment_sum': 0, 'engagement': 0}
+            career_data[cid]['mentions'] += 1
+            career_data[cid]['sentiment_sum'] += sent_map.get(r['sentimiento_predicho'], 0)
+            career_data[cid]['engagement'] += (
+                (r['engagement_likes'] or 0) +
+                (r['engagement_shares'] or 0) +
+                (r['engagement_comments'] or 0)
+            )
 
+    # 2) Buscar menciones de carreras en TODOS los COMENTARIOS (siempre son del público)
+    try:
+        cursor.execute('''
+            SELECT c.contenido
+            FROM comentario c
+        ''')
+        for r in cursor.fetchall():
+            matched = _match_careers_in_text(r['contenido'])
+            for cid in matched:
+                if cid not in career_data:
+                    career_data[cid] = {'name': EMI_CAREERS[cid]['name'], 'mentions': 0,
+                                        'sentiment_sum': 0, 'engagement': 0}
+                career_data[cid]['mentions'] += 1
+    except Exception:
+        pass
+
+    # Construir ranking solo con carreras reales
     rankings = []
     sorted_careers = sorted(career_data.items(),
                             key=lambda x: x[1]['mentions'], reverse=True)
@@ -1159,34 +1363,60 @@ def get_benchmarking_correlations():
 
 @app.route('/api/ai/benchmarking/careers/<career_id>/profile')
 def get_career_profile(career_id):
-    """Perfil radar de una carrera/fuente"""
+    """Perfil radar de una carrera real de la EMI"""
+    career_info = EMI_CAREERS.get(career_id)
+    career_name = career_info['name'] if career_info else f'Carrera #{career_id}'
+
     conn = get_db()
     cursor = conn.cursor()
 
-    # Calcular métricas agregadas para el perfil
+    # Buscar posts EXTERNOS que mencionan esta carrera
     cursor.execute('''
-        SELECT COUNT(*) as total,
-               AVG(CASE WHEN a.sentimiento_predicho='Positivo' THEN 1
-                        WHEN a.sentimiento_predicho='Negativo' THEN -1 ELSE 0 END) as avg_sent,
-               AVG(a.confianza) as avg_conf,
-               SUM(COALESCE(dr.engagement_likes,0)+COALESCE(dr.engagement_shares,0)+COALESCE(dr.engagement_comments,0)) as total_eng,
-               AVG(LENGTH(dr.contenido_original)) as avg_length
+        SELECT dr.contenido_original, a.sentimiento_predicho, a.confianza,
+               dr.engagement_likes, dr.engagement_shares, dr.engagement_comments
         FROM dato_recolectado dr
+        JOIN fuente_osint fo ON dr.id_fuente = fo.id_fuente
         JOIN dato_procesado dp ON dr.id_dato = dp.id_dato_original
         LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
+        WHERE fo.es_oficial = 0 OR fo.es_oficial IS NULL
     ''')
-    r = cursor.fetchone()
+
+    total = 0
+    sent_sum = 0
+    eng_sum = 0
+    conf_sum = 0
+    sent_map = {'Positivo': 1, 'Neutral': 0, 'Negativo': -1}
+
+    for r in cursor.fetchall():
+        if career_id in _match_careers_in_text(r['contenido_original']):
+            total += 1
+            sent_sum += sent_map.get(r['sentimiento_predicho'], 0)
+            eng_sum += (r['engagement_likes'] or 0) + (r['engagement_shares'] or 0) + (r['engagement_comments'] or 0)
+            conf_sum += (r['confianza'] or 0)
+
+    # También buscar en comentarios
+    try:
+        cursor.execute('SELECT contenido FROM comentario')
+        for r in cursor.fetchall():
+            if career_id in _match_careers_in_text(r['contenido']):
+                total += 1
+    except Exception:
+        pass
+
     conn.close()
 
-    sent_score = max(0, min(100, int((r['avg_sent'] + 1) * 50))) if r['avg_sent'] is not None else 50
-    mention_score = min(100, r['total'] * 2) if r['total'] else 0
-    eng_score = min(100, int((r['total_eng'] or 0) / max(r['total'], 1) / 100)) if r['total'] else 0
-    conf_score = int((r['avg_conf'] or 0) * 100)
-    visibility = min(100, mention_score + eng_score) // 2
+    avg_sent = sent_sum / max(total, 1)
+    avg_conf = conf_sum / max(total, 1)
+
+    sent_score = max(0, min(100, int((avg_sent + 1) * 50)))
+    mention_score = min(100, total * 10)  # escala para pocas menciones
+    eng_score = min(100, int(eng_sum / max(total, 1)))
+    conf_score = int(avg_conf * 100)
+    visibility = (mention_score + eng_score) // 2
 
     return jsonify({
         'careerId': career_id,
-        'careerName': f'Fuente #{career_id}',
+        'careerName': career_name,
         'metrics': {
             'sentiment': sent_score,
             'mentions': mention_score,
@@ -1198,30 +1428,44 @@ def get_career_profile(career_id):
 
 @app.route('/api/ai/benchmarking/careers/<career_id>/trends')
 def get_career_trends(career_id):
-    """Tendencias históricas de una carrera/fuente"""
+    """Tendencias históricas de una carrera real de la EMI"""
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT DATE(dr.fecha_recoleccion) as fecha,
-               COUNT(*) as mentions,
-               AVG(CASE WHEN a.sentimiento_predicho='Positivo' THEN 1
-                        WHEN a.sentimiento_predicho='Negativo' THEN -1 ELSE 0 END) as sentiment,
-               SUM(COALESCE(dr.engagement_likes,0)+COALESCE(dr.engagement_shares,0)+COALESCE(dr.engagement_comments,0)) as engagement
+        SELECT DATE(dr.fecha_recoleccion) as fecha, dr.contenido_original,
+               a.sentimiento_predicho,
+               COALESCE(dr.engagement_likes,0)+COALESCE(dr.engagement_shares,0)+COALESCE(dr.engagement_comments,0) as eng
         FROM dato_recolectado dr
+        JOIN fuente_osint fo ON dr.id_fuente = fo.id_fuente
         JOIN dato_procesado dp ON dr.id_dato = dp.id_dato_original
         LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
-        GROUP BY DATE(dr.fecha_recoleccion)
+        WHERE fo.es_oficial = 0 OR fo.es_oficial IS NULL
         ORDER BY fecha
     ''')
-    trends = []
+
+    # Agrupar por fecha solo posts que mencionan esta carrera
+    date_data = {}
+    sent_map = {'Positivo': 1, 'Neutral': 0, 'Negativo': -1}
     for r in cursor.fetchall():
-        trends.append({
-            'date': r['fecha'],
-            'mentions': r['mentions'],
-            'sentiment': round(r['sentiment'] or 0, 2),
-            'engagement': r['engagement'] or 0,
-        })
+        if career_id in _match_careers_in_text(r['contenido_original']):
+            fecha = r['fecha']
+            if fecha not in date_data:
+                date_data[fecha] = {'mentions': 0, 'sent_sum': 0, 'eng': 0}
+            date_data[fecha]['mentions'] += 1
+            date_data[fecha]['sent_sum'] += sent_map.get(r['sentimiento_predicho'], 0)
+            date_data[fecha]['eng'] += r['eng'] or 0
+
     conn.close()
+
+    trends = []
+    for fecha in sorted(date_data.keys()):
+        d = date_data[fecha]
+        trends.append({
+            'date': fecha,
+            'mentions': d['mentions'],
+            'sentiment': round(d['sent_sum'] / max(d['mentions'], 1), 2),
+            'engagement': d['eng'],
+        })
     return jsonify(trends)
 
 @app.route('/api/ai/benchmarking/compare')
@@ -1240,19 +1484,15 @@ def compare_careers():
 
 @app.route('/api/careers')
 def get_careers_list():
-    """Lista de carreras/fuentes disponibles"""
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT id_fuente, nombre_fuente, tipo_fuente FROM fuente_osint ORDER BY nombre_fuente')
+    """Lista de carreras reales de la EMI"""
     careers = []
-    for r in cursor.fetchall():
+    for cid, info in EMI_CAREERS.items():
         careers.append({
-            'id': str(r['id_fuente']),
-            'name': r['nombre_fuente'],
-            'faculty': r['tipo_fuente'] or 'General',
+            'id': cid,
+            'name': info['name'],
+            'faculty': 'Ingeniería',
         })
-    conn.close()
-    return jsonify(careers)
+    return jsonify(sorted(careers, key=lambda x: x['name']))
 
 # ============== CONFIGURACIÓN DE ALERTAS ==============
 @app.route('/api/configuracion-alertas')
@@ -1391,9 +1631,21 @@ def reputation_wordcloud():
     
     min_freq = request.args.get('min_frequency', 2, type=int)
     
-    # Obtener todos los textos reales
-    cursor.execute('SELECT contenido_limpio FROM dato_procesado WHERE contenido_limpio IS NOT NULL')
+    # Obtener todos los textos reales - solo de fuentes externas
+    cursor.execute(f'''
+        SELECT dp.contenido_limpio FROM dato_procesado dp
+        WHERE dp.contenido_limpio IS NOT NULL
+        AND {EXTERNAL_PROCESADOS_SUBQUERY}
+    ''')
     texts = [row['contenido_limpio'] for row in cursor.fetchall()]
+    
+    # También incluir comentarios (siempre son del público)
+    try:
+        cursor.execute('SELECT contenido FROM comentario WHERE contenido IS NOT NULL')
+        texts.extend([row['contenido'] for row in cursor.fetchall()])
+    except Exception:
+        pass
+    
     conn.close()
     
     # Extraer palabras reales
@@ -1414,12 +1666,13 @@ def reputation_topics():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Obtener textos con sus sentimientos
-    cursor.execute('''
+    # Obtener textos con sus sentimientos - solo contenido externo
+    cursor.execute(f'''
         SELECT dp.contenido_limpio, a.sentimiento_predicho
         FROM dato_procesado dp
         LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
         WHERE dp.contenido_limpio IS NOT NULL
+        AND {EXTERNAL_PROCESADOS_SUBQUERY}
     ''')
     rows = cursor.fetchall()
     conn.close()
@@ -1517,17 +1770,19 @@ def reputation_competitors():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Obtener métricas reales de EMI
-    cursor.execute('SELECT COUNT(*) FROM dato_procesado')
+    # Obtener métricas reales de EMI - solo contenido externo/opiniones
+    cursor.execute(f'SELECT COUNT(*) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
     emi_posts = cursor.fetchone()[0]
     
-    cursor.execute('SELECT AVG(engagement_total) FROM dato_procesado')
+    cursor.execute(f'SELECT AVG(engagement_total) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
     emi_engagement = cursor.fetchone()[0] or 0
     
-    cursor.execute('''
+    cursor.execute(f'''
         SELECT 
-            SUM(CASE WHEN sentimiento_predicho = 'Positivo' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)
-        FROM analisis_sentimiento
+            SUM(CASE WHEN a.sentimiento_predicho = 'Positivo' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)
+        FROM analisis_sentimiento a
+        JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
     ''')
     emi_positive_pct = cursor.fetchone()[0] or 0
     
@@ -1581,39 +1836,43 @@ def reputation_metrics():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Volumen de menciones
-    cursor.execute('SELECT COUNT(*) FROM dato_procesado')
+    # Volumen de menciones - solo externas
+    cursor.execute(f'SELECT COUNT(*) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
     mention_volume = cursor.fetchone()[0]
     
-    # Score de sentimiento real
-    cursor.execute('''
+    # Score de sentimiento real - solo externo
+    cursor.execute(f'''
         SELECT 
-            SUM(CASE WHEN sentimiento_predicho = 'Positivo' THEN 1 ELSE 0 END) as pos,
-            SUM(CASE WHEN sentimiento_predicho = 'Negativo' THEN 1 ELSE 0 END) as neg,
+            SUM(CASE WHEN a.sentimiento_predicho = 'Positivo' THEN 1 ELSE 0 END) as pos,
+            SUM(CASE WHEN a.sentimiento_predicho = 'Negativo' THEN 1 ELSE 0 END) as neg,
             COUNT(*) as total
-        FROM analisis_sentimiento
+        FROM analisis_sentimiento a
+        JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
     ''')
     row = cursor.fetchone()
     pos, neg, total = row['pos'] or 0, row['neg'] or 0, row['total'] or 1
     sentiment_score = round((pos - neg) / total * 100 + 50, 1)  # Normalizado 0-100
     
-    # Engagement real
-    cursor.execute('SELECT AVG(engagement_total), SUM(engagement_total) FROM dato_procesado')
+    # Engagement real - solo externo
+    cursor.execute(f'SELECT AVG(engagement_total), SUM(engagement_total) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
     row = cursor.fetchone()
     avg_engagement = row[0] or 0
     total_engagement = row[1] or 0
     
-    # Calcular tendencia (última semana vs anterior)
-    cursor.execute('''
-        SELECT COUNT(*) FROM dato_procesado 
-        WHERE DATE(fecha_publicacion_iso) >= DATE('now', '-7 days')
+    # Calcular tendencia (última semana vs anterior) - solo externo
+    cursor.execute(f'''
+        SELECT COUNT(*) FROM dato_procesado dp
+        WHERE DATE(dp.fecha_publicacion_iso) >= DATE('now', '-7 days')
+        AND {EXTERNAL_PROCESADOS_SUBQUERY}
     ''')
     recent = cursor.fetchone()[0]
     
-    cursor.execute('''
-        SELECT COUNT(*) FROM dato_procesado 
-        WHERE DATE(fecha_publicacion_iso) >= DATE('now', '-14 days')
-        AND DATE(fecha_publicacion_iso) < DATE('now', '-7 days')
+    cursor.execute(f'''
+        SELECT COUNT(*) FROM dato_procesado dp
+        WHERE DATE(dp.fecha_publicacion_iso) >= DATE('now', '-14 days')
+        AND DATE(dp.fecha_publicacion_iso) < DATE('now', '-7 days')
+        AND {EXTERNAL_PROCESADOS_SUBQUERY}
     ''')
     previous = cursor.fetchone()[0]
     
@@ -1804,11 +2063,21 @@ def create_source():
     conn = get_db()
     cursor = conn.cursor()
     
+    # Determinar si la fuente es oficial de la EMI o externa
+    es_oficial = data.get('es_oficial', 0)
+    name_lower = name.lower()
+    url_lower = url.lower()
+    # Auto-detectar fuentes oficiales por nombre o URL
+    if any(kw in name_lower for kw in ['emi oficial', 'emi ualp', 'emilapaz', 'emi la paz']):
+        es_oficial = 1
+    if any(kw in url_lower for kw in ['emi.ualp', 'emilapazoficial', 'emi_oficial']):
+        es_oficial = 1
+    
     try:
         cursor.execute('''
-            INSERT INTO fuente_osint (nombre_fuente, tipo_fuente, url_fuente, identificador, activa)
-            VALUES (?, ?, ?, ?, 1)
-        ''', (name, platform, url, identifier))
+            INSERT INTO fuente_osint (nombre_fuente, tipo_fuente, url_fuente, identificador, activa, es_oficial)
+            VALUES (?, ?, ?, ?, 1, ?)
+        ''', (name, platform, url, identifier, es_oficial))
         
         source_id = cursor.lastrowid
         conn.commit()
@@ -3881,12 +4150,13 @@ def nlp_sentimiento_aspecto():
     conn = get_db()
     cursor = conn.cursor()
     try:
-        # Incluir también comentarios en el análisis
-        cursor.execute("""
+        # Solo contenido externo (confesiones, etc.) + TODOS los comentarios (siempre del público)
+        cursor.execute(f"""
             SELECT dp.contenido_limpio as texto, COALESCE(a.sentimiento_predicho, 'Neutral') as sent
             FROM dato_procesado dp
             LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
             WHERE dp.contenido_limpio IS NOT NULL AND LENGTH(dp.contenido_limpio) > 5
+            AND {EXTERNAL_PROCESADOS_SUBQUERY}
             UNION ALL
             SELECT c.contenido as texto, COALESCE(ac.sentimiento, 'Neutral') as sent
             FROM comentario c
