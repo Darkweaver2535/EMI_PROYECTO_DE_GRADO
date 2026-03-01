@@ -41,14 +41,24 @@ const DRAWER_WIDTH = 260;
 
 type UserRole = 'administrador' | 'vicerrector' | 'uebu';
 
+interface UserPermisos {
+  osint?: boolean;
+  posts?: boolean;
+  dashboards?: boolean;
+  nlp?: boolean;
+  evaluacion?: boolean;
+  usuarios?: boolean;
+  configuracion?: boolean;
+}
+
 interface MenuItem {
   id: string;
   label: string;
   icon: React.ReactNode;
   path?: string;
   children?: MenuItem[];
-  /** Roles that can see this item. If empty/undefined, all roles can see it. */
-  roles?: UserRole[];
+  /** Permission key to check (maps to permisos object). If undefined, visible to all. */
+  permisoKey?: keyof UserPermisos;
 }
 
 const menuItems: MenuItem[] = [
@@ -57,19 +67,20 @@ const menuItems: MenuItem[] = [
     label: 'Inteligencia OSINT',
     icon: <OSINTIcon />,
     path: '/dashboard/osint',
-    roles: ['administrador', 'vicerrector'],
+    permisoKey: 'osint',
   },
   {
     id: 'posts',
     label: 'Posts y Comentarios',
     icon: <PostsIcon />,
     path: '/dashboard/posts',
-    roles: ['administrador', 'vicerrector'],
+    permisoKey: 'posts',
   },
   {
     id: 'dashboards',
     label: 'Analisis AI',
     icon: <DashboardIcon />,
+    permisoKey: 'dashboards',
     children: [
       {
         id: 'sentiment',
@@ -102,20 +113,21 @@ const menuItems: MenuItem[] = [
     label: 'IA / ML / NLP',
     icon: <NLPIcon />,
     path: '/dashboard/nlp',
+    permisoKey: 'nlp',
   },
   {
     id: 'evaluacion',
     label: 'Evaluacion Sistema',
     icon: <EvaluacionIcon />,
     path: '/dashboard/evaluacion',
-    roles: ['administrador', 'vicerrector'],
+    permisoKey: 'evaluacion',
   },
   {
     id: 'usuarios',
     label: 'Gestion Usuarios',
     icon: <UsersIcon />,
     path: '/dashboard/usuarios',
-    roles: ['administrador'],
+    permisoKey: 'usuarios',
   },
 ];
 
@@ -125,7 +137,7 @@ const bottomMenuItems: MenuItem[] = [
     label: 'Configuracion',
     icon: <SettingsIcon />,
     path: '/dashboard/configuracion',
-    roles: ['administrador', 'vicerrector'],
+    permisoKey: 'configuracion',
   },
   {
     id: 'help',
@@ -141,19 +153,35 @@ interface SidebarProps {
   variant?: 'permanent' | 'temporary';
 }
 
-/** Filter menu items based on user role */
-const filterMenuByRole = (items: MenuItem[], role: UserRole): MenuItem[] => {
+/** Filter menu items based on user permissions */
+const filterMenuByPermisos = (items: MenuItem[], permisos: UserPermisos): MenuItem[] => {
   return items
-    .filter(item => !item.roles || item.roles.includes(role))
+    .filter(item => {
+      if (!item.permisoKey) return true; // No permission required → always visible
+      return permisos[item.permisoKey] === true;
+    })
     .map(item => {
       if (item.children) {
-        const filteredChildren = filterMenuByRole(item.children, role);
+        const filteredChildren = filterMenuByPermisos(item.children, permisos);
         if (filteredChildren.length === 0) return null;
         return { ...item, children: filteredChildren };
       }
       return item;
     })
     .filter(Boolean) as MenuItem[];
+};
+
+/** Get default permisos for a role (fallback when user has no permisos) */
+const getDefaultPermisos = (rol: UserRole): UserPermisos => {
+  switch (rol) {
+    case 'administrador':
+      return { osint: true, posts: true, dashboards: true, nlp: true, evaluacion: true, usuarios: true, configuracion: true };
+    case 'vicerrector':
+      return { osint: true, posts: true, dashboards: true, nlp: true, evaluacion: true, usuarios: false, configuracion: true };
+    case 'uebu':
+    default:
+      return { osint: false, posts: false, dashboards: true, nlp: true, evaluacion: false, usuarios: false, configuracion: false };
+  }
 };
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -167,8 +195,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { user } = useAuth();
   
   const userRole: UserRole = (user?.rol as UserRole) || 'uebu';
-  const visibleMenuItems = React.useMemo(() => filterMenuByRole(menuItems, userRole), [userRole]);
-  const visibleBottomItems = React.useMemo(() => filterMenuByRole(bottomMenuItems, userRole), [userRole]);
+  const userPermisos: UserPermisos = user?.permisos || getDefaultPermisos(userRole);
+  const visibleMenuItems = React.useMemo(() => filterMenuByPermisos(menuItems, userPermisos), [userPermisos]);
+  const visibleBottomItems = React.useMemo(() => filterMenuByPermisos(bottomMenuItems, userPermisos), [userPermisos]);
   
   const [expandedItems, setExpandedItems] = React.useState<string[]>(['dashboards']);
 

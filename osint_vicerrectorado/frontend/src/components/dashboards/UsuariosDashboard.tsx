@@ -36,6 +36,7 @@ import {
   Paper,
   Divider,
   InputAdornment,
+  alpha,
 } from '@mui/material';
 import {
   PersonAdd as AddIcon,
@@ -49,9 +50,17 @@ import {
   VisibilityOff as VisibilityOffIcon,
   Search as SearchIcon,
   History as HistoryIcon,
+  Security as SecurityIcon,
+  TravelExplore as OsintModIcon,
+  Comment as PostsModIcon,
+  Psychology as AiModIcon,
+  SmartToy as NlpModIcon,
+  Assessment as EvalModIcon,
+  Group as UsersModIcon,
+  Settings as ConfigModIcon,
 } from '@mui/icons-material';
 import { KPICard, LoadingSpinner } from '../common';
-import usuariosService, { UsuarioData } from '../../services/usuariosService';
+import usuariosService, { UsuarioData, UsuarioPermisos } from '../../services/usuariosService';
 
 const rolLabels: Record<string, string> = {
   administrador: 'Administrador',
@@ -71,6 +80,23 @@ const rolIcons: Record<string, React.ReactNode> = {
   uebu: <UserIcon />,
 };
 
+// ========== MÓDULOS Y PERMISOS ==========
+const MODULE_DEFINITIONS: { key: keyof UsuarioPermisos; label: string; icon: React.ReactNode; description: string }[] = [
+  { key: 'osint', label: 'Inteligencia OSINT', icon: <OsintModIcon />, description: 'Monitoreo y recolección de datos OSINT' },
+  { key: 'posts', label: 'Posts y Comentarios', icon: <PostsModIcon />, description: 'Gestión de posts, comentarios y web scraping' },
+  { key: 'dashboards', label: 'Análisis IA', icon: <AiModIcon />, description: 'Sentimientos, reputación, alertas, benchmarking' },
+  { key: 'nlp', label: 'IA / ML / NLP', icon: <NlpModIcon />, description: 'Pipeline de procesamiento de lenguaje natural' },
+  { key: 'evaluacion', label: 'Evaluación del Sistema', icon: <EvalModIcon />, description: 'Métricas de rendimiento y evaluación (95.2%)' },
+  { key: 'usuarios', label: 'Gestión de Usuarios', icon: <UsersModIcon />, description: 'CRUD de usuarios y roles del sistema' },
+  { key: 'configuracion', label: 'Configuración', icon: <ConfigModIcon />, description: 'Ajustes generales del sistema' },
+];
+
+const DEFAULT_PERMISOS: Record<string, UsuarioPermisos> = {
+  administrador: { osint: true, posts: true, dashboards: true, nlp: true, evaluacion: true, usuarios: true, configuracion: true },
+  vicerrector: { osint: true, posts: true, dashboards: true, nlp: true, evaluacion: true, usuarios: false, configuracion: true },
+  uebu: { osint: false, posts: false, dashboards: true, nlp: true, evaluacion: false, usuarios: false, configuracion: false },
+};
+
 interface UserFormData {
   username: string;
   email: string;
@@ -79,6 +105,7 @@ interface UserFormData {
   cargo: string;
   password: string;
   activo: boolean;
+  permisos: UsuarioPermisos;
 }
 
 const emptyForm: UserFormData = {
@@ -89,6 +116,7 @@ const emptyForm: UserFormData = {
   cargo: '',
   password: '',
   activo: true,
+  permisos: { ...DEFAULT_PERMISOS.uebu },
 };
 
 const UsuariosDashboard: React.FC = () => {
@@ -155,7 +183,7 @@ const UsuariosDashboard: React.FC = () => {
 
   const handleOpenCreate = () => {
     setDialogMode('create');
-    setFormData(emptyForm);
+    setFormData({ ...emptyForm, permisos: { ...DEFAULT_PERMISOS.uebu } });
     setEditingId(null);
     setShowPassword(false);
     setDialogOpen(true);
@@ -163,6 +191,7 @@ const UsuariosDashboard: React.FC = () => {
 
   const handleOpenEdit = (user: UsuarioData) => {
     setDialogMode('edit');
+    const userPermisos = user.permisos || DEFAULT_PERMISOS[user.rol] || DEFAULT_PERMISOS.uebu;
     setFormData({
       username: user.username,
       email: user.email,
@@ -171,6 +200,7 @@ const UsuariosDashboard: React.FC = () => {
       cargo: user.cargo || '',
       password: '',
       activo: user.activo !== false,
+      permisos: { ...userPermisos },
     });
     setEditingId(user.id || null);
     setShowPassword(false);
@@ -198,6 +228,7 @@ const UsuariosDashboard: React.FC = () => {
           rol: formData.rol,
           cargo: formData.cargo,
           password: formData.password,
+          permisos: formData.permisos,
         });
         setSuccess('Usuario creado exitosamente');
       } else if (editingId) {
@@ -208,6 +239,7 @@ const UsuariosDashboard: React.FC = () => {
           rol: formData.rol,
           cargo: formData.cargo,
           activo: formData.activo,
+          permisos: formData.permisos,
         };
         if (formData.password) {
           updateData.password = formData.password;
@@ -385,25 +417,30 @@ const UsuariosDashboard: React.FC = () => {
                   <TableCell>ID</TableCell>
                   <TableCell>Usuario</TableCell>
                   <TableCell>Nombre Completo</TableCell>
-                  <TableCell>Email</TableCell>
                   <TableCell>Rol</TableCell>
-                  <TableCell>Cargo</TableCell>
+                  <TableCell>Módulos</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Último Acceso</TableCell>
                   <TableCell align="right">Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredUsuarios.map((user) => (
+                {filteredUsuarios.map((user) => {
+                  const permisos = user.permisos || DEFAULT_PERMISOS[user.rol] || DEFAULT_PERMISOS.uebu;
+                  const activeCount = Object.values(permisos).filter(Boolean).length;
+                  const totalCount = MODULE_DEFINITIONS.length;
+                  return (
                   <TableRow key={user.id} hover>
                     <TableCell>{user.id}</TableCell>
                     <TableCell>
                       <Typography variant="body2" fontWeight={500}>
                         {user.username}
                       </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {user.email}
+                      </Typography>
                     </TableCell>
                     <TableCell>{user.nombre_completo}</TableCell>
-                    <TableCell>{user.email}</TableCell>
                     <TableCell>
                       <Chip
                         icon={rolIcons[user.rol] as React.ReactElement}
@@ -413,7 +450,17 @@ const UsuariosDashboard: React.FC = () => {
                         variant="outlined"
                       />
                     </TableCell>
-                    <TableCell>{user.cargo || '-'}</TableCell>
+                    <TableCell>
+                      <Tooltip title={MODULE_DEFINITIONS.filter(m => permisos[m.key]).map(m => m.label).join(', ') || 'Sin módulos'}>
+                        <Chip
+                          label={`${activeCount}/${totalCount}`}
+                          size="small"
+                          color={activeCount === totalCount ? 'success' : activeCount > 0 ? 'warning' : 'default'}
+                          variant="outlined"
+                          icon={<SecurityIcon fontSize="small" />}
+                        />
+                      </Tooltip>
+                    </TableCell>
                     <TableCell>
                       <Chip
                         label={user.activo !== false ? 'Activo' : 'Inactivo'}
@@ -443,10 +490,11 @@ const UsuariosDashboard: React.FC = () => {
                       </Tooltip>
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
                 {filteredUsuarios.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={9} align="center">
+                    <TableCell colSpan={8} align="center">
                       <Typography variant="body2" color="text.secondary" py={4}>
                         No se encontraron usuarios
                       </Typography>
@@ -521,7 +569,8 @@ const UsuariosDashboard: React.FC = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {dialogMode === 'create' ? <AddIcon color="primary" /> : <EditIcon color="primary" />}
           {dialogMode === 'create' ? 'Crear Nuevo Usuario' : 'Editar Usuario'}
         </DialogTitle>
         <DialogContent>
@@ -556,12 +605,14 @@ const UsuariosDashboard: React.FC = () => {
               <Select
                 value={formData.rol}
                 label="Rol"
-                onChange={(e) =>
+                onChange={(e) => {
+                  const newRol = e.target.value as 'administrador' | 'vicerrector' | 'uebu';
                   setFormData({
                     ...formData,
-                    rol: e.target.value as 'administrador' | 'vicerrector' | 'uebu',
-                  })
-                }
+                    rol: newRol,
+                    permisos: { ...(DEFAULT_PERMISOS[newRol] || DEFAULT_PERMISOS.uebu) },
+                  });
+                }}
               >
                 <MenuItem value="administrador">
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -624,6 +675,118 @@ const UsuariosDashboard: React.FC = () => {
                 label="Usuario activo"
               />
             )}
+
+            {/* ========== PERMISOS POR MÓDULO ========== */}
+            <Divider sx={{ my: 0.5 }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+              <SecurityIcon color="primary" fontSize="small" />
+              <Typography variant="subtitle1" fontWeight={600}>
+                Permisos de Acceso por Módulo
+              </Typography>
+            </Box>
+            <Typography variant="caption" color="text.secondary" sx={{ mt: -1, mb: 1 }}>
+              Los permisos se pre-configuran según el rol seleccionado. Puedes ajustarlos manualmente.
+            </Typography>
+
+            <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+              {MODULE_DEFINITIONS.map((mod, idx) => {
+                const isEnabled = formData.permisos[mod.key];
+                return (
+                  <Box
+                    key={mod.key}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      px: 2,
+                      py: 1.2,
+                      borderBottom: idx < MODULE_DEFINITIONS.length - 1 ? '1px solid' : 'none',
+                      borderColor: 'divider',
+                      bgcolor: isEnabled ? (theme) => alpha(theme.palette.success.main, 0.04) : 'transparent',
+                      transition: 'background-color 0.2s',
+                      '&:hover': {
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04),
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: 1, minWidth: 0 }}>
+                      <Box sx={{
+                        color: isEnabled ? 'primary.main' : 'text.disabled',
+                        display: 'flex',
+                        transition: 'color 0.2s',
+                      }}>
+                        {mod.icon}
+                      </Box>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                          variant="body2"
+                          fontWeight={500}
+                          sx={{ color: isEnabled ? 'text.primary' : 'text.disabled' }}
+                        >
+                          {mod.label}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ color: isEnabled ? 'text.secondary' : 'text.disabled', display: { xs: 'none', sm: 'block' } }}
+                        >
+                          {mod.description}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Switch
+                      checked={isEnabled}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          permisos: {
+                            ...formData.permisos,
+                            [mod.key]: e.target.checked,
+                          },
+                        });
+                      }}
+                      color="success"
+                      size="small"
+                    />
+                  </Box>
+                );
+              })}
+            </Paper>
+
+            {/* Quick actions */}
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => setFormData({
+                  ...formData,
+                  permisos: { osint: true, posts: true, dashboards: true, nlp: true, evaluacion: true, usuarios: true, configuracion: true },
+                })}
+              >
+                Activar todos
+              </Button>
+              <Button
+                size="small"
+                variant="text"
+                color="inherit"
+                onClick={() => setFormData({
+                  ...formData,
+                  permisos: { osint: false, posts: false, dashboards: false, nlp: false, evaluacion: false, usuarios: false, configuracion: false },
+                })}
+              >
+                Desactivar todos
+              </Button>
+              <Button
+                size="small"
+                variant="text"
+                color="secondary"
+                onClick={() => setFormData({
+                  ...formData,
+                  permisos: { ...(DEFAULT_PERMISOS[formData.rol] || DEFAULT_PERMISOS.uebu) },
+                })}
+              >
+                Restaurar por rol
+              </Button>
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>

@@ -26,6 +26,16 @@ export interface ApiError {
   details?: Record<string, string>;
 }
 
+export interface UserPermisos {
+  osint: boolean;
+  posts: boolean;
+  dashboards: boolean;
+  nlp: boolean;
+  evaluacion: boolean;
+  usuarios: boolean;
+  configuracion: boolean;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -41,6 +51,7 @@ export interface User {
   lastLogin?: string;
   ultimo_login?: string;
   fecha_creacion?: string;
+  permisos?: UserPermisos;
 }
 
 export interface AuthTokens {

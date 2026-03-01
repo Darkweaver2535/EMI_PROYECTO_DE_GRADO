@@ -5,6 +5,16 @@
 
 import api from './api';
 
+export interface UsuarioPermisos {
+  osint: boolean;
+  posts: boolean;
+  dashboards: boolean;
+  nlp: boolean;
+  evaluacion: boolean;
+  usuarios: boolean;
+  configuracion: boolean;
+}
+
 export interface UsuarioData {
   id?: number;
   username: string;
@@ -16,6 +26,7 @@ export interface UsuarioData {
   password?: string;
   ultimo_login?: string;
   fecha_creacion?: string;
+  permisos?: UsuarioPermisos;
 }
 
 export interface RolInfo {

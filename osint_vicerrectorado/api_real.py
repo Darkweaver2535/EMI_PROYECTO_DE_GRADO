@@ -52,6 +52,14 @@ def login():
         cursor.execute('INSERT INTO log_actividad (id_usuario, accion, detalle, ip_address) VALUES (?,?,?,?)',
                        (user['id_usuario'], 'login', 'Inicio de sesión exitoso', request.remote_addr))
         conn.commit()
+        
+        # Cargar permisos
+        permisos = {}
+        try:
+            permisos = json.loads(user['permisos'] or '{}')
+        except:
+            permisos = get_default_permisos(user['rol'])
+        
         conn.close()
         return jsonify({
             'user': {
@@ -61,7 +69,8 @@ def login():
                 'nombre': user['nombre_completo'],
                 'email': user['email'],
                 'rol': user['rol'],
-                'cargo': user['cargo']
+                'cargo': user['cargo'],
+                'permisos': permisos
             },
             'tokens': {
                 'accessToken': f'token_{user["username"]}_{user["id_usuario"]}',
@@ -87,10 +96,16 @@ def auth_me():
         user = cursor.fetchone()
         conn.close()
         if user:
+            permisos = {}
+            try:
+                permisos = json.loads(user['permisos'] or '{}')
+            except:
+                permisos = get_default_permisos(user['rol'])
             return jsonify({
                 'id': user['id_usuario'], 'username': user['username'],
                 'name': user['nombre_completo'], 'nombre': user['nombre_completo'],
-                'email': user['email'], 'rol': user['rol'], 'cargo': user['cargo']
+                'email': user['email'], 'rol': user['rol'], 'cargo': user['cargo'],
+                'permisos': permisos
             })
     return jsonify({'error': 'Token inválido'}), 401
 
@@ -136,13 +151,19 @@ def get_usuarios():
     """Lista todos los usuarios"""
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT id_usuario, username, email, nombre_completo, rol, cargo, activo, ultimo_login, fecha_creacion FROM usuario ORDER BY id_usuario')
+    cursor.execute('SELECT id_usuario, username, email, nombre_completo, rol, cargo, activo, ultimo_login, fecha_creacion, permisos FROM usuario ORDER BY id_usuario')
     users = []
     for row in cursor.fetchall():
+        permisos = {}
+        try:
+            permisos = json.loads(row['permisos'] or '{}')
+        except:
+            permisos = get_default_permisos(row['rol'])
         users.append({
             'id': row['id_usuario'], 'username': row['username'], 'email': row['email'],
             'nombre_completo': row['nombre_completo'], 'rol': row['rol'], 'cargo': row['cargo'],
-            'activo': bool(row['activo']), 'ultimo_login': row['ultimo_login'], 'fecha_creacion': row['fecha_creacion']
+            'activo': bool(row['activo']), 'ultimo_login': row['ultimo_login'], 'fecha_creacion': row['fecha_creacion'],
+            'permisos': permisos
         })
     conn.close()
     return jsonify({'usuarios': users, 'total': len(users)})
@@ -152,15 +173,21 @@ def get_usuario(uid):
     """Obtener usuario por ID"""
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT id_usuario, username, email, nombre_completo, rol, cargo, activo, ultimo_login, fecha_creacion FROM usuario WHERE id_usuario = ?', (uid,))
+    cursor.execute('SELECT id_usuario, username, email, nombre_completo, rol, cargo, activo, ultimo_login, fecha_creacion, permisos FROM usuario WHERE id_usuario = ?', (uid,))
     row = cursor.fetchone()
     conn.close()
     if not row:
         return jsonify({'error': 'Usuario no encontrado'}), 404
+    permisos = {}
+    try:
+        permisos = json.loads(row['permisos'] or '{}')
+    except:
+        permisos = get_default_permisos(row['rol'])
     return jsonify({
         'id': row['id_usuario'], 'username': row['username'], 'email': row['email'],
         'nombre_completo': row['nombre_completo'], 'rol': row['rol'], 'cargo': row['cargo'],
-        'activo': bool(row['activo']), 'ultimo_login': row['ultimo_login'], 'fecha_creacion': row['fecha_creacion']
+        'activo': bool(row['activo']), 'ultimo_login': row['ultimo_login'], 'fecha_creacion': row['fecha_creacion'],
+        'permisos': permisos
     })
 
 @app.route('/api/usuarios', methods=['POST'])
@@ -173,14 +200,20 @@ def create_usuario():
             return jsonify({'error': f'Campo {field} requerido'}), 400
     if data['rol'] not in ('administrador', 'vicerrector', 'uebu'):
         return jsonify({'error': 'Rol inválido'}), 400
+    # Calcular permisos
+    permisos = data.get('permisos')
+    if not permisos:
+        permisos = get_default_permisos(data['rol'])
+    permisos_json = json.dumps(permisos)
+    
     conn = get_db()
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            INSERT INTO usuario (username, email, password_hash, nombre_completo, rol, cargo)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO usuario (username, email, password_hash, nombre_completo, rol, cargo, permisos)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (data['username'], data['email'], hash_password(data['password']),
-              data['nombre_completo'], data['rol'], data.get('cargo', '')))
+              data['nombre_completo'], data['rol'], data.get('cargo', ''), permisos_json))
         conn.commit()
         new_id = cursor.lastrowid
         conn.close()
@@ -212,6 +245,9 @@ def update_usuario(uid):
     if 'password' in data and data['password']:
         fields.append('password_hash = ?')
         values.append(hash_password(data['password']))
+    if 'permisos' in data:
+        fields.append('permisos = ?')
+        values.append(json.dumps(data['permisos']))
 
     if fields:
         values.append(uid)
@@ -230,14 +266,42 @@ def delete_usuario(uid):
     conn.close()
     return jsonify({'message': 'Usuario desactivado'})
 
+def get_default_permisos(rol):
+    """Retorna los permisos por defecto según el rol"""
+    defaults = {
+        'administrador': {
+            'osint': True, 'posts': True, 'dashboards': True,
+            'nlp': True, 'evaluacion': True, 'usuarios': True, 'configuracion': True
+        },
+        'vicerrector': {
+            'osint': True, 'posts': True, 'dashboards': True,
+            'nlp': True, 'evaluacion': True, 'usuarios': False, 'configuracion': True
+        },
+        'uebu': {
+            'osint': False, 'posts': False, 'dashboards': True,
+            'nlp': True, 'evaluacion': False, 'usuarios': False, 'configuracion': False
+        }
+    }
+    return defaults.get(rol, defaults['uebu'])
+
 @app.route('/api/usuarios/roles')
 def get_roles():
-    """Lista los roles disponibles"""
+    """Lista los roles disponibles con permisos por defecto"""
     return jsonify({'roles': [
-        {'id': 'administrador', 'nombre': 'Administrador del Sistema', 'descripcion': 'Acceso total al sistema'},
-        {'id': 'vicerrector', 'nombre': 'Vicerrector de Grado / Jefe', 'descripcion': 'Supervisión y reportes ejecutivos'},
-        {'id': 'uebu', 'nombre': 'Usuario UEBU', 'descripcion': 'Análisis y gestión operativa'},
+        {'id': 'administrador', 'nombre': 'Administrador del Sistema', 'descripcion': 'Acceso total al sistema',
+         'defaultPermisos': get_default_permisos('administrador')},
+        {'id': 'vicerrector', 'nombre': 'Vicerrector de Grado / Jefe', 'descripcion': 'Supervisión y reportes ejecutivos',
+         'defaultPermisos': get_default_permisos('vicerrector')},
+        {'id': 'uebu', 'nombre': 'Usuario UEBU', 'descripcion': 'Análisis y gestión operativa',
+         'defaultPermisos': get_default_permisos('uebu')},
     ]})
+
+@app.route('/api/usuarios/roles/permisos-default/<rol>')
+def get_role_default_permisos(rol):
+    """Retorna los permisos por defecto de un rol"""
+    if rol not in ('administrador', 'vicerrector', 'uebu'):
+        return jsonify({'error': 'Rol inválido'}), 400
+    return jsonify({'permisos': get_default_permisos(rol)})
 
 # ============== SENTIMIENTOS ==============
 @app.route('/api/ai/sentiments/distribution')

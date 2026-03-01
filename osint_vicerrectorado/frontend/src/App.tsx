@@ -26,29 +26,59 @@ const UsuariosDashboard = lazy(() => import('./components/dashboards/UsuariosDas
 const ConfiguracionDashboard = lazy(() => import('./components/dashboards/ConfiguracionDashboard'));
 const AyudaDashboard = lazy(() => import('./components/dashboards/AyudaDashboard'));
 
+import { UserPermisos } from './types';
+
 /**
- * Role-based route protection.
- * allowedRoles: roles that can access. If empty, all authenticated users can.
+ * Permission-based route protection.
+ * permisoKey: the permission key to check in user.permisos.
+ * If empty string, all authenticated users can access.
  */
-const RoleRoute: React.FC<{ allowedRoles: string[]; children: React.ReactNode }> = ({ allowedRoles, children }) => {
+const PermisoRoute: React.FC<{ permisoKey?: keyof UserPermisos; children: React.ReactNode }> = ({ permisoKey, children }) => {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user.rol)) {
-    return <Navigate to="/dashboard/sentiment" replace />;
+  
+  if (permisoKey) {
+    const permisos = user.permisos || getDefaultPermisos(user.rol);
+    if (!permisos[permisoKey]) {
+      // Redirect to first available module
+      const firstAvailable = getFirstAvailableRoute(permisos);
+      return <Navigate to={firstAvailable} replace />;
+    }
   }
   return <>{children}</>;
 };
 
+/** Get default permisos for fallback */
+const getDefaultPermisos = (rol: string): UserPermisos => {
+  switch (rol) {
+    case 'administrador':
+      return { osint: true, posts: true, dashboards: true, nlp: true, evaluacion: true, usuarios: true, configuracion: true };
+    case 'vicerrector':
+      return { osint: true, posts: true, dashboards: true, nlp: true, evaluacion: true, usuarios: false, configuracion: true };
+    default:
+      return { osint: false, posts: false, dashboards: true, nlp: true, evaluacion: false, usuarios: false, configuracion: false };
+  }
+};
+
+/** Find the first accessible route for a user */
+const getFirstAvailableRoute = (permisos: UserPermisos): string => {
+  if (permisos.posts) return '/dashboard/posts';
+  if (permisos.osint) return '/dashboard/osint';
+  if (permisos.dashboards) return '/dashboard/sentiment';
+  if (permisos.nlp) return '/dashboard/nlp';
+  if (permisos.evaluacion) return '/dashboard/evaluacion';
+  if (permisos.configuracion) return '/dashboard/configuracion';
+  return '/dashboard/ayuda';
+};
+
 /**
- * Default redirect based on role.
- * Admin/Vicerrector go to posts, UEBU goes to sentiment (Analisis AI).
+ * Default redirect based on permissions.
  */
 const DefaultRedirect: React.FC = () => {
   const { user } = useAuth();
-  if (user?.rol === 'uebu') {
-    return <Navigate to="sentiment" replace />;
-  }
-  return <Navigate to="posts" replace />;
+  const permisos = user?.permisos || getDefaultPermisos(user?.rol || 'uebu');
+  const target = getFirstAvailableRoute(permisos);
+  return <Navigate to={target} replace />;
 };
 
 const App: React.FC = () => {
@@ -67,34 +97,54 @@ const App: React.FC = () => {
                   <Route path="/dashboard" element={<DashboardLayout />}>
                     <Route index element={<DefaultRedirect />} />
                     <Route path="posts" element={
-                      <RoleRoute allowedRoles={['administrador', 'vicerrector']}>
+                      <PermisoRoute permisoKey="posts">
                         <PostsDashboard />
-                      </RoleRoute>
+                      </PermisoRoute>
                     } />
-                    <Route path="sentiment" element={<SentimentDashboard />} />
-                    <Route path="reputation" element={<ReputationDashboard />} />
-                    <Route path="alerts" element={<AlertsDashboard />} />
-                    <Route path="benchmarking" element={<BenchmarkingDashboard />} />
+                    <Route path="sentiment" element={
+                      <PermisoRoute permisoKey="dashboards">
+                        <SentimentDashboard />
+                      </PermisoRoute>
+                    } />
+                    <Route path="reputation" element={
+                      <PermisoRoute permisoKey="dashboards">
+                        <ReputationDashboard />
+                      </PermisoRoute>
+                    } />
+                    <Route path="alerts" element={
+                      <PermisoRoute permisoKey="dashboards">
+                        <AlertsDashboard />
+                      </PermisoRoute>
+                    } />
+                    <Route path="benchmarking" element={
+                      <PermisoRoute permisoKey="dashboards">
+                        <BenchmarkingDashboard />
+                      </PermisoRoute>
+                    } />
                     <Route path="osint" element={
-                      <RoleRoute allowedRoles={['administrador', 'vicerrector']}>
+                      <PermisoRoute permisoKey="osint">
                         <OSINTDashboard />
-                      </RoleRoute>
+                      </PermisoRoute>
                     } />
-                    <Route path="nlp" element={<NLPDashboard />} />
+                    <Route path="nlp" element={
+                      <PermisoRoute permisoKey="nlp">
+                        <NLPDashboard />
+                      </PermisoRoute>
+                    } />
                     <Route path="evaluacion" element={
-                      <RoleRoute allowedRoles={['administrador', 'vicerrector']}>
+                      <PermisoRoute permisoKey="evaluacion">
                         <EvaluacionDashboard />
-                      </RoleRoute>
+                      </PermisoRoute>
                     } />
                     <Route path="usuarios" element={
-                      <RoleRoute allowedRoles={['administrador']}>
+                      <PermisoRoute permisoKey="usuarios">
                         <UsuariosDashboard />
-                      </RoleRoute>
+                      </PermisoRoute>
                     } />
                     <Route path="configuracion" element={
-                      <RoleRoute allowedRoles={['administrador', 'vicerrector']}>
+                      <PermisoRoute permisoKey="configuracion">
                         <ConfiguracionDashboard />
-                      </RoleRoute>
+                      </PermisoRoute>
                     } />
                     <Route path="ayuda" element={<AyudaDashboard />} />
                   </Route>
