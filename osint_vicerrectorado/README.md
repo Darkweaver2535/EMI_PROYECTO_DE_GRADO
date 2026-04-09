@@ -65,7 +65,7 @@ playwright install chromium
 python main.py --init-db
 ```
 
-## 📖 Uso
+## 📖 Uso.
 
 ### Comandos Principales
 
