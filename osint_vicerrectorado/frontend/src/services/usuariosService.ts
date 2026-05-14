@@ -26,6 +26,8 @@ export interface UsuarioData {
   password?: string;
   ultimo_login?: string;
   fecha_creacion?: string;
+  motivo_desactivacion?: string;
+  fecha_desactivacion?: string;
   permisos?: UsuarioPermisos;
 }
 
@@ -56,8 +58,8 @@ export const usuariosService = {
     return data;
   },
 
-  async deleteUsuario(id: number): Promise<{ message: string }> {
-    const { data } = await api.delete(`/usuarios/${id}`);
+  async deleteUsuario(id: number, motivo: string): Promise<{ message: string; motivo?: string }> {
+    const { data } = await api.delete(`/usuarios/${id}`, { data: { motivo } });
     return data;
   },
 

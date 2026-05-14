@@ -96,7 +96,7 @@ flower>=2.0.0  # Celery monitoring
 
 # Scheduling
 croniter>=2.0.0
-celery-beat>=0.3.0
+# celery-beat>=0.3.0
 
 # Email (SMTP)
 # smtplib es parte de la librería estándar de Python

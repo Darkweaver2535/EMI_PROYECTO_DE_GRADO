@@ -50,6 +50,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   Hash,
+  Filter,
+  Calendar,
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -90,14 +92,26 @@ interface Noticia {
   fuente: string;
   url: string;
   fecha_publicacion: string;
+  fecha_recoleccion?: string;
   relevancia_score: number;
   temas_json: string;
 }
 
+interface OSINTExecutionStatus {
+  running: boolean;
+  status: 'idle' | 'running' | 'success' | 'error';
+  progress: number;
+  current_step: string;
+  started_at?: string | null;
+  finished_at?: string | null;
+  message?: string | null;
+  steps?: Array<{ timestamp: string; message: string }>;
+}
+
 interface InteresesAcademicos {
   intereses_por_tema: { tema_principal: string; menciones: number; academico: number; uebu: number }[];
-  problemas_detectados: { tema_principal: string; palabras_clave: string; texto: string }[];
-  elogios_detectados: { tema_principal: string; palabras_clave: string; texto: string }[];
+  problemas_detectados: { tema_principal: string; palabras_clave: string; texto: string; fecha?: string }[];
+  elogios_detectados: { tema_principal: string; palabras_clave: string; texto: string; fecha?: string }[];
   total_contenido_academico: number;
 }
 
@@ -295,6 +309,30 @@ const s: Record<string, React.CSSProperties> = {
   },
 };
 
+const formatDisplayDate = (value?: string | null): string => {
+  if (!value) return 'Sin fecha';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleString('es-BO', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+const formatDateOnly = (value?: string | null): string => {
+  if (!value) return '';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString('es-BO', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+};
+
 // ─── Componente Principal ────────────────────────────────────
 
 const OSINTDashboard: React.FC = () => {
@@ -306,6 +344,14 @@ const OSINTDashboard: React.FC = () => {
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [intereses, setIntereses] = useState<InteresesAcademicos | null>(null);
   const [activeTab, setActiveTab] = useState<'patrones' | 'temas' | 'noticias' | 'uebu'>('patrones');
+  const [executionStatus, setExecutionStatus] = useState<OSINTExecutionStatus | null>(null);
+
+  // Filtros para sección de noticias (NEWSINT)
+  const [newsSearch, setNewsSearch] = useState('');
+  const [newsSourceFilter, setNewsSourceFilter] = useState('todas');
+  const [newsMinRelevance, setNewsMinRelevance] = useState(0);
+  const [newsDateFrom, setNewsDateFrom] = useState('');
+  const [newsDateTo, setNewsDateTo] = useState('');
 
   // Cargar datos
   const fetchData = useCallback(async () => {
@@ -335,6 +381,34 @@ const OSINTDashboard: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
+  const pollExecutionStatus = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_URL}/osint/estado`);
+      const status = await res.json();
+      setExecutionStatus(status);
+
+      if (!status.running && executing) {
+        setExecuting(false);
+        await fetchData();
+      }
+    } catch {
+      // Si falla el polling, mantenemos el último estado visible
+    }
+  }, [executing, fetchData]);
+
+  useEffect(() => {
+    if (!executing) return;
+
+    pollExecutionStatus();
+    const intervalId = window.setInterval(() => {
+      pollExecutionStatus();
+    }, 1500);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [executing, pollExecutionStatus]);
+
   // Ejecutar OSINT completo
   const handleExecuteOSINT = async () => {
     if (!confirm('¿Ejecutar recolección OSINT completa?\n\nEsto ejecutará:\n1. Búsqueda de noticias (NEWSINT)\n2. Análisis de tendencias (TRENDINT)\n3. Clasificación temática (NLP)\n4. Identificación de patrones')) {
@@ -343,17 +417,40 @@ const OSINTDashboard: React.FC = () => {
     
     setExecuting(true);
     try {
-      await fetch(`${API_URL}/osint/ejecutar`, { method: 'POST' });
-      
-      // Esperar a que termine y recargar
-      setTimeout(async () => {
-        await fetchData();
+      const response = await fetch(`${API_URL}/osint/ejecutar`, { method: 'POST' });
+      if (!response.ok) {
         setExecuting(false);
-      }, 8000);
+      }
     } catch {
       setExecuting(false);
     }
   };
+
+  const availableSources = Array.from(
+    new Set((noticias || []).map((n) => n.fuente).filter(Boolean))
+  );
+
+  const filteredNoticias = (noticias || []).filter((n) => {
+    const text = `${n.titulo || ''} ${n.resumen || ''}`.toLowerCase();
+    const source = (n.fuente || '').toLowerCase();
+    const newsDateRaw = n.fecha_publicacion || n.fecha_recoleccion;
+
+    const searchOk = !newsSearch.trim() || text.includes(newsSearch.trim().toLowerCase());
+    const sourceOk = newsSourceFilter === 'todas' || source === newsSourceFilter.toLowerCase();
+    const relevanceOk = ((n.relevancia_score || 0) * 100) >= newsMinRelevance;
+
+    let fromOk = true;
+    let toOk = true;
+    if (newsDateRaw) {
+      const d = new Date(newsDateRaw);
+      if (!Number.isNaN(d.getTime())) {
+        fromOk = !newsDateFrom || d >= new Date(`${newsDateFrom}T00:00:00`);
+        toOk = !newsDateTo || d <= new Date(`${newsDateTo}T23:59:59`);
+      }
+    }
+
+    return searchOk && sourceOk && relevanceOk && fromOk && toOk;
+  });
 
   // Helpers
   const getImpactColor = (impact: string) => {
@@ -430,6 +527,33 @@ const OSINTDashboard: React.FC = () => {
             <div style={s.headerStatLabel}>Noticias Monitoreadas</div>
           </div>
         </div>
+
+        {(executing || executionStatus?.running) && (
+          <div style={{ marginTop: '20px', backgroundColor: 'rgba(15, 23, 42, 0.55)', borderRadius: '12px', padding: '14px 16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '8px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 600, color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Activity size={14} />
+                {executionStatus?.current_step || 'Procesando OSINT...'}
+              </div>
+              <div style={{ fontSize: '12px', color: '#93c5fd', fontWeight: 700 }}>
+                {Math.max(0, Math.min(100, executionStatus?.progress || 0))}%
+              </div>
+            </div>
+            <div style={{ width: '100%', height: '8px', borderRadius: '999px', backgroundColor: 'rgba(148, 163, 184, 0.35)', overflow: 'hidden' }}>
+              <div
+                style={{
+                  width: `${Math.max(0, Math.min(100, executionStatus?.progress || 0))}%`,
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #22c55e 0%, #38bdf8 100%)',
+                  transition: 'width 0.6s ease',
+                }}
+              />
+            </div>
+            <div style={{ marginTop: '8px', fontSize: '12px', color: '#94a3b8' }}>
+              Inicio: {formatDisplayDate(executionStatus?.started_at)}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ─── Técnicas OSINT Utilizadas ─── */}
@@ -459,6 +583,10 @@ const OSINTDashboard: React.FC = () => {
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: 600, color: info.color, marginTop: '4px' }}>
                     {t.total_datos_recolectados || 0} datos
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Calendar size={12} />
+                    Última detección: {formatDisplayDate(t.ultima_recoleccion)}
                   </div>
                 </div>
               </div>
@@ -539,6 +667,10 @@ const OSINTDashboard: React.FC = () => {
                     </div>
                     <div style={{ fontSize: '13px', color: '#475569', marginBottom: '10px', lineHeight: 1.6 }}>
                       {p.descripcion}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Calendar size={12} />
+                      Última detección: {formatDisplayDate(p.fecha_ultima_deteccion)}
                     </div>
                     <div style={{ 
                       fontSize: '13px', color: '#059669', backgroundColor: '#f0fdf4', 
@@ -679,6 +811,11 @@ const OSINTDashboard: React.FC = () => {
                 (intereses?.problemas_detectados || []).slice(0, 5).map((p, i) => (
                   <div key={i} style={{ ...s.contentItem, borderLeft: '3px solid #dc2626' }}>
                     "{p.texto?.slice(0, 150)}..."
+                    {p.fecha && (
+                      <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+                        Fecha: {formatDisplayDate(p.fecha)}
+                      </div>
+                    )}
                     {p.palabras_clave && (
                       <div style={{ fontSize: '11px', color: '#dc2626', marginTop: '4px' }}>
                         Palabras clave: {p.palabras_clave}
@@ -700,6 +837,11 @@ const OSINTDashboard: React.FC = () => {
                 (intereses?.elogios_detectados || []).slice(0, 5).map((e, i) => (
                   <div key={i} style={{ ...s.contentItem, borderLeft: '3px solid #16a34a' }}>
                     "{e.texto?.slice(0, 150)}..."
+                    {e.fecha && (
+                      <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+                        Fecha: {formatDisplayDate(e.fecha)}
+                      </div>
+                    )}
                     {e.palabras_clave && (
                       <div style={{ fontSize: '11px', color: '#16a34a', marginTop: '4px' }}>
                         Palabras clave: {e.palabras_clave}
@@ -723,15 +865,83 @@ const OSINTDashboard: React.FC = () => {
               NEWSINT
             </span>
           </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '10px', marginBottom: '16px' }}>
+            <div style={{ gridColumn: 'span 2' }}>
+              <label style={{ fontSize: '11px', color: '#64748b', display: 'block', marginBottom: '4px' }}>
+                <Filter size={12} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Buscar noticia
+              </label>
+              <input
+                type="text"
+                value={newsSearch}
+                onChange={(e) => setNewsSearch(e.target.value)}
+                placeholder="Título o resumen..."
+                style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '11px', color: '#64748b', display: 'block', marginBottom: '4px' }}>Fuente</label>
+              <select
+                value={newsSourceFilter}
+                onChange={(e) => setNewsSourceFilter(e.target.value)}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px' }}
+              >
+                <option value="todas">Todas</option>
+                {availableSources.map((src) => (
+                  <option key={src} value={src}>{src}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={{ fontSize: '11px', color: '#64748b', display: 'block', marginBottom: '4px' }}>Fecha desde</label>
+              <input
+                type="date"
+                value={newsDateFrom}
+                onChange={(e) => setNewsDateFrom(e.target.value)}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '11px', color: '#64748b', display: 'block', marginBottom: '4px' }}>Fecha hasta</label>
+              <input
+                type="date"
+                value={newsDateTo}
+                onChange={(e) => setNewsDateTo(e.target.value)}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px' }}
+              />
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ fontSize: '11px', color: '#64748b', display: 'block', marginBottom: '6px' }}>
+              Relevancia mínima: {newsMinRelevance}%
+            </label>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={5}
+              value={newsMinRelevance}
+              onChange={(e) => setNewsMinRelevance(Number(e.target.value))}
+              style={{ width: '100%' }}
+            />
+          </div>
+
+          <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>
+            Mostrando {filteredNoticias.length} de {noticias.length} noticias
+          </div>
           
-          {noticias.length === 0 ? (
+          {filteredNoticias.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>
               <Newspaper size={48} style={{ opacity: 0.3, marginBottom: '12px' }} />
-              <p>No hay noticias recolectadas aún.</p>
-              <p style={{ fontSize: '13px' }}>Ejecuta el OSINT completo para buscar noticias sobre la EMI.</p>
+              <p>No hay noticias que cumplan los filtros seleccionados.</p>
+              <p style={{ fontSize: '13px' }}>Ajusta los filtros o ejecuta nuevamente el OSINT completo.</p>
             </div>
           ) : (
-            noticias.map((n, i) => (
+            filteredNoticias.map((n, i) => (
               <div key={i} style={s.noticiaCard} onClick={() => n.url && window.open(n.url, '_blank')}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                   <Newspaper size={18} color="#dc2626" style={{ flexShrink: 0, marginTop: '2px' }} />
@@ -747,7 +957,12 @@ const OSINTDashboard: React.FC = () => {
                     )}
                     <div style={{ display: 'flex', gap: '12px', marginTop: '6px', fontSize: '11px', color: '#94a3b8' }}>
                       {n.fuente && <span>Fuente: {n.fuente}</span>}
-                      {n.fecha_publicacion && <span>Fecha: {n.fecha_publicacion}</span>}
+                      {(n.fecha_publicacion || n.fecha_recoleccion) && (
+                        <span>
+                          Fecha evento: {formatDateOnly(n.fecha_publicacion || n.fecha_recoleccion)}
+                        </span>
+                      )}
+                      {n.fecha_recoleccion && <span>Recolectado: {formatDateOnly(n.fecha_recoleccion)}</span>}
                       {n.relevancia_score > 0 && (
                         <span style={{ color: '#059669' }}>Relevancia: {(n.relevancia_score * 100).toFixed(0)}%</span>
                       )}

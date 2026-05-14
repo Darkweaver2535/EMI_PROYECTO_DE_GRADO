@@ -13,11 +13,51 @@ import json
 import hashlib
 from datetime import datetime, timedelta
 from collections import defaultdict
+import threading
+import logging
 
 app = Flask(__name__)
 CORS(app)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'osint_emi.db')
+
+# Estado global de ejecución OSINT para mostrar progreso real en UI
+OSINT_STATUS_LOCK = threading.Lock()
+OSINT_EXECUTION_STATUS = {
+    'running': False,
+    'status': 'idle',
+    'progress': 0,
+    'current_step': 'Sin ejecución activa',
+    'started_at': None,
+    'finished_at': None,
+    'message': None,
+    'steps': []
+}
+
+
+def _osint_set_status(**kwargs):
+    """Actualiza estado global OSINT en forma thread-safe."""
+    step = kwargs.pop('step_message', None)
+    with OSINT_STATUS_LOCK:
+        OSINT_EXECUTION_STATUS.update(kwargs)
+
+        # Permite agregar trazas visibles de proceso para el frontend
+        if step:
+            OSINT_EXECUTION_STATUS.setdefault('steps', []).append({
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'message': step
+            })
+            OSINT_EXECUTION_STATUS['steps'] = OSINT_EXECUTION_STATUS['steps'][-30:]
+
+
+def _extract_deactivation_reason(detalle):
+    """Normaliza el texto guardado en log para exponer solo el motivo."""
+    if not detalle:
+        return None
+    prefix = 'Motivo: '
+    if isinstance(detalle, str) and detalle.startswith(prefix):
+        return detalle[len(prefix):].strip()
+    return detalle
 
 def get_db():
     """Obtiene conexión a SQLite"""
@@ -176,7 +216,37 @@ def get_usuarios():
     """Lista todos los usuarios"""
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('SELECT id_usuario, username, email, nombre_completo, rol, cargo, activo, ultimo_login, fecha_creacion, permisos FROM usuario ORDER BY id_usuario')
+    cursor.execute('''
+        SELECT
+            u.id_usuario,
+            u.username,
+            u.email,
+            u.nombre_completo,
+            u.rol,
+            u.cargo,
+            u.activo,
+            u.ultimo_login,
+            u.fecha_creacion,
+            u.permisos,
+            (
+                SELECT l.detalle
+                FROM log_actividad l
+                WHERE l.id_usuario = u.id_usuario
+                AND l.accion = 'usuario_desactivado'
+                ORDER BY l.fecha DESC
+                LIMIT 1
+            ) AS motivo_desactivacion,
+            (
+                SELECT l.fecha
+                FROM log_actividad l
+                WHERE l.id_usuario = u.id_usuario
+                AND l.accion = 'usuario_desactivado'
+                ORDER BY l.fecha DESC
+                LIMIT 1
+            ) AS fecha_desactivacion
+        FROM usuario u
+        ORDER BY u.id_usuario
+    ''')
     users = []
     for row in cursor.fetchall():
         permisos = {}
@@ -188,7 +258,9 @@ def get_usuarios():
             'id': row['id_usuario'], 'username': row['username'], 'email': row['email'],
             'nombre_completo': row['nombre_completo'], 'rol': row['rol'], 'cargo': row['cargo'],
             'activo': bool(row['activo']), 'ultimo_login': row['ultimo_login'], 'fecha_creacion': row['fecha_creacion'],
-            'permisos': permisos
+            'permisos': permisos,
+            'motivo_desactivacion': _extract_deactivation_reason(row['motivo_desactivacion']),
+            'fecha_desactivacion': row['fecha_desactivacion']
         })
     conn.close()
     return jsonify({'usuarios': users, 'total': len(users)})
@@ -284,12 +356,28 @@ def update_usuario(uid):
 @app.route('/api/usuarios/<int:uid>', methods=['DELETE'])
 def delete_usuario(uid):
     """Desactivar usuario (soft delete)"""
+    data = request.get_json(silent=True) or {}
+    motivo = (data.get('motivo') or '').strip()
+
+    if not motivo:
+        return jsonify({'error': 'El motivo de desactivación es obligatorio'}), 400
+
     conn = get_db()
     cursor = conn.cursor()
+
+    cursor.execute('SELECT id_usuario FROM usuario WHERE id_usuario = ?', (uid,))
+    if not cursor.fetchone():
+        conn.close()
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
     cursor.execute('UPDATE usuario SET activo = 0 WHERE id_usuario = ?', (uid,))
+    cursor.execute(
+        'INSERT INTO log_actividad (id_usuario, accion, detalle, ip_address) VALUES (?,?,?,?)',
+        (uid, 'usuario_desactivado', f'Motivo: {motivo}', request.remote_addr)
+    )
     conn.commit()
     conn.close()
-    return jsonify({'message': 'Usuario desactivado'})
+    return jsonify({'message': 'Usuario desactivado', 'motivo': motivo})
 
 def get_default_permisos(rol):
     """Retorna los permisos por defecto según el rol"""
@@ -3570,21 +3658,73 @@ def hierarchy_tree():
 @app.route('/api/osint/ejecutar', methods=['POST'])
 def ejecutar_osint_completo():
     """Ejecuta todas las técnicas OSINT: noticias, tendencias, clasificación, patrones."""
-    import threading
-    
+    with OSINT_STATUS_LOCK:
+        if OSINT_EXECUTION_STATUS.get('running'):
+            return jsonify({
+                'success': False,
+                'message': 'Ya existe una ejecución OSINT en curso'
+            }), 409
+
+    started_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    _osint_set_status(
+        running=True,
+        status='running',
+        progress=5,
+        current_step='Inicializando proceso OSINT',
+        started_at=started_at,
+        finished_at=None,
+        message='OSINT iniciado en segundo plano',
+        steps=[{'timestamp': started_at, 'message': 'Inicio de ejecución OSINT'}],
+        step_message='Inicializando motores de recolección'
+    )
+
     def run_osint():
         try:
+            _osint_set_status(progress=20, current_step='Preparando componentes OSINT', step_message='Componentes preparados')
             from osint_multifuente import OSINTMultifuente
+
+            _osint_set_status(progress=35, current_step='Recolectando datos multifuente', step_message='Iniciando recolección de noticias, tendencias y contenido social')
             osint = OSINTMultifuente()
             result = osint.ejecutar_recoleccion_completa()
+
+            tecnicas = result.get('tecnicas_ejecutadas', 0)
+            summary_msg = f'OSINT completo: {tecnicas} técnica(s) ejecutada(s)'
+            finished_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            _osint_set_status(
+                running=False,
+                status='success',
+                progress=100,
+                current_step='Ejecución completada',
+                finished_at=finished_at,
+                message=summary_msg,
+                step_message='Proceso OSINT finalizado correctamente'
+            )
             print(f"✅ OSINT completo: {result['tecnicas_ejecutadas']} técnicas ejecutadas")
         except Exception as e:
+            finished_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            _osint_set_status(
+                running=False,
+                status='error',
+                progress=100,
+                current_step='Ejecución finalizada con error',
+                finished_at=finished_at,
+                message=f'Error OSINT: {str(e)}',
+                step_message=f'Error detectado: {str(e)}'
+            )
             print(f"❌ Error OSINT: {e}")
     
     thread = threading.Thread(target=run_osint, daemon=True)
     thread.start()
     
     return jsonify({'success': True, 'message': 'Recolección OSINT iniciada en segundo plano'})
+
+
+@app.route('/api/osint/estado')
+def osint_estado():
+    """Estado de ejecución OSINT para barra de progreso en frontend."""
+    with OSINT_STATUS_LOCK:
+        return jsonify(dict(OSINT_EXECUTION_STATUS))
 
 
 @app.route('/api/osint/resumen')
@@ -3648,16 +3788,72 @@ def osint_resumen():
 
 @app.route('/api/osint/noticias')
 def osint_noticias():
-    """Retorna noticias recolectadas sobre la EMI."""
+    """Retorna noticias recolectadas sobre la EMI con filtros opcionales."""
     conn = get_db()
     cursor = conn.cursor()
+
+    fuente = (request.args.get('fuente') or '').strip().lower()
+    search = (request.args.get('search') or '').strip().lower()
+    fecha_desde = (request.args.get('fecha_desde') or '').strip()
+    fecha_hasta = (request.args.get('fecha_hasta') or '').strip()
+    sort_by = (request.args.get('sort_by') or 'fecha_recoleccion').strip().lower()
+
+    try:
+        min_relevancia = float(request.args.get('min_relevancia', 0) or 0)
+    except ValueError:
+        min_relevancia = 0
+
+    try:
+        limit = int(request.args.get('limit', 50) or 50)
+    except ValueError:
+        limit = 50
+
+    limit = max(1, min(200, limit))
+
+    sort_columns = {
+        'fecha_publicacion': 'fecha_publicacion',
+        'fecha_recoleccion': 'fecha_recoleccion',
+        'relevancia': 'relevancia_score'
+    }
+    order_column = sort_columns.get(sort_by, 'fecha_recoleccion')
     
     try:
-        cursor.execute('''
-            SELECT * FROM osint_noticias 
-            ORDER BY fecha_recoleccion DESC 
-            LIMIT 50
-        ''')
+        where_clauses = []
+        params = []
+
+        if fuente:
+            where_clauses.append('LOWER(COALESCE(fuente, "")) LIKE ?')
+            params.append(f'%{fuente}%')
+
+        if search:
+            where_clauses.append('(' 
+                                 'LOWER(COALESCE(titulo, "")) LIKE ? '
+                                 'OR LOWER(COALESCE(resumen, "")) LIKE ?'
+                                 ')')
+            params.extend([f'%{search}%', f'%{search}%'])
+
+        if fecha_desde:
+            where_clauses.append('DATE(COALESCE(fecha_publicacion, fecha_recoleccion)) >= DATE(?)')
+            params.append(fecha_desde)
+
+        if fecha_hasta:
+            where_clauses.append('DATE(COALESCE(fecha_publicacion, fecha_recoleccion)) <= DATE(?)')
+            params.append(fecha_hasta)
+
+        if min_relevancia > 0:
+            where_clauses.append('COALESCE(relevancia_score, 0) >= ?')
+            params.append(min_relevancia)
+
+        where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ''
+
+        query = f'''
+            SELECT * FROM osint_noticias
+            {where_sql}
+            ORDER BY {order_column} DESC
+            LIMIT ?
+        '''
+        params.append(limit)
+        cursor.execute(query, params)
         noticias = [dict(row) for row in cursor.fetchall()]
     except:
         noticias = []
@@ -3817,7 +4013,8 @@ def osint_intereses_academicos():
                    CASE 
                        WHEN ct.tipo_contenido = 'post' THEN SUBSTR(d.contenido_original, 1, 200)
                        WHEN ct.tipo_contenido = 'comentario' THEN SUBSTR(c.contenido, 1, 200)
-                   END as texto
+                   END as texto,
+                   ct.fecha_clasificacion as fecha
             FROM clasificacion_tematica ct
             LEFT JOIN dato_recolectado d ON ct.id_contenido = d.id_dato AND ct.tipo_contenido = 'post'
             LEFT JOIN comentario c ON ct.id_contenido = c.id_comentario AND ct.tipo_contenido = 'comentario'
@@ -3832,7 +4029,8 @@ def osint_intereses_academicos():
                    CASE 
                        WHEN ct.tipo_contenido = 'post' THEN SUBSTR(d.contenido_original, 1, 200)
                        WHEN ct.tipo_contenido = 'comentario' THEN SUBSTR(c.contenido, 1, 200)
-                   END as texto
+                   END as texto,
+                   ct.fecha_clasificacion as fecha
             FROM clasificacion_tematica ct
             LEFT JOIN dato_recolectado d ON ct.id_contenido = d.id_dato AND ct.tipo_contenido = 'post'
             LEFT JOIN comentario c ON ct.id_contenido = c.id_comentario AND ct.tipo_contenido = 'comentario'
@@ -3848,7 +4046,8 @@ def osint_intereses_academicos():
                    CASE 
                        WHEN ct.tipo_contenido = 'post' THEN SUBSTR(d.contenido_original, 1, 200)
                        WHEN ct.tipo_contenido = 'comentario' THEN SUBSTR(c.contenido, 1, 200)
-                   END as texto
+                   END as texto,
+                   ct.fecha_clasificacion as fecha
             FROM clasificacion_tematica ct
             LEFT JOIN dato_recolectado d ON ct.id_contenido = d.id_dato AND ct.tipo_contenido = 'post'
             LEFT JOIN comentario c ON ct.id_contenido = c.id_comentario AND ct.tipo_contenido = 'comentario'

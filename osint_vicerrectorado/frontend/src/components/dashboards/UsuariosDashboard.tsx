@@ -141,6 +141,7 @@ const UsuariosDashboard: React.FC = () => {
   // Delete dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingUser, setDeletingUser] = useState<UsuarioData | null>(null);
+  const [deactivationReason, setDeactivationReason] = useState('');
 
   // Inactive users section
   const [showInactive, setShowInactive] = useState(false);
@@ -268,19 +269,29 @@ const UsuariosDashboard: React.FC = () => {
 
   const handleOpenDelete = (user: UsuarioData) => {
     setDeletingUser(user);
+    setDeactivationReason('');
     setDeleteDialogOpen(true);
   };
 
   const handleDelete = async () => {
     if (!deletingUser?.id) return;
+
+    const reason = deactivationReason.trim();
+    if (!reason) {
+      setError('Debes ingresar el motivo de desactivación');
+      return;
+    }
+
     try {
-      await usuariosService.deleteUsuario(deletingUser.id);
+      await usuariosService.deleteUsuario(deletingUser.id, reason);
       setSuccess(`Usuario "${deletingUser.username}" desactivado y movido a la lista de eliminados`);
       setDeleteDialogOpen(false);
       setDeletingUser(null);
+      setDeactivationReason('');
       loadData();
     } catch (err) {
-      setError('Error al desactivar usuario');
+      const msg = err instanceof Error ? err.message : 'Error al desactivar usuario';
+      setError(msg);
     }
   };
 
@@ -552,6 +563,7 @@ const UsuariosDashboard: React.FC = () => {
                       <TableCell>Nombre Completo</TableCell>
                       <TableCell>Rol</TableCell>
                       <TableCell>Fecha de desactivación</TableCell>
+                      <TableCell>Motivo</TableCell>
                       <TableCell align="right">Restaurar</TableCell>
                     </TableRow>
                   </TableHead>
@@ -583,7 +595,12 @@ const UsuariosDashboard: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <Typography variant="caption" color="text.secondary">
-                            {user.ultimo_login || 'N/A'}
+                            {user.fecha_desactivacion || 'N/A'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="caption" color="text.secondary">
+                            {user.motivo_desactivacion || 'Sin motivo registrado'}
                           </Typography>
                         </TableCell>
                         <TableCell align="right">
@@ -904,7 +921,13 @@ const UsuariosDashboard: React.FC = () => {
       </Dialog>
 
       {/* Delete Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setDeactivationReason('');
+        }}
+      >
         <DialogTitle>Confirmar Desactivación</DialogTitle>
         <DialogContent>
           <Typography>
@@ -914,10 +937,28 @@ const UsuariosDashboard: React.FC = () => {
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             El usuario no podrá acceder al sistema pero sus datos se conservarán.
           </Typography>
+          <TextField
+            label="Motivo de desactivación"
+            value={deactivationReason}
+            onChange={(e) => setDeactivationReason(e.target.value)}
+            fullWidth
+            required
+            multiline
+            minRows={2}
+            sx={{ mt: 2 }}
+            placeholder="Ejemplo: Cambio de área, salida institucional, solicitud de RRHH..."
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancelar</Button>
-          <Button onClick={handleDelete} variant="contained" color="error">
+          <Button
+            onClick={() => {
+              setDeleteDialogOpen(false);
+              setDeactivationReason('');
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button onClick={handleDelete} variant="contained" color="error" disabled={!deactivationReason.trim()}>
             Desactivar
           </Button>
         </DialogActions>
