@@ -10,6 +10,14 @@
         "backup_enabled": true,
         "backup_path": "data/backups/"
     },
+    "apify": {
+        "api_key": "YOUR_APIFY_TOKEN",
+        "api_keys": {
+            "facebook": "YOUR_APIFY_TOKEN_FACEBOOK",
+            "tiktok": "YOUR_APIFY_TOKEN_TIKTOK",
+            "fallback": "YOUR_APIFY_TOKEN_FALLBACK"
+        }
+    },
     "sources": {
         "facebook": {
             "enabled": true,

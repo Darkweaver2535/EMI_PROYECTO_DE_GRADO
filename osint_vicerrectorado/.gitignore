@@ -100,3 +100,6 @@ coverage/
 # ===== Git =====
 .git/
 *.orig
+
+# Legacy code (deprecated, moved during Apify migration)
+_legacy/

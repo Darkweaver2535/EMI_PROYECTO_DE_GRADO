@@ -1,8 +1,8 @@
 # Sistema OSINT EMI - Dependencias
 # Python 3.10+ (Compatible con Python 3.13)
 
-# Web Scraping
-playwright==1.48.0
+# Data Collection (Apify)
+apify-client>=1.6.0
 beautifulsoup4==4.12.3
 lxml==5.3.0
 
@@ -75,7 +75,7 @@ pytest-mock==3.14.0
 python-dateutil==2.9.0.post0
 pytz==2024.2
 tqdm==4.67.1
-fake-useragent==1.5.1
+# fake-useragent removed (no longer using browser automation)
 
 # ==============================
 # Sprint 5: Reportes y Estadísticas

@@ -39,8 +39,7 @@ import {
   Inbox
 } from 'lucide-react';
 
-// Modal de TikTok Scraping Interactivo
-import TikTokScrapingModal from '../TikTokScrapingModal';
+
 
 // Tipos
 interface Source {
@@ -134,12 +133,8 @@ const PostsDashboard: React.FC = () => {
   const [scrapingSource, setScrapingSource] = useState<number | null>(null);
   const [scrapingMessage, setScrapingMessage] = useState<string | null>(null);
 
-  // Estado para modal de TikTok scraping interactivo
-  const [tiktokScrapingModal, setTiktokScrapingModal] = useState<{
-    isOpen: boolean;
-    sourceId: number;
-    sourceName: string;
-  } | null>(null);
+  // Estado para progreso de scraping
+  const [scrapingProgress, setScrapingProgress] = useState<string>('');
 
   // Cargar datos iniciales
   const fetchInitialData = useCallback(async () => {
@@ -297,29 +292,23 @@ const PostsDashboard: React.FC = () => {
     }
   };
 
-  // ========== WEB SCRAPING ==========
+  // ========== WEB SCRAPING (Apify — Facebook y TikTok) ==========
   
   const handleRunScraping = async (sourceId: number) => {
     const source = sources.find(s => s.id === sourceId);
     if (!source) return;
 
-    // Para TikTok, usar el modal interactivo
-    if (source.platform.toLowerCase() === 'tiktok') {
-      setTiktokScrapingModal({
-        isOpen: true,
-        sourceId: source.id,
-        sourceName: source.name
-      });
-      return;
-    }
-
-    // Para otras plataformas (Facebook), usar el scraping normal
-    if (!confirm(`¿Ejecutar Web Scraping para "${source.name}"?\n\nEsto buscará nuevos posts y comentarios en ${source.platform}.`)) {
+    if (!confirm(
+      `¿Ejecutar Web Scraping para "${source.name}"?\n\n` +
+      `Se extraerán los últimos posts de ${source.platform} usando Apify.\n` +
+      `Esto puede tardar 30-90 segundos.`
+    )) {
       return;
     }
 
     setScrapingSource(sourceId);
-    setScrapingMessage(`Iniciando scraping de ${source.name}...`);
+    setScrapingProgress('');
+    setScrapingMessage(`🔄 Conectando con Apify para ${source.name}...`);
 
     try {
       const res = await fetch(`${API_URL}/sources/${sourceId}/scrape`, {
@@ -332,14 +321,33 @@ const PostsDashboard: React.FC = () => {
         throw new Error(data.error || 'Error al iniciar scraping');
       }
 
-      setScrapingMessage(`Scraping iniciado para ${source.name}. Esto puede tardar 1-2 minutos...`);
-      
-      // Polling: verificar estado del scraping cada 5 segundos (máximo 3 minutos)
-      const maxAttempts = 36; // 36 * 5s = 180s = 3 min
+      // Fases del scraping para mostrar progreso visual (2 fases: posts + comentarios)
+      const phases = [
+        { time: 5, msg: `🔄 Conectando con Apify...` },
+        { time: 10, msg: `📄 [Fase 1/2] Extrayendo posts de ${source.platform}...` },
+        { time: 25, msg: `📄 [Fase 1/2] Descargando publicaciones de ${source.name}...` },
+        { time: 45, msg: `💬 [Fase 2/2] Extrayendo comentarios de cada post...` },
+        { time: 75, msg: `💬 [Fase 2/2] Recopilando todos los comentarios (esto tarda)...` },
+        { time: 120, msg: `⚙️ Procesando y guardando en base de datos...` },
+        { time: 180, msg: `🔄 Finalizando... el scraping con comentarios tarda más` },
+        { time: 240, msg: `⏳ Casi listo, procesando los últimos datos...` },
+      ];
+
+      let phaseIndex = 0;
       let attempts = 0;
+      const maxAttempts = 60; // 60 * 5s = 300s = 5 min max
       
       const pollStatus = setInterval(async () => {
         attempts++;
+        const elapsed = attempts * 5;
+
+        // Update progress phase
+        while (phaseIndex < phases.length - 1 && elapsed >= phases[phaseIndex + 1].time) {
+          phaseIndex++;
+        }
+        setScrapingProgress(phases[phaseIndex].msg);
+        setScrapingMessage(`${phases[phaseIndex].msg} (${elapsed}s)`);
+
         try {
           const statusRes = await fetch(`${API_URL}/sources/${sourceId}/scrape/status`);
           const statusData = await statusRes.json();
@@ -347,50 +355,56 @@ const PostsDashboard: React.FC = () => {
           if (statusData.status === 'completado' || statusData.status === 'error') {
             clearInterval(pollStatus);
             await fetchInitialData();
-            if (selectedSource === sourceId) {
-              await fetchPosts(sourceId);
-            }
+            await fetchPosts(selectedSource === sourceId ? sourceId : undefined);
             setScrapingSource(null);
+            setScrapingProgress('');
             
             if (statusData.status === 'completado') {
-              const records = statusData.recordsProcessed || 0;
-              setScrapingMessage(`✅ Scraping completado. ${records} registros procesados.`);
+              const details = statusData.details || {};
+              const newPosts = details.posts_nuevos ?? statusData.recordsProcessed ?? 0;
+              const skipped = details.posts_duplicados_ignorados ?? 0;
+              const commentsCount = details.comments ?? 0;
+              
+              let msg = `✅ ¡Scraping completado! `;
+              if (newPosts > 0) {
+                msg += `${newPosts} posts nuevos`;
+                if (commentsCount > 0) {
+                  msg += ` y ${commentsCount} comentarios`;
+                }
+                msg += ` agregados.`;
+                if (skipped > 0) {
+                  msg += ` (${skipped} posts ya existían)`;
+                }
+              } else if (skipped > 0) {
+                msg += `No hay posts nuevos (${skipped} ya existían en la BD).`;
+              } else {
+                msg += `Datos procesados de ${source.name}.`;
+              }
+              setScrapingMessage(msg);
             } else {
-              setScrapingMessage(`❌ Error en scraping: ${statusData.error || 'Error desconocido'}`);
+              setScrapingMessage(`❌ Error: ${statusData.error || 'Error desconocido'}`);
             }
-            setTimeout(() => setScrapingMessage(null), 8000);
+            setTimeout(() => setScrapingMessage(null), 10000);
           } else if (attempts >= maxAttempts) {
             clearInterval(pollStatus);
             await fetchInitialData();
-            if (selectedSource === sourceId) {
-              await fetchPosts(sourceId);
-            }
+            await fetchPosts(selectedSource === sourceId ? sourceId : undefined);
             setScrapingSource(null);
-            setScrapingMessage('Scraping tardó más de lo esperado. Recarga la página para ver resultados.');
-            setTimeout(() => setScrapingMessage(null), 8000);
-          } else {
-            setScrapingMessage(`Scraping en progreso para ${source.name}... (${attempts * 5}s)`);
+            setScrapingProgress('');
+            setScrapingMessage('⏰ El scraping tardó más de lo esperado. Recarga para ver resultados.');
+            setTimeout(() => setScrapingMessage(null), 10000);
           }
         } catch {
-          // Si falla el polling, seguir intentando
+          // Network error, keep polling
         }
       }, 5000);
 
     } catch (err) {
-      setScrapingMessage(`Error: ${err instanceof Error ? err.message : 'Error desconocido'}`);
+      setScrapingMessage(`❌ Error: ${err instanceof Error ? err.message : 'Error desconocido'}`);
       setScrapingSource(null);
+      setScrapingProgress('');
       setTimeout(() => setScrapingMessage(null), 5000);
     }
-  };
-
-  // Callback cuando el scraping de TikTok se completa
-  const handleTikTokScrapingComplete = async () => {
-    await fetchInitialData();
-    if (tiktokScrapingModal && selectedSource === tiktokScrapingModal.sourceId) {
-      await fetchPosts(tiktokScrapingModal.sourceId);
-    }
-    setScrapingMessage('Extracción de comentarios TikTok completada');
-    setTimeout(() => setScrapingMessage(null), 5000);
   };
 
   // Seleccionar fuente
@@ -509,9 +523,19 @@ const PostsDashboard: React.FC = () => {
         
         {/* Mensaje de scraping */}
         {scrapingMessage && (
-          <div style={styles.scrapingMessage}>
-            <RefreshCw size={16} style={{ marginRight: '8px', animation: scrapingSource ? 'spin 1s linear infinite' : 'none' }} />
-            {scrapingMessage}
+          <div style={{
+            ...styles.scrapingMessage,
+            backgroundColor: scrapingMessage.startsWith('✅') ? '#dcfce7' : 
+                           scrapingMessage.startsWith('❌') ? '#fee2e2' : '#dbeafe',
+            borderColor: scrapingMessage.startsWith('✅') ? '#86efac' : 
+                        scrapingMessage.startsWith('❌') ? '#fca5a5' : '#93c5fd'
+          }}>
+            {scrapingSource ? (
+              <Loader2 size={16} style={{ marginRight: '8px', animation: 'spin 1s linear infinite', flexShrink: 0 }} />
+            ) : (
+              <CheckCircle2 size={16} style={{ marginRight: '8px', flexShrink: 0 }} />
+            )}
+            <span>{scrapingMessage}</span>
           </div>
         )}
         
@@ -978,16 +1002,7 @@ const PostsDashboard: React.FC = () => {
         </ol>
       </div>
 
-      {/* Modal de TikTok Scraping Interactivo */}
-      {tiktokScrapingModal && (
-        <TikTokScrapingModal
-          isOpen={tiktokScrapingModal.isOpen}
-          onClose={() => setTiktokScrapingModal(null)}
-          sourceId={tiktokScrapingModal.sourceId}
-          sourceName={tiktokScrapingModal.sourceName}
-          onComplete={handleTikTokScrapingComplete}
-        />
-      )}
+      {/* Apify maneja el scraping para ambas plataformas */}
 
       {/* Estilos de animación */}
       <style>{`

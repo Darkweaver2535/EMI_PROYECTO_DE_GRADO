@@ -1,12 +1,22 @@
 """
-Paquete scrapers - Módulo de recolección OSINT
-Sistema de Analítica EMI
+Módulo de Recolección de Datos - Sistema OSINT EMI
+===================================================
 
-Contiene los scrapers para Facebook y TikTok con técnicas anti-detección.
+Recolecta datos de redes sociales usando la API de Apify.
+Apify maneja proxies, CAPTCHAs y anti-detección automáticamente.
+
+Componentes:
+- BaseCollector: Clase base con interfaz común para todos los collectors
+- ApifyClient: Cliente genérico para interactuar con la API de Apify
+- FacebookCollector: Recolecta posts y comentarios de Facebook vía Apify
+- TikTokCollector: Recolecta videos y comentarios de TikTok vía Apify
+
+Autor: Sistema OSINT EMI
+Fecha: Mayo 2026
 """
 
-from scrapers.base_scraper import BaseScraper
-from scrapers.facebook_scraper import FacebookScraper
-from scrapers.tiktok_scraper import TikTokScraper
+from scrapers.base_collector import BaseCollector
 
-__all__ = ['BaseScraper', 'FacebookScraper', 'TikTokScraper']
+__all__ = [
+    'BaseCollector',
+]

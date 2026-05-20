@@ -1,8 +1,8 @@
 """
-Paquete controllers - Controladores del sistema
-Sistema de Analítica EMI
+Módulo de Controladores - Sistema OSINT EMI
+============================================
 
-Contiene el controlador principal OSINT que orquesta los scrapers.
+Controladores que orquestan la lógica de negocio del sistema.
 """
 
 from controllers.osint_controller import OSINTController
