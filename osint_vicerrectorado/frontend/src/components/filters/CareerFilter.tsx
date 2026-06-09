@@ -54,14 +54,9 @@ const CareerFilter: React.FC<CareerFilterProps> = ({
       } catch (err) {
         console.error('Error loading careers:', err);
         setError('Error al cargar carreras');
-        // Datos de fallback
-        setCareers([
-          { id: 'ing-sistemas', name: 'Ingeniería de Sistemas', faculty: 'Ingeniería' },
-          { id: 'ing-civil', name: 'Ingeniería Civil', faculty: 'Ingeniería' },
-          { id: 'ing-comercial', name: 'Ingeniería Comercial', faculty: 'Ciencias Económicas' },
-          { id: 'administracion', name: 'Administración de Empresas', faculty: 'Ciencias Económicas' },
-          { id: 'derecho', name: 'Derecho', faculty: 'Ciencias Jurídicas' },
-        ]);
+        // Sin datos de fallback: la lista proviene exclusivamente del backend
+        // (/api/careers). No se inyectan carreras estáticas.
+        setCareers([]);
       } finally {
         setLoading(false);
       }
@@ -89,7 +84,7 @@ const CareerFilter: React.FC<CareerFilterProps> = ({
     (acc, [faculty, facultyCareers]) => {
       const filtered = facultyCareers.filter(
         career =>
-          career.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          (career.name || '').toLowerCase().includes(searchText.toLowerCase()) ||
           faculty.toLowerCase().includes(searchText.toLowerCase())
       );
       if (filtered.length > 0) {

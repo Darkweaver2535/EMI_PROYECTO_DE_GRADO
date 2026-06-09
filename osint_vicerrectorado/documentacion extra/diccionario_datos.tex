@@ -105,9 +105,9 @@
 \textbf{Institución:}   & Escuela Militar de Ingeniería (EMI) \\
 \textbf{Motor BD:}      & SQLite 3 \\
 \textbf{Archivo:}       & \texttt{data/osint\_emi.db} \\
-\textbf{Total tablas:}  & 23 tablas \\
-\textbf{Versión:}       & 1.0 \\
-\textbf{Fecha:}         & Febrero 2026 \\
+\textbf{Total tablas:}  & 30 tablas \\
+\textbf{Versión:}       & 2.0 \\
+\textbf{Fecha:}         & Mayo 2026 \\
 \end{tabular}
 
 \vspace{1cm}
@@ -181,9 +181,11 @@ fecha\_creacion & TIMESTAMP & & & & Fecha de registro de la fuente. \\
 fecha\_ultima\_recoleccion & TIMESTAMP & & & & Última vez que se extrajeron datos. \\
 \rowcolor{tablerow}
 total\_registros\_recolectados & INTEGER & & & & Contador acumulado de datos extraídos. \\
+\rowcolor{tablerow}
 metadata\_json & TEXT & & & & Metadatos adicionales en formato JSON. \\
+es\_oficial & BOOLEAN & & & & Si es fuente oficial de la EMI. Defecto: 0. \\
 \bottomrule
-\caption{Tabla \texttt{fuente\_osint} — Fuentes OSINT (3 registros)}
+\caption{Tabla \texttt{fuente\_osint} — Fuentes OSINT (4 registros)}
 \end{longtable}
 
 % ── Tabla: dato_recolectado ───────────────────────────────────────────────
@@ -221,7 +223,7 @@ procesado & BOOLEAN & & & & Indica si fue procesado por el ETL. Defecto: 0. \\
 \rowcolor{tablerow}
 fecha\_procesamiento & TIMESTAMP & & & & Fecha del procesamiento ETL. \\
 \bottomrule
-\caption{Tabla \texttt{dato\_recolectado} — Datos crudos (54 registros)}
+\caption{Tabla \texttt{dato\_recolectado} — Datos crudos (214 registros)}
 \end{longtable}
 
 % ── Tabla: comentario ─────────────────────────────────────────────────────
@@ -256,7 +258,7 @@ procesado & BOOLEAN & & & & Si fue analizado. Defecto: 0. \\
 \rowcolor{tablerow}
 metadata\_json & TEXT & & & & Metadatos adicionales. \\
 \bottomrule
-\caption{Tabla \texttt{comentario} — Comentarios (61 registros)}
+\caption{Tabla \texttt{comentario} — Comentarios (534 registros)}
 \end{longtable}
 
 % ══════════════════════════════════════════════════════════════════════════
@@ -304,7 +306,7 @@ sentimiento\_basico & VARCHAR(20) & & & & Sentimiento por reglas simples. \\
 fecha\_procesamiento & TIMESTAMP & & & & Fecha del procesamiento ETL. \\
 version\_etl & VARCHAR(20) & & & & Versión del pipeline. Defecto: ``1.0.0''. \\
 \bottomrule
-\caption{Tabla \texttt{dato\_procesado} — Datos procesados (49 registros)}
+\caption{Tabla \texttt{dato\_procesado} — Datos procesados (210 registros)}
 \end{longtable}
 
 % ══════════════════════════════════════════════════════════════════════════
@@ -334,7 +336,7 @@ probabilidad\_negativo & DECIMAL(5,4) & & & & P(negativo). \\
 modelo\_version & VARCHAR(50) & & & & Versión del modelo. Defecto: ``1.0.0''. \\
 fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
 \bottomrule
-\caption{Tabla \texttt{analisis\_sentimiento} — Sentimientos (69 registros)}
+\caption{Tabla \texttt{analisis\_sentimiento} — Sentimientos (244 registros)}
 \end{longtable}
 
 % ── Tabla: analisis_comentario ────────────────────────────────────────────
@@ -360,7 +362,7 @@ probabilidad\_negativo & DECIMAL(5,4) & & & & P(negativo). \\
 \rowcolor{tablerow}
 fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
 \bottomrule
-\caption{Tabla \texttt{analisis\_comentario} — Sentimiento de comentarios (57 registros)}
+\caption{Tabla \texttt{analisis\_comentario} — Sentimiento de comentarios (448 registros)}
 \end{longtable}
 
 % ══════════════════════════════════════════════════════════════════════════
@@ -392,7 +394,7 @@ es\_relevante\_uebu & BOOLEAN & & & & Si es relevante para la UEBU. \\
 \rowcolor{tablerow}
 fecha\_clasificacion & TIMESTAMP & & & & Fecha del análisis. \\
 \bottomrule
-\caption{Tabla \texttt{clasificacion\_tematica} — Clasificación temática (53 registros)}
+\caption{Tabla \texttt{clasificacion\_tematica} — Clasificación temática (233 registros)}
 \end{longtable}
 
 % ── Tabla: nlp_keywords ───────────────────────────────────────────────────
@@ -470,7 +472,7 @@ textos\_representativos & TEXT & & & & Ejemplos de textos del cluster. \\
 silhouette\_score & REAL & & & & Métrica de calidad del cluster. \\
 fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
 \bottomrule
-\caption{Tabla \texttt{nlp\_clusters} — Clusters K-Means (6 registros)}
+\caption{Tabla \texttt{nlp\_clusters} — Clusters K-Means (8 registros)}
 \end{longtable}
 
 % ── Tabla: nlp_entidades ──────────────────────────────────────────────────
@@ -494,7 +496,7 @@ frecuencia & INTEGER & & & & Número de ocurrencias. \\
 contextos & TEXT & & & & Fragmentos contextuales. \\
 fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
 \bottomrule
-\caption{Tabla \texttt{nlp\_entidades} — Entidades NER (15 registros)}
+\caption{Tabla \texttt{nlp\_entidades} — Entidades NER (28 registros)}
 \end{longtable}
 
 % ── Tabla: nlp_resumen_ejecutivo ──────────────────────────────────────────
@@ -549,7 +551,7 @@ sentimiento & VARCHAR(20) & & & & Sentimiento detectado. \\
 \rowcolor{tablerow}
 procesado & BOOLEAN & & & & Si fue procesado. \\
 \bottomrule
-\caption{Tabla \texttt{osint\_noticias} — Noticias (40 registros)}
+\caption{Tabla \texttt{osint\_noticias} — Noticias (1 registro)}
 \end{longtable}
 
 \subsection{Tabla: osint\_tendencias}
@@ -575,7 +577,7 @@ fecha\_recoleccion & TIMESTAMP & & & & Fecha de extracción. \\
 tipo & VARCHAR(50) & & & & Tipo: google\_trends. \\
 metadata\_json & TEXT & & & & Metadatos JSON. \\
 \bottomrule
-\caption{Tabla \texttt{osint\_tendencias} — Tendencias (24 registros)}
+\caption{Tabla \texttt{osint\_tendencias} — Tendencias (108 registros)}
 \end{longtable}
 
 \subsection{Tabla: osint\_fuente\_resumen}
@@ -601,7 +603,7 @@ ultima\_recoleccion & TIMESTAMP & & & & Última recolección. \\
 estado & VARCHAR(20) & & & & Estado: activo, inactivo. \\
 metadata\_json & TEXT & & & & Metadatos JSON. \\
 \bottomrule
-\caption{Tabla \texttt{osint\_fuente\_resumen} — Resumen de fuentes OSINT (4 registros)}
+\caption{Tabla \texttt{osint\_fuente\_resumen} — Resumen de fuentes OSINT (3 registros)}
 \end{longtable}
 
 \subsection{Tabla: patron\_identificado}
@@ -664,8 +666,9 @@ activo & INTEGER & & & & Estado activo (1) o inactivo (0). \\
 ultimo\_login & TEXT & & & & Fecha del último inicio de sesión. \\
 \rowcolor{tablerow}
 fecha\_creacion & TEXT & & & & Fecha de creación de la cuenta. \\
+permisos & TEXT & & & & Permisos JSON del usuario. Defecto: ``\{\}''. \\
 \bottomrule
-\caption{Tabla \texttt{usuario} — Usuarios del sistema (4 registros)}
+\caption{Tabla \texttt{usuario} — Usuarios del sistema (6 registros)}
 \end{longtable}
 
 \subsection{Tabla: log\_actividad}
@@ -687,7 +690,7 @@ ip\_address & TEXT & & & & Dirección IP del usuario. \\
 \rowcolor{tablerow}
 fecha & TEXT & & & & Fecha y hora de la acción. \\
 \bottomrule
-\caption{Tabla \texttt{log\_actividad} — Logs de actividad (7 registros)}
+\caption{Tabla \texttt{log\_actividad} — Logs de actividad (47 registros)}
 \end{longtable}
 
 % ══════════════════════════════════════════════════════════════════════════
@@ -725,7 +728,7 @@ resuelto\_por & INTEGER & & \fk & & Ref.\ a \texttt{usuario} que resolvió. \\
 fecha\_creacion & TEXT & & & & Fecha de creación. \\
 fecha\_resolucion & TEXT & & & & Fecha de resolución. \\
 \bottomrule
-\caption{Tabla \texttt{alerta} — Alertas (9 registros)}
+\caption{Tabla \texttt{alerta} — Alertas (20 registros)}
 \end{longtable}
 
 \subsection{Tabla: configuracion\_alerta}
@@ -809,7 +812,250 @@ mensaje\_error & TEXT & & & & Mensaje de error si aplica. \\
 \rowcolor{tablerow}
 detalles\_json & TEXT & & & & Detalles adicionales JSON. \\
 \bottomrule
-\caption{Tabla \texttt{log\_ejecucion} — Logs de ejecución (28 registros)}
+\caption{Tabla \texttt{log\_ejecucion} — Logs de ejecución (46 registros)}
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════
+\section{Tablas del módulo de IA Avanzada}
+
+\subsection{Tabla: alerta\_ia}
+\textit{Alertas generadas por los módulos de Inteligencia Artificial del sistema.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_alerta & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+tipo\_alerta & VARCHAR(50) & & & \nn & Tipo de alerta IA. \\
+titulo & VARCHAR(200) & & & \nn & Título descriptivo. \\
+\rowcolor{tablerow}
+descripcion & TEXT & & & \nn & Descripción detallada. \\
+severidad & VARCHAR(20) & & & \nn & Niveles: critica, alta, media, baja. \\
+\rowcolor{tablerow}
+modulo\_origen & VARCHAR(50) & & & & Módulo que generó la alerta. \\
+referencia\_id & INTEGER & & & & ID del registro relacionado. \\
+\rowcolor{tablerow}
+referencia\_tipo & VARCHAR(50) & & & & Tipo de registro referenciado. \\
+requiere\_accion & BOOLEAN & & & & Si requiere acción inmediata. Defecto: 0. \\
+\rowcolor{tablerow}
+estado & VARCHAR(20) & & & & Estado: nueva, leida, resuelta. Defecto: ``nueva''. \\
+fecha\_creacion & TIMESTAMP & & & & Fecha de creación. \\
+\rowcolor{tablerow}
+fecha\_lectura & TIMESTAMP & & & & Fecha de lectura. \\
+fecha\_resolucion & TIMESTAMP & & & & Fecha de resolución. \\
+\rowcolor{tablerow}
+usuario\_asignado & VARCHAR(100) & & & & Usuario asignado a resolver. \\
+notas\_resolucion & TEXT & & & & Notas de la resolución. \\
+\bottomrule
+\caption{Tabla \texttt{alerta\_ia} — Alertas de IA (0 registros)}
+\end{longtable}
+
+\subsection{Tabla: anomalia\_detectada}
+\textit{Anomalías detectadas por el algoritmo Isolation Forest sobre métricas del sistema.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_anomalia & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+tipo\_anomalia & VARCHAR(50) & & & \nn & Tipo de anomalía detectada. \\
+descripcion & TEXT & & & \nn & Descripción de la anomalía. \\
+\rowcolor{tablerow}
+severidad & VARCHAR(20) & & & \nn & Niveles: critica, alta, media, baja. \\
+metrica\_afectada & VARCHAR(100) & & & & Métrica afectada. \\
+\rowcolor{tablerow}
+valor\_esperado & DECIMAL(15,4) & & & & Valor esperado por el modelo. \\
+valor\_observado & DECIMAL(15,4) & & & & Valor observado (anómalo). \\
+\rowcolor{tablerow}
+anomaly\_score & DECIMAL(10,6) & & & & Puntuación de anomalía (Isolation Forest). \\
+fecha\_deteccion & TIMESTAMP & & & & Fecha de detección. \\
+\rowcolor{tablerow}
+fecha\_ocurrencia & TIMESTAMP & & & & Fecha real de la ocurrencia. \\
+estado & VARCHAR(20) & & & & Estado: nueva, investigada, resuelta. Defecto: ``nueva''. \\
+\rowcolor{tablerow}
+notas & TEXT & & & & Notas adicionales. \\
+metadata\_json & TEXT & & & & Metadatos JSON. \\
+\bottomrule
+\caption{Tabla \texttt{anomalia\_detectada} — Anomalías (5 registros)}
+\end{longtable}
+
+\subsection{Tabla: modelo\_entrenamiento}
+\textit{Registro de modelos de Machine Learning entrenados y sus métricas de rendimiento.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_entrenamiento & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+tipo\_modelo & VARCHAR(50) & & & \nn & Tipo: sentiment, clustering, topic. \\
+nombre\_modelo & VARCHAR(100) & & & \nn & Nombre del modelo. \\
+\rowcolor{tablerow}
+version & VARCHAR(20) & & & \nn & Versión del modelo. \\
+metricas\_json & TEXT & & & \nn & Métricas de rendimiento (accuracy, f1, etc.). \\
+\rowcolor{tablerow}
+parametros\_json & TEXT & & & & Hiperparámetros del modelo. \\
+datos\_entrenamiento & INTEGER & & & & Registros usados para entrenar. \\
+\rowcolor{tablerow}
+datos\_validacion & INTEGER & & & & Registros usados para validar. \\
+modelo\_path & VARCHAR(500) & & & & Ruta al archivo del modelo. \\
+\rowcolor{tablerow}
+estado & VARCHAR(20) & & & & Estado: entrenado, activo, deprecado. \\
+fecha\_entrenamiento & TIMESTAMP & & & & Fecha de entrenamiento. \\
+\rowcolor{tablerow}
+fecha\_activacion & TIMESTAMP & & & & Fecha de activación en producción. \\
+\bottomrule
+\caption{Tabla \texttt{modelo\_entrenamiento} — Modelos ML (1 registro)}
+\end{longtable}
+
+\subsection{Tabla: clustering\_modelo}
+\textit{Modelos de clustering K-Means con métricas de calidad (silhouette, Calinski-Harabasz, Davies-Bouldin).}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_modelo & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+nombre\_modelo & VARCHAR(100) & & & \nn & Nombre del modelo de clustering. \\
+n\_clusters & INTEGER & & & \nn & Número de clusters (k). \\
+\rowcolor{tablerow}
+silhouette\_score & DECIMAL(5,4) & & & & Coeficiente de Silhouette (0--1). \\
+calinski\_score & DECIMAL(10,2) & & & & Índice Calinski-Harabasz. \\
+\rowcolor{tablerow}
+davies\_bouldin\_score & DECIMAL(10,4) & & & & Índice Davies-Bouldin. \\
+total\_documentos & INTEGER & & & & Documentos procesados. \\
+\rowcolor{tablerow}
+cluster\_keywords\_json & TEXT & & & & Keywords por cluster (JSON). \\
+configuracion\_json & TEXT & & & & Configuración del modelo (JSON). \\
+\rowcolor{tablerow}
+modelo\_path & VARCHAR(500) & & & & Ruta al archivo del modelo. \\
+activo & BOOLEAN & & & & Si el modelo está activo. Defecto: 1. \\
+\rowcolor{tablerow}
+fecha\_entrenamiento & TIMESTAMP & & & & Fecha de entrenamiento. \\
+\bottomrule
+\caption{Tabla \texttt{clustering\_modelo} — Modelos de clustering (0 registros)}
+\end{longtable}
+
+\subsection{Tabla: clustering\_resultado}
+\textit{Asignación de cada documento procesado a un cluster específico.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_clustering & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+id\_dato\_procesado & INTEGER & & \fk & \nn & Ref.\ a \texttt{dato\_procesado}. \\
+cluster\_id & INTEGER & & & \nn & ID del cluster asignado. \\
+\rowcolor{tablerow}
+distancia\_centroide & DECIMAL(10,6) & & & & Distancia al centroide del cluster. \\
+confianza\_asignacion & DECIMAL(5,4) & & & & Confianza de la asignación. \\
+\rowcolor{tablerow}
+fecha\_clustering & TIMESTAMP & & & & Fecha del clustering. \\
+\bottomrule
+\caption{Tabla \texttt{clustering\_resultado} — Resultados de clustering (0 registros)}
+\end{longtable}
+
+\subsection{Tabla: analisis\_tendencia}
+\textit{Análisis de tendencias temporales sobre las métricas del sistema.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_tendencia & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+periodo & VARCHAR(50) & & & \nn & Periodo analizado. \\
+metrica & VARCHAR(100) & & & \nn & Métrica evaluada. \\
+\rowcolor{tablerow}
+tipo\_tendencia & VARCHAR(30) & & & \nn & Tipo: creciente, decreciente, estable. \\
+valor\_slope & DECIMAL(10,6) & & & & Pendiente de la regresión. \\
+\rowcolor{tablerow}
+valor\_r\_squared & DECIMAL(5,4) & & & & Coeficiente de determinación $R^2$. \\
+confianza & DECIMAL(5,4) & & & & Confianza del análisis. \\
+\rowcolor{tablerow}
+fecha\_inicio & DATE & & & \nn & Inicio del periodo. \\
+fecha\_fin & DATE & & & \nn & Fin del periodo. \\
+\rowcolor{tablerow}
+datos\_puntos & INTEGER & & & & Puntos de datos utilizados. \\
+estacionalidad\_detectada & BOOLEAN & & & & Si se detectó estacionalidad. \\
+\rowcolor{tablerow}
+forecast\_json & TEXT & & & & Pronóstico generado (JSON). \\
+metadata\_json & TEXT & & & & Metadatos adicionales. \\
+\rowcolor{tablerow}
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{analisis\_tendencia} — Tendencias (5 registros)}
+\end{longtable}
+
+\subsection{Tabla: anotacion\_manual}
+\textit{Anotaciones manuales de sentimiento para validación (gold standard) de los modelos de IA.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_anotacion & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+id\_dato\_procesado & INTEGER & & \fk & \nn & Ref.\ a \texttt{dato\_procesado}. \\
+texto\_original & TEXT & & & \nn & Texto que fue anotado. \\
+\rowcolor{tablerow}
+sentimiento\_anotado & VARCHAR(20) & & & \nn & Sentimiento asignado manualmente. \\
+confianza\_anotacion & VARCHAR(20) & & & & Nivel de confianza del anotador. \\
+\rowcolor{tablerow}
+anotador & VARCHAR(100) & & & & Nombre del anotador. \\
+fecha\_anotacion & TIMESTAMP & & & & Fecha de la anotación. \\
+\rowcolor{tablerow}
+notas & TEXT & & & & Notas del anotador. \\
+usado\_entrenamiento & BOOLEAN & & & & Si fue usado para entrenar. Defecto: 0. \\
+\bottomrule
+\caption{Tabla \texttt{anotacion\_manual} — Anotaciones manuales (1 registro)}
+\end{longtable}
+
+\subsection{Tabla: correlacion\_resultado}
+\textit{Resultados de análisis de correlación estadística entre variables del sistema.}
+
+\begin{longtable}{p{4.2cm} p{2.8cm} c c c p{4.5cm}}
+\toprule
+\tableheadrow
+\tablehead{Campo} & \tablehead{Tipo} & \tablehead{PK} & \tablehead{FK} & \tablehead{NN} & \tablehead{Descripción} \\
+\midrule
+\endhead
+id\_correlacion & INTEGER & \pk & & & Identificador único. \\
+\rowcolor{tablerow}
+variable\_1 & VARCHAR(100) & & & \nn & Primera variable. \\
+variable\_2 & VARCHAR(100) & & & \nn & Segunda variable. \\
+\rowcolor{tablerow}
+coeficiente\_correlacion & DECIMAL(6,4) & & & \nn & Coeficiente de correlación. \\
+p\_value & DECIMAL(10,8) & & & \nn & Valor p (significancia). \\
+\rowcolor{tablerow}
+es\_significativa & BOOLEAN & & & \nn & Si la correlación es significativa ($p < 0.05$). \\
+fuerza & VARCHAR(30) & & & & Fuerza: débil, moderada, fuerte. \\
+\rowcolor{tablerow}
+direccion & VARCHAR(20) & & & & Dirección: positiva, negativa. \\
+n\_muestras & INTEGER & & & & Número de muestras. \\
+\rowcolor{tablerow}
+metodo & VARCHAR(30) & & & & Método: pearson, spearman. Defecto: ``pearson''. \\
+fecha\_analisis & TIMESTAMP & & & & Fecha del análisis. \\
+\bottomrule
+\caption{Tabla \texttt{correlacion\_resultado} — Correlaciones (28 registros)}
 \end{longtable}
 
 % ══════════════════════════════════════════════════════════════════════════
@@ -821,30 +1067,38 @@ detalles\_json & TEXT & & & & Detalles adicionales JSON. \\
 \toprule
 \textbf{Tabla} & \textbf{Registros} & \textbf{Módulo} \\
 \midrule
-fuente\_osint & 3 & Recolección OSINT \\
-dato\_recolectado & 54 & Recolección OSINT \\
-comentario & 61 & Recolección OSINT \\
-dato\_procesado & 49 & ETL / Procesamiento \\
-analisis\_sentimiento & 69 & IA — Sentimiento \\
-analisis\_comentario & 57 & IA — Sentimiento \\
-clasificacion\_tematica & 53 & NLP / ML \\
+fuente\_osint & 4 & Recolección OSINT \\
+dato\_recolectado & 214 & Recolección OSINT \\
+comentario & 534 & Recolección OSINT \\
+dato\_procesado & 210 & ETL / Procesamiento \\
+analisis\_sentimiento & 244 & IA — Sentimiento \\
+analisis\_comentario & 448 & IA — Sentimiento \\
+clasificacion\_tematica & 233 & NLP / ML \\
 nlp\_keywords & 50 & NLP / ML \\
 nlp\_topicos & 6 & NLP / ML \\
-nlp\_clusters & 6 & NLP / ML \\
-nlp\_entidades & 15 & NLP / ML \\
+nlp\_clusters & 8 & NLP / ML \\
+nlp\_entidades & 28 & NLP / ML \\
 nlp\_resumen\_ejecutivo & 1 & NLP / ML \\
-osint\_noticias & 40 & Inteligencia OSINT \\
-osint\_tendencias & 24 & Inteligencia OSINT \\
-osint\_fuente\_resumen & 4 & Inteligencia OSINT \\
+osint\_noticias & 1 & Inteligencia OSINT \\
+osint\_tendencias & 108 & Inteligencia OSINT \\
+osint\_fuente\_resumen & 3 & Inteligencia OSINT \\
 patron\_identificado & 10 & Inteligencia OSINT \\
-usuario & 4 & Seguridad \\
-log\_actividad & 7 & Seguridad \\
-alerta & 9 & Alertas \\
+usuario & 6 & Seguridad \\
+log\_actividad & 47 & Seguridad \\
+alerta & 20 & Alertas \\
+alerta\_ia & 0 & Alertas IA \\
 configuracion\_alerta & 4 & Alertas \\
+anomalia\_detectada & 5 & IA Avanzada \\
+modelo\_entrenamiento & 1 & IA Avanzada \\
+clustering\_modelo & 0 & IA Avanzada \\
+clustering\_resultado & 0 & IA Avanzada \\
+analisis\_tendencia & 5 & IA Avanzada \\
+anotacion\_manual & 1 & IA Avanzada \\
+correlacion\_resultado & 28 & IA Avanzada \\
 evaluacion\_sistema & 22 & Evaluación \\
-log\_ejecucion & 28 & Auditoría \\
+log\_ejecucion & 46 & Auditoría \\
 \midrule
-\textbf{Total} & \textbf{576} & \textbf{23 tablas} \\
+\textbf{Total} & \textbf{2287} & \textbf{30 tablas} \\
 \bottomrule
 \end{tabularx}
 \caption{Resumen de registros por tabla}
@@ -860,6 +1114,7 @@ log\_ejecucion & 28 & Auditoría \\
 \textbf{Versión} & \textbf{Fecha} & \textbf{Autor} & \textbf{Cambios} \\
 \midrule
 1.0 & Feb 2026 & Alvaro Santiago Encinas Flores & Versión inicial del diccionario de datos. \\
+2.0 & May 2026 & Alvaro Santiago Encinas Flores & Sincronización con BD real: 30 tablas, conteos actualizados, 8 tablas agregadas (IA Avanzada). \\
 \bottomrule
 \end{tabularx}
 \end{table}

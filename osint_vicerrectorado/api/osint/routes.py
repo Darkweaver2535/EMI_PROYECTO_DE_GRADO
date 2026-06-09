@@ -19,6 +19,69 @@ from api.common.state import _osint_set_status, OSINT_EXECUTION_STATUS, OSINT_ST
 
 bp = Blueprint('osint', __name__)
 
+# Estado del job de análisis IA de noticias
+_news_ai_job = {'running': False}
+
+
+@bp.route('/api/osint/fuentes-bolivia')
+def osint_fuentes_bolivia():
+    """Catálogo de fuentes de noticias gratuitas de Bolivia + estadísticas reales."""
+    try:
+        from news_sources_bolivia import listar_fuentes
+        fuentes = listar_fuentes()
+    except Exception:
+        fuentes = []
+
+    conn = get_db()
+    cursor = conn.cursor()
+    # Conteo real de noticias por fuente
+    por_fuente = {}
+    try:
+        cursor.execute("SELECT fuente, COUNT(*) c FROM osint_noticias GROUP BY fuente")
+        por_fuente = {(r['fuente'] or 'Desconocida'): r['c'] for r in cursor.fetchall()}
+    except Exception:
+        pass
+    # Cuántas noticias ya clasificó la IA
+    analizadas = 0
+    total = 0
+    try:
+        cursor.execute("SELECT COUNT(*) c FROM osint_noticias")
+        total = cursor.fetchone()['c']
+        cursor.execute("SELECT COUNT(*) c FROM osint_noticias WHERE procesado = 1")
+        analizadas = cursor.fetchone()['c']
+    except Exception:
+        pass
+    conn.close()
+
+    return jsonify({
+        'fuentes': fuentes,
+        'totalFuentes': len(fuentes),
+        'noticiasPorFuente': por_fuente,
+        'totalNoticias': total,
+        'noticiasAnalizadasIA': analizadas,
+    })
+
+
+@bp.route('/api/osint/noticias/analizar', methods=['POST'])
+def osint_analizar_noticias():
+    """Dispara la clasificación IA (DeepSeek) de las noticias pendientes."""
+    if _news_ai_job['running']:
+        return jsonify({'status': 'en_progreso'}), 409
+
+    def run_job():
+        _news_ai_job['running'] = True
+        try:
+            from deepseek_analyzer import analizar_noticias
+            analizar_noticias()
+        except Exception as e:
+            logging.getLogger('OSINT.API').warning(f"Error IA noticias: {e}")
+        finally:
+            _news_ai_job['running'] = False
+
+    threading.Thread(target=run_job, daemon=True).start()
+    return jsonify({'status': 'iniciado', 'mensaje': 'Clasificación IA de noticias iniciada.'})
+
+
 # ============== OSINT MULTIFUENTE Y PATRONES ==============
 
 @bp.route('/api/osint/ejecutar', methods=['POST'])
@@ -46,15 +109,67 @@ def ejecutar_osint_completo():
 
     def run_osint():
         try:
-            _osint_set_status(progress=20, current_step='Preparando componentes OSINT', step_message='Componentes preparados')
+            _osint_set_status(progress=10, current_step='Importando módulo OSINT', step_message='Preparando componentes')
             from osint_multifuente import OSINTMultifuente
 
-            _osint_set_status(progress=35, current_step='Recolectando datos multifuente', step_message='Iniciando recolección de noticias, tendencias y contenido social')
             osint = OSINTMultifuente()
-            result = osint.ejecutar_recoleccion_completa()
+            resultados = {'tecnicas_ejecutadas': 0, 'resultados': {}}
 
-            tecnicas = result.get('tecnicas_ejecutadas', 0)
-            summary_msg = f'OSINT completo: {tecnicas} técnica(s) ejecutada(s)'
+            # 1. NEWSINT
+            _osint_set_status(progress=15, current_step='📰 NEWSINT: Recolectando noticias de Google News', step_message='Buscando noticias sobre EMI en medios bolivianos...')
+            try:
+                resultados['resultados']['newsint'] = osint.recolectar_noticias()
+                resultados['tecnicas_ejecutadas'] += 1
+            except Exception as e:
+                print(f"Error NEWSINT: {e}")
+
+            # 2. SEINT
+            _osint_set_status(progress=35, current_step='🔍 SEINT: Search Engine Intelligence', step_message='Buscando menciones de EMI en motores de búsqueda...')
+            try:
+                resultados['resultados']['seint'] = osint.recolectar_busquedas()
+                resultados['tecnicas_ejecutadas'] += 1
+            except Exception as e:
+                print(f"Error SEINT: {e}")
+
+            # 3. TRENDINT
+            _osint_set_status(progress=55, current_step='📊 TRENDINT: Analizando tendencias de búsqueda', step_message='Analizando tendencias de actividad...')
+            try:
+                resultados['resultados']['trendint'] = osint.recolectar_tendencias()
+                resultados['tecnicas_ejecutadas'] += 1
+            except Exception as e:
+                print(f"Error TRENDINT: {e}")
+                
+            # 3.5 SENTIMIENTOS
+            _osint_set_status(progress=65, current_step='🎭 Analizando Sentimientos', step_message='Clasificando sentimientos (BETO/Lexicón)...')
+            try:
+                import sentiment_analyzer
+                resultados['resultados']['sentimientos'] = sentiment_analyzer.ejecutar_analisis_completo()
+                # No sumamos técnica ejecutada porque es interna
+            except Exception as e:
+                print(f"Error Sentimientos: {e}")
+
+            # 4. Clasificación temática
+            _osint_set_status(progress=70, current_step='🏷️ Clasificando contenido por temas', step_message='Analizando posts, comentarios y noticias...')
+            try:
+                resultados['resultados']['clasificacion'] = osint.clasificar_contenido_tematico()
+                resultados['tecnicas_ejecutadas'] += 1
+            except Exception as e:
+                print(f"Error clasificación: {e}")
+
+            # 5. Patrones
+            _osint_set_status(progress=85, current_step='🔍 Identificando patrones', step_message='Cruzando datos de múltiples fuentes...')
+            try:
+                resultados['resultados']['patrones'] = osint.identificar_patrones()
+                resultados['tecnicas_ejecutadas'] += 1
+            except Exception as e:
+                print(f"Error patrones: {e}")
+
+            tecnicas = resultados['tecnicas_ejecutadas']
+            newsint = resultados['resultados'].get('newsint', {})
+            seint = resultados['resultados'].get('seint', {})
+            news_new = newsint.get('noticias_nuevas', 0) + seint.get('resultados_nuevos', 0)
+            
+            summary_msg = f'OSINT completo: {tecnicas} técnica(s) ejecutada(s), {news_new} noticias nuevas'
             finished_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
             _osint_set_status(
@@ -66,7 +181,7 @@ def ejecutar_osint_completo():
                 message=summary_msg,
                 step_message='Proceso OSINT finalizado correctamente'
             )
-            print(f"✅ OSINT completo: {result['tecnicas_ejecutadas']} técnicas ejecutadas")
+            print(f"✅ {summary_msg}")
         except Exception as e:
             finished_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             _osint_set_status(

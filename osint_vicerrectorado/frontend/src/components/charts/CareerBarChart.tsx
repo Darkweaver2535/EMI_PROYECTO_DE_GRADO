@@ -162,7 +162,8 @@ const CareerBarChart: React.FC<CareerBarChartProps> = ({
             <>
               <XAxis
                 dataKey="displayName"
-                tick={{ fontSize: 11, angle: -45, textAnchor: 'end' }}
+                // recharts lee angle/textAnchor del tick en runtime; el tipado no lo expone
+                tick={{ fontSize: 11, angle: -45, textAnchor: 'end' } as React.SVGProps<SVGTextElement>}
                 height={80}
                 stroke={theme.palette.text.secondary}
               />

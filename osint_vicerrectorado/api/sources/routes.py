@@ -226,7 +226,7 @@ def create_source():
 # y scrapers/tiktok_collector.py). Los endpoints de abajo mantienen la misma interfaz
 # pero delegan al nuevo sistema de collectors.
 
-def _collect_with_apify(source_id, platform, url, source_name):
+def _collect_with_apify(source_id, platform, url, source_name, log_id=None):
     """
     Ejecuta recolección usando los collectors de Apify.
     Función interna usada por el endpoint /api/sources/<id>/scrape.
@@ -288,24 +288,38 @@ def _collect_with_apify(source_id, platform, url, source_name):
         posts = collector.collect_data(limit=scrape_limit)
         
         if posts:
-            _save_collected_data(source_id, posts, platform)
+            _save_collected_data(source_id, posts, platform, log_id)
         else:
             print(f"[INFO] No se obtuvieron datos de {source_name}.")
-            
+
+            # Abrir conexión propia para este camino (antes usaba cursor sin definir)
             conn = get_db()
             cursor = conn.cursor()
-            cursor.execute('''
-                INSERT INTO log_ejecucion 
-                (tipo_operacion, fuente, fecha_inicio, fecha_fin, 
-                 registros_procesados, registros_exitosos, estado, detalles_json)
-                VALUES ('scraping', ?, datetime('now'), datetime('now'), 0, 0, 'completado', ?)
-            ''', (
-                source_name,
-                json_lib.dumps({
-                    'message': 'No se obtuvieron datos',
-                    'platform': platform
-                })
-            ))
+            if log_id:
+                cursor.execute('''
+                    UPDATE log_ejecucion 
+                    SET fecha_fin = datetime('now'), estado = 'completado', 
+                        detalles_json = ?
+                    WHERE id_log = ?
+                ''', (
+                    json_lib.dumps({
+                        'message': 'No se obtuvieron datos',
+                        'platform': platform
+                    }), log_id
+                ))
+            else:
+                cursor.execute('''
+                    INSERT INTO log_ejecucion 
+                    (tipo_operacion, fuente, fecha_inicio, fecha_fin, 
+                     registros_procesados, registros_exitosos, estado, detalles_json)
+                    VALUES ('scraping', ?, datetime('now'), datetime('now'), 0, 0, 'completado', ?)
+                ''', (
+                    source_name,
+                    json_lib.dumps({
+                        'message': 'No se obtuvieron datos',
+                        'platform': platform
+                    })
+                ))
             conn.commit()
             conn.close()
             
@@ -316,16 +330,23 @@ def _collect_with_apify(source_id, platform, url, source_name):
         
         conn = get_db()
         cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO log_ejecucion 
-            (tipo_operacion, fuente, fecha_inicio, fecha_fin, estado, mensaje_error)
-            VALUES ('scraping', ?, datetime('now'), datetime('now'), 'error', ?)
-        ''', (source_name, str(e)))
+        if log_id:
+            cursor.execute('''
+                UPDATE log_ejecucion 
+                SET fecha_fin = datetime('now'), estado = 'error', mensaje_error = ?
+                WHERE id_log = ?
+            ''', (str(e), log_id))
+        else:
+            cursor.execute('''
+                INSERT INTO log_ejecucion 
+                (tipo_operacion, fuente, fecha_inicio, fecha_fin, estado, mensaje_error)
+                VALUES ('scraping', ?, datetime('now'), datetime('now'), 'error', ?)
+            ''', (source_name, str(e)))
         conn.commit()
         conn.close()
 
 
-def _save_collected_data(source_id, posts, platform):
+def _save_collected_data(source_id, posts, platform, log_id=None):
     """
     Guarda los datos recolectados en la BD.
     Deduplicación por id_externo: si un post ya existe, se ignora.
@@ -482,28 +503,57 @@ def _save_collected_data(source_id, posts, platform):
     ''', (posts_added, source_id))
     
     # Registrar log con info de deduplicación
-    cursor.execute('''
-        INSERT INTO log_ejecucion 
-        (tipo_operacion, fuente, fecha_inicio, fecha_fin, 
-         registros_procesados, registros_exitosos, estado, detalles_json)
-        VALUES ('scraping', ?, datetime('now'), datetime('now'), ?, ?, 'completado', ?)
-    ''', (
-        str(source_id),
-        posts_added + comments_added,
-        posts_added,
-        json_lib.dumps({
-            'posts_nuevos': posts_added,
-            'posts_duplicados_ignorados': posts_skipped,
-            'posts_de_apify': total_from_apify, 
-            'comments': comments_added,
-            'method': 'apify'
-        })
-    ))
+    if log_id:
+        cursor.execute('''
+            UPDATE log_ejecucion 
+            SET fecha_fin = datetime('now'),
+                registros_procesados = ?,
+                registros_exitosos = ?,
+                estado = 'completado',
+                detalles_json = ?
+            WHERE id_log = ?
+        ''', (
+            posts_added + comments_added,
+            posts_added,
+            json_lib.dumps({
+                'posts_nuevos': posts_added,
+                'posts_duplicados_ignorados': posts_skipped,
+                'posts_de_apify': total_from_apify, 
+                'comments': comments_added,
+                'method': 'apify'
+            }), log_id
+        ))
+    else:
+        cursor.execute('''
+            INSERT INTO log_ejecucion 
+            (tipo_operacion, fuente, fecha_inicio, fecha_fin, 
+             registros_procesados, registros_exitosos, estado, detalles_json)
+            VALUES ('scraping', ?, datetime('now'), datetime('now'), ?, ?, 'completado', ?)
+        ''', (
+            str(source_id),
+            posts_added + comments_added,
+            posts_added,
+            json_lib.dumps({
+                'posts_nuevos': posts_added,
+                'posts_duplicados_ignorados': posts_skipped,
+                'posts_de_apify': total_from_apify, 
+                'comments': comments_added,
+                'method': 'apify'
+            })
+        ))
     
     conn.commit()
     conn.close()
     
     print(f"✅ Recolección completada: {posts_added} nuevos, {posts_skipped} duplicados ignorados, {comments_added} comentarios")
+    
+    # === ANALIZAR SENTIMIENTOS AUTOMÁTICAMENTE ===
+    try:
+        import sentiment_analyzer
+        print("Iniciando análisis de sentimientos post-scraping...")
+        sentiment_analyzer.ejecutar_analisis_completo()
+    except Exception as e:
+        print(f"Error al ejecutar análisis de sentimiento post-scraping: {e}")
 
 
 @bp.route('/api/sources/<int:source_id>/scrape', methods=['POST'])
@@ -525,12 +575,21 @@ def run_scraping(source_id):
     url = source['url_fuente']
     source_name = source['nombre_fuente']
     
+    # Registrar estado 'en_progreso' inicial
+    cursor.execute('''
+        INSERT INTO log_ejecucion 
+        (tipo_operacion, fuente, fecha_inicio, estado)
+        VALUES ('scraping', ?, datetime('now'), 'en_progreso')
+    ''', (str(source_id),))
+    log_id = cursor.lastrowid
+    
+    conn.commit()
     conn.close()
     
     # Ejecutar en background
     thread = threading.Thread(
         target=_collect_with_apify,
-        args=(source_id, platform, url, source_name)
+        args=(source_id, platform, url, source_name, log_id)
     )
     thread.start()
     

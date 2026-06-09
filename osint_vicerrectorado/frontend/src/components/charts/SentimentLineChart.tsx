@@ -37,7 +37,7 @@ const SentimentLineChart: React.FC<SentimentLineChartProps> = ({
   const theme = useTheme();
 
   const formatXAxis = (value: string) => {
-    return formatDateDisplay(value, 'short');
+    return formatDateDisplay(value, 'dd MMM');
   };
 
   const formatTooltipValue = (value: number) => {

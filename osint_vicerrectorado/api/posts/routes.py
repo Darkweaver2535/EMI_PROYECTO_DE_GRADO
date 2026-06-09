@@ -48,12 +48,16 @@ def get_posts():
             dr.url_publicacion as url,
             (SELECT COUNT(*) FROM comentario c WHERE c.id_post = dr.id_dato) as collected_comments,
             dp.sentimiento_basico as sentiment,
-            asent.sentimiento_predicho as ai_sentiment,
-            asent.confianza as ai_confidence
+            COALESCE(ds.sentimiento, asent.sentimiento_predicho) as ai_sentiment,
+            COALESCE(ds.confianza_pseudo, asent.confianza) as ai_confidence
         FROM dato_recolectado dr
         JOIN fuente_osint f ON dr.id_fuente = f.id_fuente
         LEFT JOIN dato_procesado dp ON dr.id_dato = dp.id_dato_original
         LEFT JOIN analisis_sentimiento asent ON dp.id_dato_procesado = asent.id_dato_procesado
+        LEFT JOIN (
+            SELECT id_contenido, sentimiento, ABS(sentimiento_score) AS confianza_pseudo
+            FROM analisis_deepseek WHERE tipo_contenido = 'post'
+        ) ds ON ds.id_contenido = dp.id_dato_procesado
         WHERE 1=1
     '''
     params = []
@@ -140,7 +144,7 @@ def get_post_detail(post_id):
             dp.cantidad_palabras,
             dp.engagement_normalizado,
             dp.categoria_preliminar,
-            asent.sentimiento_predicho as ai_sentiment,
+            COALESCE(ds.sentimiento, asent.sentimiento_predicho) as ai_sentiment,
             asent.confianza as ai_confidence,
             asent.probabilidad_positivo,
             asent.probabilidad_neutral,
@@ -149,6 +153,7 @@ def get_post_detail(post_id):
         JOIN fuente_osint f ON dr.id_fuente = f.id_fuente
         LEFT JOIN dato_procesado dp ON dr.id_dato = dp.id_dato_original
         LEFT JOIN analisis_sentimiento asent ON dp.id_dato_procesado = asent.id_dato_procesado
+        LEFT JOIN analisis_deepseek ds ON ds.tipo_contenido='post' AND ds.id_contenido = dp.id_dato_procesado
         WHERE dr.id_dato = ?
     ''', (post_id,))
     
@@ -157,15 +162,16 @@ def get_post_detail(post_id):
         conn.close()
         return jsonify({'error': 'Post no encontrado'}), 404
     
-    # Obtener resumen de sentimientos de comentarios
+    # Resumen de sentimientos de comentarios (prefiere DeepSeek sobre BERT)
     cursor.execute('''
-        SELECT 
+        SELECT
             COUNT(*) as total,
-            SUM(CASE WHEN ac.sentimiento = 'Positivo' THEN 1 ELSE 0 END) as positivos,
-            SUM(CASE WHEN ac.sentimiento = 'Neutral' THEN 1 ELSE 0 END) as neutrales,
-            SUM(CASE WHEN ac.sentimiento = 'Negativo' THEN 1 ELSE 0 END) as negativos
+            SUM(CASE WHEN COALESCE(ds.sentimiento, ac.sentimiento) = 'Positivo' THEN 1 ELSE 0 END) as positivos,
+            SUM(CASE WHEN COALESCE(ds.sentimiento, ac.sentimiento) = 'Neutral' THEN 1 ELSE 0 END) as neutrales,
+            SUM(CASE WHEN COALESCE(ds.sentimiento, ac.sentimiento) = 'Negativo' THEN 1 ELSE 0 END) as negativos
         FROM comentario c
         LEFT JOIN analisis_comentario ac ON c.id_comentario = ac.id_comentario
+        LEFT JOIN analisis_deepseek ds ON ds.tipo_contenido='comentario' AND ds.id_contenido = c.id_comentario
         WHERE c.id_post = ?
     ''', (post_id,))
     comments_sentiment = cursor.fetchone()
@@ -226,13 +232,14 @@ def get_post_comments(post_id):
             c.respuestas,
             c.es_respuesta,
             c.id_comentario_padre,
-            ac.sentimiento,
+            COALESCE(ds.sentimiento, ac.sentimiento) as sentimiento,
             ac.confianza,
             ac.probabilidad_positivo,
             ac.probabilidad_neutral,
             ac.probabilidad_negativo
         FROM comentario c
         LEFT JOIN analisis_comentario ac ON c.id_comentario = ac.id_comentario
+        LEFT JOIN analisis_deepseek ds ON ds.tipo_contenido='comentario' AND ds.id_contenido = c.id_comentario
         WHERE c.id_post = ?
         ORDER BY c.fecha_publicacion DESC
         LIMIT ? OFFSET ?
@@ -299,18 +306,19 @@ def get_all_comments():
             f.nombre_fuente as source_name,
             f.tipo_fuente as platform,
             dr.contenido_original as post_content,
-            ac.sentimiento,
+            COALESCE(ds.sentimiento, ac.sentimiento) as sentimiento,
             ac.confianza
         FROM comentario c
         JOIN dato_recolectado dr ON c.id_post = dr.id_dato
         JOIN fuente_osint f ON c.id_fuente = f.id_fuente
         LEFT JOIN analisis_comentario ac ON c.id_comentario = ac.id_comentario
+        LEFT JOIN analisis_deepseek ds ON ds.tipo_contenido='comentario' AND ds.id_contenido = c.id_comentario
         WHERE 1=1
     '''
     params = []
-    
+
     if sentiment:
-        query += ' AND ac.sentimiento = ?'
+        query += ' AND COALESCE(ds.sentimiento, ac.sentimiento) = ?'
         params.append(sentiment)
     
     if source_id:
@@ -390,15 +398,19 @@ def hierarchy_stats():
             'comments': row['comments']
         })
     
-    # Sentimientos de comentarios
+    # Sentimientos de comentarios (prefiere DeepSeek; incluye comentarios de
+    # solo emojis que tienen DeepSeek pero no BERT → LEFT JOIN en ambos)
     cursor.execute('''
-        SELECT 
-            ac.sentimiento,
+        SELECT
+            COALESCE(ds.sentimiento, ac.sentimiento) as sentimiento,
             COUNT(*) as count
-        FROM analisis_comentario ac
-        GROUP BY ac.sentimiento
+        FROM comentario c
+        LEFT JOIN analisis_comentario ac ON c.id_comentario = ac.id_comentario
+        LEFT JOIN analisis_deepseek ds ON ds.tipo_contenido='comentario' AND ds.id_contenido = c.id_comentario
+        WHERE COALESCE(ds.sentimiento, ac.sentimiento) IS NOT NULL
+        GROUP BY COALESCE(ds.sentimiento, ac.sentimiento)
     ''')
-    
+
     comments_sentiment = {'Positivo': 0, 'Neutral': 0, 'Negativo': 0}
     for row in cursor.fetchall():
         if row['sentimiento'] in comments_sentiment:

@@ -451,14 +451,46 @@ class OSINTController:
 
         try:
             from etl.etl_controller import ETLController
+            import asyncio
 
             etl = ETLController(config=self.config, db=self.db)
             results = etl.run()
+            
+            nuevos_registros = results.get('loaded', 0)
 
             self.logger.info(
                 f"ETL programado completado: "
-                f"{results.get('loaded', 0)} registros procesados"
+                f"{nuevos_registros} registros procesados"
             )
+            
+            if nuevos_registros > 0:
+                self.logger.info("Iniciando análisis IA automático...")
+                
+                def run_ai():
+                    try:
+                        import sentiment_analyzer
+                        from nlp_pipeline import NLPPipeline
+                        
+                        # a) Sentiment Analyzer: solo registros sin análisis previo
+                        sentiment_analyzer.ejecutar_analisis_completo(force_reanalysis=False)
+                        
+                        # b) NLP Pipeline: recalcula tópicos y clusters
+                        NLPPipeline().ejecutar_pipeline_completo()
+                        
+                        self.logger.info("Pipeline NLP/ML completado. Dashboard actualizado.")
+                    except Exception as ai_e:
+                        self.logger.error(f"Error en análisis IA automático: {ai_e}")
+
+                loop = asyncio.get_running_loop()
+                # Se ejecuta en un thread separado para NO bloquear el event loop del scheduler
+                future = loop.run_in_executor(None, run_ai)
+                future.add_done_callback(
+                    lambda f: self.logger.error(f"IA thread error: {f.exception()}") 
+                    if f.exception() else None
+                )
+            else:
+                self.logger.info("Sin datos nuevos, omitiendo análisis IA")
+
         except Exception as e:
             self.logger.error(f"Error en ETL programado: {e}")
 

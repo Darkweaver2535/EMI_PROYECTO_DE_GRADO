@@ -60,7 +60,7 @@ import {
 import ScheduleForm from '../components/reports/ScheduleForm';
 
 // Tipos y servicios
-import { ReportSchedule, ExecutionLog, CreateScheduleRequest } from '../types/reports.types';
+import { ReportSchedule, ExecutionLog } from '../types/reports.types';
 import reportsService, { formatFrequency, getReportTypeName } from '../services/reportsService';
 
 // Colores EMI
@@ -139,28 +139,16 @@ const ScheduledReports: React.FC = () => {
   };
 
   // Guardar programación
-  const handleSaveSchedule = async (data: CreateScheduleRequest) => {
-    try {
-      let response;
-      if (editingSchedule) {
-        response = await reportsService.updateSchedule(editingSchedule.id, data);
-      } else {
-        response = await reportsService.createSchedule(data);
-      }
-
-      if (response.success) {
-        showNotification(
-          editingSchedule ? 'Programación actualizada' : 'Programación creada',
-          'success'
-        );
-        setFormOpen(false);
-        loadSchedules();
-      } else {
-        showNotification(response.error || 'Error guardando programación', 'error');
-      }
-    } catch (error) {
-      showNotification('Error guardando programación', 'error');
-    }
+  // El guardado (create/update) lo realiza ScheduleForm internamente; aquí solo
+  // refrescamos la lista y notificamos. Antes se guardaba dos veces (bug).
+  const handleSaveSchedule = () => {
+    showNotification(
+      editingSchedule ? 'Programación actualizada' : 'Programación creada',
+      'success'
+    );
+    setFormOpen(false);
+    setEditingSchedule(null);
+    loadSchedules();
   };
 
   // Confirmar eliminación
@@ -193,7 +181,7 @@ const ScheduledReports: React.FC = () => {
       const response = await reportsService.toggleSchedule(schedule.id);
       if (response.success) {
         showNotification(
-          response.schedule?.enabled ? 'Programación habilitada' : 'Programación deshabilitada',
+          response.enabled ? 'Programación habilitada' : 'Programación deshabilitada',
           'success'
         );
         loadSchedules();
@@ -229,7 +217,7 @@ const ScheduledReports: React.FC = () => {
     if (!historyData[scheduleId]) {
       try {
         setLoadingHistory(scheduleId);
-        const response = await reportsService.getScheduleHistory(scheduleId);
+        const response = await reportsService.getScheduleHistory(Number(scheduleId));
         if (response.success) {
           setHistoryData(prev => ({
             ...prev,
@@ -269,15 +257,15 @@ const ScheduledReports: React.FC = () => {
               {history.slice(0, 5).map((log, index) => (
                 <ListItem key={index} disablePadding>
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    {log.status === 'success' ? (
+                    {log.status === 'completed' ? (
                       <SuccessIcon color="success" fontSize="small" />
                     ) : (
                       <ErrorIcon color="error" fontSize="small" />
                     )}
                   </ListItemIcon>
                   <ListItemText
-                    primary={new Date(log.executed_at).toLocaleString('es-BO')}
-                    secondary={log.status === 'success' ? log.report_file : log.error}
+                    primary={new Date(log.started_at).toLocaleString('es-BO')}
+                    secondary={log.status === 'completed' ? log.file_path : log.error_message}
                     primaryTypographyProps={{ variant: 'body2' }}
                     secondaryTypographyProps={{ variant: 'caption' }}
                   />
@@ -455,7 +443,13 @@ const ScheduledReports: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           <Chip
-                            label={formatFrequency(schedule)}
+                            label={formatFrequency(
+                              schedule.frequency,
+                              schedule.day_of_week,
+                              schedule.day_of_month,
+                              schedule.hour,
+                              schedule.minute
+                            )}
                             size="small"
                             variant="outlined"
                             color={
@@ -501,9 +495,9 @@ const ScheduledReports: React.FC = () => {
                           <Tooltip title="Ver historial">
                             <IconButton
                               size="small"
-                              onClick={() => handleToggleHistory(schedule.id)}
+                              onClick={() => handleToggleHistory(String(schedule.id))}
                             >
-                              {expandedHistory === schedule.id ? (
+                              {expandedHistory === String(schedule.id) ? (
                                 <ExpandLessIcon fontSize="small" />
                               ) : (
                                 <ExpandMoreIcon fontSize="small" />
@@ -531,7 +525,7 @@ const ScheduledReports: React.FC = () => {
                       </TableRow>
                       <TableRow>
                         <TableCell colSpan={7} sx={{ py: 0 }}>
-                          {renderExecutionHistory(schedule.id)}
+                          {renderExecutionHistory(String(schedule.id))}
                         </TableCell>
                       </TableRow>
                     </React.Fragment>
@@ -598,7 +592,7 @@ const ScheduledReports: React.FC = () => {
           setEditingSchedule(null);
         }}
         onSave={handleSaveSchedule}
-        schedule={editingSchedule}
+        editSchedule={editingSchedule}
       />
 
       {/* Diálogo de confirmación de eliminación */}

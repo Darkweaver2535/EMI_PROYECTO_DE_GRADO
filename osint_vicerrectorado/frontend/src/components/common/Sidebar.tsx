@@ -35,6 +35,7 @@ import {
   Psychology as NLPIcon,
   FactCheck as EvaluacionIcon,
   PeopleAlt as UsersIcon,
+  AutoAwesome as InsightsIcon,
 } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 260;
@@ -105,6 +106,12 @@ const menuItems: MenuItem[] = [
         label: 'Benchmarking',
         icon: <BenchmarkingIcon />,
         path: '/dashboard/benchmarking',
+      },
+      {
+        id: 'insights',
+        label: 'Insights IA',
+        icon: <InsightsIcon />,
+        path: '/dashboard/insights',
       },
     ],
   },

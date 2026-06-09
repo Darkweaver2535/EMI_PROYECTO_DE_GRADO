@@ -112,9 +112,9 @@ const AyudaDashboard: React.FC = () => {
       name: 'Analisis de Sentimientos',
       path: '/dashboard/sentiment',
       roles: ['administrador', 'vicerrector', 'uebu'],
-      description: 'Analisis de sentimientos usando el modelo BETO (Bidirectional Encoder Representations from Transformers) fine-tuned en espanol. Clasificacion en Positivo, Negativo y Neutro con alta confianza.',
+      description: 'Analisis de sentimientos usando el modelo Robertuito (Bidirectional Encoder Representations from Transformers) fine-tuned en espanol. Clasificacion en Positivo, Negativo y Neutro con alta confianza.',
       features: [
-        'Modelo BETO fine-tuned en dataset TASS (espanol)',
+        'Modelo Robertuito fine-tuned en dataset TASS (espanol)',
         'Distribucion de sentimientos (pie chart)',
         'Evolucion temporal de sentimientos',
         'Confianza promedio del modelo (94-99%)',
@@ -167,10 +167,10 @@ const AyudaDashboard: React.FC = () => {
       name: 'IA / ML / NLP',
       path: '/dashboard/nlp',
       roles: ['administrador', 'vicerrector', 'uebu'],
-      description: 'Pipeline completo de procesamiento de lenguaje natural. Keywords (TF-IDF), modelado de topicos (LDA), clustering (K-Means) y reconocimiento de entidades nombradas (NER).',
+      description: 'Pipeline completo de procesamiento de lenguaje natural. Keywords (TF-IDF), modelado de topicos (BERTopic), clustering (K-Means) y reconocimiento de entidades nombradas (NER).',
       features: [
         'Extraccion de keywords con TF-IDF',
-        'Modelado de topicos con LDA (Latent Dirichlet Allocation)',
+        'Modelado de topicos con BERTopic',
         'Clustering de documentos con K-Means + PCA',
         'NER: reconocimiento de entidades nombradas',
         'Nube de palabras interactiva',
@@ -198,7 +198,7 @@ const AyudaDashboard: React.FC = () => {
     },
     {
       q: 'Que modelo de IA se usa para el analisis de sentimientos?',
-      a: 'Se utiliza BETO (finiteautomata/beto-sentiment-analysis), un modelo basado en BERT pre-entrenado en espanol y fine-tuned en el dataset TASS para analisis de sentimientos. Tiene ~110 millones de parametros y alcanza una confianza promedio del 94-99% en nuestros datos.',
+      a: 'Se utiliza Robertuito (pysentimiento/robertuito-sentiment-analysis), un modelo basado en BERT pre-entrenado en espanol y fine-tuned en el dataset TASS para analisis de sentimientos. Tiene ~110 millones de parametros y alcanza una confianza promedio del 94-99% en nuestros datos.',
     },
     {
       q: 'De donde se extraen los datos?',
@@ -214,7 +214,7 @@ const AyudaDashboard: React.FC = () => {
     },
     {
       q: 'Que tecnicas NLP se aplican?',
-      a: 'El pipeline NLP incluye: TF-IDF para extraccion de palabras clave, LDA (Latent Dirichlet Allocation) para modelado de topicos, K-Means con reduccion PCA para clustering de documentos, y reconocimiento de entidades nombradas (NER) con spaCy.',
+      a: 'El pipeline NLP incluye: TF-IDF para extraccion de palabras clave, BERTopic para modelado de topicos, K-Means con reduccion PCA para clustering de documentos, y reconocimiento de entidades nombradas (NER) con spaCy.',
     },
     {
       q: 'Que es el Benchmarking de carreras?',
@@ -229,8 +229,8 @@ const AyudaDashboard: React.FC = () => {
   const techStack = [
     { category: 'Backend', items: 'Python 3.13, Flask, SQLite3' },
     { category: 'Frontend', items: 'React 18, TypeScript, Material UI 5, Vite' },
-    { category: 'IA/ML', items: 'BETO (HuggingFace Transformers), Isolation Forest (scikit-learn), scipy.stats' },
-    { category: 'NLP', items: 'TF-IDF, LDA (gensim), K-Means, spaCy (NER)' },
+    { category: 'IA/ML', items: 'Robertuito (HuggingFace Transformers), Isolation Forest (scikit-learn), scipy.stats' },
+    { category: 'NLP', items: 'TF-IDF, BERTopic, K-Means, spaCy (NER)' },
     { category: 'Scraping', items: 'Selenium, BeautifulSoup, Requests' },
     { category: 'Graficos', items: 'Recharts, Lucide React' },
     { category: 'Hardware', items: 'Apple Silicon (MPS) para inferencia de modelos' },
@@ -382,8 +382,8 @@ Vite Dev Server (:3000) --proxy--> Flask API (:5001)
                                         |
                           +-------------+-------------+
                           |             |             |
-                        BETO      Isolation     NLP Pipeline
-                     (Sentiment)   Forest      (TF-IDF, LDA,
+                        Robertuito      Isolation     NLP Pipeline
+                     (Sentiment)   Forest      (TF-IDF, BERTopic,
                                  (Anomalies)   K-Means, NER)
                           |             |             |
                     HuggingFace   scikit-learn   gensim + spaCy

@@ -145,7 +145,7 @@ def evaluacion_objetivos():
         cursor.execute("SELECT COUNT(*) FROM nlp_topicos")
         n = cursor.fetchone()[0]
         if n > 0:
-            tecnicas_ia.append(f'LDA Topic Modeling: {n} tópicos descubiertos')
+            tecnicas_ia.append(f'BERTopic Topic Modeling: {n} tópicos descubiertos')
             score_oe3 += 15
     except: pass
     

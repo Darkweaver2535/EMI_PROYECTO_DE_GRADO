@@ -15,6 +15,8 @@ from flask import Blueprint, jsonify, request
 from api.common.database import get_db
 from api.common.filters import EXTERNAL_POSTS_FILTER, EXTERNAL_PROCESADOS_SUBQUERY
 from api.common.auth import hash_password, get_active_tokens, get_current_user
+# Permisos por defecto según rol (fuente única en users.routes)
+from api.users.routes import get_default_permisos
 
 bp = Blueprint('auth', __name__)
 

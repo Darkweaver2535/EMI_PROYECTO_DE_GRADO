@@ -38,6 +38,7 @@ import {
   Info,
   Inbox
 } from 'lucide-react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, IconButton } from '@mui/material';
 
 
 
@@ -124,6 +125,10 @@ const PostsDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [loadingComments, setLoadingComments] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Estados para modales de texto completo
+  const [viewPostModal, setViewPostModal] = useState<Post | null>(null);
+  const [viewCommentModal, setViewCommentModal] = useState<Comment | null>(null);
 
   // Estados para gestión de fuentes
   const [showAddSource, setShowAddSource] = useState(false);
@@ -868,11 +873,18 @@ const PostsDashboard: React.FC = () => {
                     </span>
                   </div>
                   
-                  <p style={styles.postContent}>
+                  <Box 
+                    sx={{ 
+                      fontSize: '13px', color: '#334155', margin: '0 0 10px 0', lineHeight: 1.5,
+                      cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { backgroundColor: '#f1f5f9' }
+                    }}
+                    onClick={(e) => { e.stopPropagation(); setViewPostModal(post); }}
+                    title="Clic para leer completo"
+                  >
                     {post.content.length > 150 
-                      ? post.content.substring(0, 150) + '...' 
+                      ? post.content.substring(0, 150) + '... (Ver más)' 
                       : post.content}
-                  </p>
+                  </Box>
                   
                   <div style={styles.postFooter}>
                     <span style={styles.footerItem}>
@@ -952,7 +964,18 @@ const PostsDashboard: React.FC = () => {
                     </span>
                   </div>
                   
-                  <p style={styles.commentContent}>{comment.content}</p>
+                  <Box 
+                    sx={{ 
+                      fontSize: '13px', color: '#1e293b', margin: '0 0 8px 0', lineHeight: 1.4,
+                      cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { backgroundColor: '#e2e8f0' }
+                    }}
+                    onClick={(e) => { e.stopPropagation(); setViewCommentModal(comment); }}
+                    title="Clic para leer completo"
+                  >
+                    {comment.content.length > 150 
+                      ? comment.content.substring(0, 150) + '... (Ver más)' 
+                      : comment.content}
+                  </Box>
                   
                   <div style={styles.commentFooter}>
                     <span style={styles.footerItem}>
@@ -1003,6 +1026,99 @@ const PostsDashboard: React.FC = () => {
       </div>
 
       {/* Apify maneja el scraping para ambas plataformas */}
+
+      {/* Dialog para ver Post completo */}
+      <Dialog 
+        open={!!viewPostModal} 
+        onClose={() => setViewPostModal(null)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Confesión #{viewPostModal?.id}
+          <IconButton onClick={() => setViewPostModal(null)} size="small">
+            <X size={20} />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ mb: 2, display: 'flex', gap: 2, color: 'text.secondary', fontSize: '13px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Globe size={14} /> {viewPostModal?.sourceName}
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Clock size={14} /> {formatDate(viewPostModal?.date || '')}
+            </Box>
+          </Box>
+          
+          <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>
+            {viewPostModal?.content}
+          </Typography>
+
+          <Box sx={{ mt: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
+            <span style={styles.footerItem}><Heart size={14} /> {viewPostModal?.likes}</span>
+            <span style={styles.footerItem}><MessageSquare size={14} /> {viewPostModal?.commentsCount}</span>
+            {viewPostModal?.sentiment && (
+              <span style={{
+                ...styles.sentimentBadge,
+                backgroundColor: getSentimentColor(viewPostModal.sentiment) + '20',
+                color: getSentimentColor(viewPostModal.sentiment)
+              }}>
+                <SentimentIcon sentiment={viewPostModal.sentiment} />
+                <span style={{ marginLeft: '4px' }}>{viewPostModal.sentiment}</span>
+              </span>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setViewPostModal(null)}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog para ver Comentario completo */}
+      <Dialog 
+        open={!!viewCommentModal} 
+        onClose={() => setViewCommentModal(null)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Detalle del Comentario
+          <IconButton onClick={() => setViewCommentModal(null)} size="small">
+            <X size={20} />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ mb: 2, display: 'flex', gap: 2, color: 'text.secondary', fontSize: '13px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <User size={14} /> {viewCommentModal?.author || 'Anónimo'}
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Clock size={14} /> {formatDate(viewCommentModal?.date || '')}
+            </Box>
+          </Box>
+          
+          <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>
+            {viewCommentModal?.content}
+          </Typography>
+
+          <Box sx={{ mt: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
+            <span style={styles.footerItem}><Heart size={14} /> {viewCommentModal?.likes}</span>
+            {viewCommentModal?.sentiment && (
+              <span style={{
+                ...styles.sentimentBadge,
+                backgroundColor: getSentimentColor(viewCommentModal.sentiment.prediction) + '20',
+                color: getSentimentColor(viewCommentModal.sentiment.prediction)
+              }}>
+                <SentimentIcon sentiment={viewCommentModal.sentiment.prediction} />
+                <span style={{ marginLeft: '4px' }}>{viewCommentModal.sentiment.prediction}</span>
+              </span>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setViewCommentModal(null)}>Cerrar</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Estilos de animación */}
       <style>{`

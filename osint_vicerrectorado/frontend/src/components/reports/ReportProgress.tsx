@@ -173,6 +173,8 @@ const ReportProgress: React.FC<ReportProgressProps> = ({
                       {getStatusIcon(status)}
                     </ListItemIcon>
                     <ListItemText
+                      primaryTypographyProps={{ component: 'div' }}
+                      secondaryTypographyProps={{ component: 'div' }}
                       primary={
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Typography variant="subtitle2">

@@ -1,0 +1,45 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Introducción}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Propósito}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Convenciones}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Diagrama de relaciones (resumen)}{3}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Tablas del módulo OSINT — Recolección}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Tabla: fuente\_osint}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Tabla: dato\_recolectado}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Tabla: comentario}{5}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Tablas del módulo ETL — Procesamiento}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Tabla: dato\_procesado}{5}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Tablas del módulo IA — Análisis de Sentimiento}{6}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Tabla: analisis\_sentimiento}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Tabla: analisis\_comentario}{7}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Tablas del módulo NLP / ML}{7}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Tabla: clasificacion\_tematica}{7}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Tabla: nlp\_keywords}{8}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Tabla: nlp\_topicos}{8}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Tabla: nlp\_clusters}{8}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Tabla: nlp\_entidades}{9}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Tabla: nlp\_resumen\_ejecutivo}{9}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Tablas del módulo OSINT — Inteligencia}{10}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Tabla: osint\_noticias}{10}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Tabla: osint\_tendencias}{10}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Tabla: osint\_fuente\_resumen}{10}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Tabla: patron\_identificado}{11}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Tablas del módulo de Usuarios y Seguridad}{11}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Tabla: usuario}{11}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Tabla: log\_actividad}{12}{subsection.7.2}%
+\contentsline {section}{\numberline {8}Tablas del módulo de Alertas}{12}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Tabla: alerta}{12}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Tabla: configuracion\_alerta}{13}{subsection.8.2}%
+\contentsline {section}{\numberline {9}Tablas de Evaluación y Auditoría}{13}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Tabla: evaluacion\_sistema}{13}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Tabla: log\_ejecucion}{14}{subsection.9.2}%
+\contentsline {section}{\numberline {10}Tablas del módulo de IA Avanzada}{14}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Tabla: alerta\_ia}{14}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Tabla: anomalia\_detectada}{15}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Tabla: modelo\_entrenamiento}{15}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Tabla: clustering\_modelo}{16}{subsection.10.4}%
+\contentsline {subsection}{\numberline {10.5}Tabla: clustering\_resultado}{16}{subsection.10.5}%
+\contentsline {subsection}{\numberline {10.6}Tabla: analisis\_tendencia}{17}{subsection.10.6}%
+\contentsline {subsection}{\numberline {10.7}Tabla: anotacion\_manual}{17}{subsection.10.7}%
+\contentsline {subsection}{\numberline {10.8}Tabla: correlacion\_resultado}{18}{subsection.10.8}%
+\contentsline {section}{\numberline {11}Resumen estadístico}{19}{section.11}%

@@ -13,7 +13,12 @@ from collections import defaultdict
 from flask import Blueprint, jsonify, request
 
 from api.common.database import get_db
-from api.common.filters import EXTERNAL_POSTS_FILTER, EXTERNAL_PROCESADOS_SUBQUERY
+from api.common.filters import (
+    EXTERNAL_POSTS_FILTER,
+    EXTERNAL_PROCESADOS_SUBQUERY,
+    INSTITUTIONAL_POSTS_SUBQUERY,
+    INSTITUTIONAL_COMMENTS_SUBQUERY,
+)
 from api.common.auth import hash_password, get_active_tokens, get_current_user
 
 bp = Blueprint('stats', __name__)
@@ -255,17 +260,21 @@ def reputation_wordcloud():
     
     min_freq = request.args.get('min_frequency', 2, type=int)
     
-    # Obtener todos los textos reales - solo de fuentes externas
+    # Solo contenido institucional (clasificado por DeepSeek). Se excluye el
+    # contenido personal aunque mencione la EMI.
     cursor.execute(f'''
         SELECT dp.contenido_limpio FROM dato_procesado dp
         WHERE dp.contenido_limpio IS NOT NULL
-        AND {EXTERNAL_PROCESADOS_SUBQUERY}
+        AND {INSTITUTIONAL_POSTS_SUBQUERY}
     ''')
     texts = [row['contenido_limpio'] for row in cursor.fetchall()]
-    
-    # También incluir comentarios (siempre son del público)
+
+    # Comentarios institucionales
     try:
-        cursor.execute('SELECT contenido FROM comentario WHERE contenido IS NOT NULL')
+        cursor.execute(f'''
+            SELECT c.contenido FROM comentario c
+            WHERE c.contenido IS NOT NULL AND {INSTITUTIONAL_COMMENTS_SUBQUERY}
+        ''')
         texts.extend([row['contenido'] for row in cursor.fetchall()])
     except Exception:
         pass
@@ -286,68 +295,66 @@ def reputation_wordcloud():
 
 @bp.route('/api/ai/reputation/topics')
 def reputation_topics():
-    """Clusters temáticos REALES basados en análisis de contenido"""
+    """Clusters temáticos dinámicos según la clasificación de DeepSeek.
+
+    Agrupa `analisis_deepseek` por `tema_principal`. Si DeepSeek aún no ha
+    analizado contenido, devuelve [] (el frontend muestra estado vacío).
+    """
     conn = get_db()
     cursor = conn.cursor()
-    
-    # Obtener textos con sus sentimientos - solo contenido externo
-    cursor.execute(f'''
-        SELECT dp.contenido_limpio, a.sentimiento_predicho
-        FROM dato_procesado dp
-        LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
-        WHERE dp.contenido_limpio IS NOT NULL
-        AND {EXTERNAL_PROCESADOS_SUBQUERY}
+
+    # Solo temas institucionales (sistema académico EMI); se excluye contenido
+    # personal/no institucional aunque mencione la universidad.
+    cursor.execute('''
+        SELECT tema_principal, sentimiento, keywords_json, resumen
+        FROM analisis_deepseek
+        WHERE tema_principal IS NOT NULL AND es_institucional=1
     ''')
     rows = cursor.fetchall()
     conn.close()
-    
-    # Definir temas basados en palabras clave reales de EMI
-    topic_keywords = {
-        'Académico': ['clase', 'examen', 'nota', 'profesor', 'materia', 'carrera', 'estudiar', 'tarea', 'trabajo', 'semestre'],
-        'Infraestructura': ['edificio', 'aula', 'laboratorio', 'biblioteca', 'wifi', 'internet', 'instalaciones', 'baño'],
-        'Servicios': ['comedor', 'transporte', 'secretaría', 'trámite', 'pago', 'beca', 'certificado'],
-        'Vida Estudiantil': ['compañero', 'amigo', 'fiesta', 'evento', 'actividad', 'deporte', 'club'],
-        'Institucional': ['emi', 'militar', 'ingeniería', 'universidad', 'escuela', 'convocatoria', 'inscripción']
-    }
-    
+
+    grupos = {}
+    for row in rows:
+        tema = (row['tema_principal'] or 'general').strip().lower()
+        g = grupos.setdefault(tema, {
+            'name': row['tema_principal'] or 'General',
+            'mentions': 0, 'positive': 0, 'negative': 0,
+            'keywords': Counter(), 'samples': []
+        })
+        g['mentions'] += 1
+        sent = row['sentimiento']
+        if sent == 'Positivo':
+            g['positive'] += 1
+        elif sent == 'Negativo':
+            g['negative'] += 1
+        try:
+            for kw in json.loads(row['keywords_json'] or '[]'):
+                if kw:
+                    g['keywords'][str(kw).lower()] += 1
+        except (json.JSONDecodeError, TypeError):
+            pass
+        if row['resumen'] and len(g['samples']) < 3:
+            g['samples'].append(row['resumen'][:120])
+
     topics = []
-    for topic_name, keywords in topic_keywords.items():
-        # Contar menciones reales
-        mentions = 0
-        positive = 0
-        negative = 0
-        sample_texts = []
-        
-        for row in rows:
-            text = (row['contenido_limpio'] or '').lower()
-            if any(kw in text for kw in keywords):
-                mentions += 1
-                sent = row['sentimiento_predicho']
-                if sent == 'Positivo':
-                    positive += 1
-                elif sent == 'Negativo':
-                    negative += 1
-                if len(sample_texts) < 3:
-                    sample_texts.append(row['contenido_limpio'][:100])
-        
-        if mentions > 0:
-            topics.append({
-                'id': topic_name.lower().replace(' ', '_'),
-                'name': topic_name,
-                'keywords': keywords[:5],
-                'documentCount': mentions,
-                'sentiment': {
-                    'positive': positive,
-                    'negative': negative,
-                    'neutral': mentions - positive - negative
-                },
-                'sampleTexts': sample_texts
-            })
-    
-    # Ordenar por número de menciones
+    for tema, g in grupos.items():
+        topics.append({
+            'id': tema.replace(' ', '_'),
+            'name': g['name'].capitalize(),
+            'keywords': [w for w, _ in g['keywords'].most_common(5)],
+            'documentCount': g['mentions'],
+            'sentiment': {
+                'positive': g['positive'],
+                'negative': g['negative'],
+                'neutral': g['mentions'] - g['positive'] - g['negative'],
+            },
+            'sampleTexts': g['samples'],
+        })
+
+    # Limitar a los temas más relevantes para evitar una cola larga de
+    # singletons (DeepSeek genera muchos temas únicos). Se mantiene dinámico.
     topics.sort(key=lambda x: x['documentCount'], reverse=True)
-    
-    return jsonify(topics)
+    return jsonify(topics[:20])
 
 @bp.route('/api/ai/reputation/heatmap')
 def reputation_heatmap():
@@ -390,69 +397,81 @@ def reputation_heatmap():
 
 @bp.route('/api/ai/reputation/competitors')
 def reputation_competitors():
-    """Comparación con otras universidades (datos referenciales basados en métricas reales de EMI)"""
+    """Comparación con otras universidades (datos REALES extraídos de los textos)"""
     conn = get_db()
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     
-    # Obtener métricas reales de EMI - solo contenido externo/opiniones
-    cursor.execute(f'SELECT COUNT(*) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
-    emi_posts = cursor.fetchone()[0]
-    
-    cursor.execute(f'SELECT AVG(engagement_total) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
-    emi_engagement = cursor.fetchone()[0] or 0
-    
+    # Comparación entre universidades: se usa TODO el discurso público (los
+    # nombres de otras universidades no son contenido personal y suelen
+    # aparecer en posts comparativos). No se filtra a institucional aquí para
+    # no perder menciones de la competencia.
     cursor.execute(f'''
-        SELECT 
-            SUM(CASE WHEN a.sentimiento_predicho = 'Positivo' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)
-        FROM analisis_sentimiento a
-        JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
+        SELECT dp.contenido_limpio, a.sentimiento_predicho
+        FROM dato_procesado dp
+        LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
         WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
     ''')
-    emi_positive_pct = cursor.fetchone()[0] or 0
+    posts = [dict(row) for row in cursor.fetchall()]
+
+    # Textos de comentarios
+    try:
+        cursor.execute('''
+            SELECT c.contenido as contenido_limpio, ac.sentimiento as sentimiento_predicho
+            FROM comentario c
+            LEFT JOIN analisis_comentario ac ON c.id_comentario = ac.id_comentario
+        ''')
+        comments = [dict(row) for row in cursor.fetchall()]
+    except:
+        comments = []
+        
+    all_texts = posts + comments
     
+    target_universities = {
+        'EMI': ['emi', 'escuela militar', 'ingeniería', 'ingenieria'],
+        'UMSA': ['umsa', 'san andrés', 'san andres'],
+        'UCB': ['ucb', 'católica', 'catolica'],
+        'UPEA': ['upea', 'pública de el alto', 'publica de el alto'],
+        'UNIFRANZ': ['unifranz', 'franz tamayo']
+    }
+    
+    competitors_data = []
+    colors = ['#1976d2', '#388e3c', '#f57c00', '#7b1fa2', '#d32f2f']
+    
+    for idx, (name, keywords) in enumerate(target_universities.items()):
+        mentions = 0
+        positive = 0
+        total_with_sentiment = 0
+        
+        for item in all_texts:
+            text = (item['contenido_limpio'] or '').lower()
+            if any(kw in text for kw in keywords):
+                mentions += 1
+                sent = item['sentimiento_predicho']
+                if sent:
+                    total_with_sentiment += 1
+                    if sent == 'Positivo':
+                        positive += 1
+        
+        if mentions > 0:
+            sentiment_score = (positive / total_with_sentiment * 100) if total_with_sentiment > 0 else 50
+            
+            competitors_data.append({
+                'name': name,
+                'satisfactionScore': round(sentiment_score, 1),
+                'mentionsCount': mentions,
+                'mentions': mentions,
+                'positiveRatio': round(sentiment_score / 100, 2),
+                'sentiment': round(sentiment_score, 1),
+                'color': colors[idx % len(colors)]
+            })
+            
     conn.close()
     
-    # Formato que espera el frontend
-    competitors = [
-        {
-            'name': 'EMI',
-            'satisfactionScore': round(emi_positive_pct, 1),
-            'mentionsCount': emi_posts,
-            'mentions': emi_posts,
-            'positiveRatio': round(emi_positive_pct / 100, 2),
-            'sentiment': round(emi_positive_pct, 1),
-            'color': '#1976d2'
-        },
-        {
-            'name': 'UMSA',
-            'satisfactionScore': round(emi_positive_pct * 0.85, 1),
-            'mentionsCount': int(emi_posts * 1.5),
-            'mentions': int(emi_posts * 1.5),
-            'positiveRatio': round(emi_positive_pct * 0.85 / 100, 2),
-            'sentiment': round(emi_positive_pct * 0.85, 1),
-            'color': '#388e3c'
-        },
-        {
-            'name': 'UCB',
-            'satisfactionScore': round(emi_positive_pct * 1.1, 1),
-            'mentionsCount': int(emi_posts * 0.8),
-            'mentions': int(emi_posts * 0.8),
-            'positiveRatio': round(emi_positive_pct * 1.1 / 100, 2),
-            'sentiment': round(emi_positive_pct * 1.1, 1),
-            'color': '#f57c00'
-        },
-        {
-            'name': 'UPEA',
-            'satisfactionScore': round(emi_positive_pct * 0.75, 1),
-            'mentionsCount': int(emi_posts * 1.2),
-            'mentions': int(emi_posts * 1.2),
-            'positiveRatio': round(emi_positive_pct * 0.75 / 100, 2),
-            'sentiment': round(emi_positive_pct * 0.75, 1),
-            'color': '#7b1fa2'
-        }
-    ]
+    # Ordenar por menciones
+    competitors_data.sort(key=lambda x: x['mentions'], reverse=True)
     
-    return jsonify(competitors)
+    return jsonify(competitors_data)
 
 @bp.route('/api/ai/reputation/metrics')
 def reputation_metrics():
@@ -460,35 +479,56 @@ def reputation_metrics():
     conn = get_db()
     cursor = conn.cursor()
     
-    # Volumen de menciones - solo externas
-    cursor.execute(f'SELECT COUNT(*) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
-    mention_volume = cursor.fetchone()[0]
-    
-    # Score de sentimiento real - solo externo
+    # Volumen de menciones institucionales (posts + comentarios)
+    cursor.execute(f'SELECT COUNT(*) FROM dato_procesado dp WHERE {INSTITUTIONAL_POSTS_SUBQUERY}')
+    post_volume = cursor.fetchone()[0]
+
+    try:
+        cursor.execute(f'SELECT COUNT(*) FROM comentario c WHERE {INSTITUTIONAL_COMMENTS_SUBQUERY}')
+        comment_volume = cursor.fetchone()[0]
+    except:
+        comment_volume = 0
+
+    mention_volume = post_volume + comment_volume
+
+    # Score de sentimiento real (solo institucional)
     cursor.execute(f'''
-        SELECT 
+        SELECT
             SUM(CASE WHEN a.sentimiento_predicho = 'Positivo' THEN 1 ELSE 0 END) as pos,
             SUM(CASE WHEN a.sentimiento_predicho = 'Negativo' THEN 1 ELSE 0 END) as neg,
             COUNT(*) as total
         FROM analisis_sentimiento a
         JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
-        WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+        WHERE {INSTITUTIONAL_POSTS_SUBQUERY}
     ''')
     row = cursor.fetchone()
     pos, neg, total = row['pos'] or 0, row['neg'] or 0, row['total'] or 1
     sentiment_score = round((pos - neg) / total * 100 + 50, 1)  # Normalizado 0-100
     
-    # Engagement real - solo externo
-    cursor.execute(f'SELECT AVG(engagement_total), SUM(engagement_total) FROM dato_procesado dp WHERE {EXTERNAL_PROCESADOS_SUBQUERY}')
+    # Engagement: promedio de likes+comments+shares por post
+    cursor.execute(f'''
+        SELECT
+            AVG(dp.engagement_total) as avg_engagement,
+            SUM(dp.engagement_total) as total_engagement
+        FROM dato_procesado dp
+        WHERE {INSTITUTIONAL_POSTS_SUBQUERY}
+    ''')
     row = cursor.fetchone()
-    avg_engagement = row[0] or 0
-    total_engagement = row[1] or 0
+    avg_engagement = row['avg_engagement'] or 0
+    total_engagement = row['total_engagement'] or 0
     
-    # Calcular tendencia (última semana vs anterior) - solo externo
+    # Alcance estimado basado en views reales
+    cursor.execute('''
+        SELECT SUM(engagement_views) FROM dato_recolectado
+        WHERE engagement_views IS NOT NULL
+    ''')
+    total_views = cursor.fetchone()[0] or total_engagement
+    
+    # Calcular tendencia (última semana vs anterior)
     cursor.execute(f'''
         SELECT COUNT(*) FROM dato_procesado dp
         WHERE DATE(dp.fecha_publicacion_iso) >= DATE('now', '-7 days')
-        AND {EXTERNAL_PROCESADOS_SUBQUERY}
+        AND {INSTITUTIONAL_POSTS_SUBQUERY}
     ''')
     recent = cursor.fetchone()[0]
     
@@ -496,7 +536,7 @@ def reputation_metrics():
         SELECT COUNT(*) FROM dato_procesado dp
         WHERE DATE(dp.fecha_publicacion_iso) >= DATE('now', '-14 days')
         AND DATE(dp.fecha_publicacion_iso) < DATE('now', '-7 days')
-        AND {EXTERNAL_PROCESADOS_SUBQUERY}
+        AND {INSTITUTIONAL_POSTS_SUBQUERY}
     ''')
     previous = cursor.fetchone()[0]
     
@@ -509,15 +549,17 @@ def reputation_metrics():
     
     conn.close()
     
-    # Score general: combinación de sentimiento y engagement
-    overall_score = round((sentiment_score * 0.6 + min(avg_engagement / 1000, 40) * 0.4), 1)
+    # Score general: sentimiento pesa 60%, ratio pos/total 40%
+    positive_ratio = pos / max(total, 1) * 100
+    overall_score = round(sentiment_score * 0.6 + positive_ratio * 0.4, 1)
+    overall_score = min(max(overall_score, 0), 100)
     
     return jsonify({
-        'overallScore': min(overall_score, 100),
+        'overallScore': overall_score,
         'mentionVolume': mention_volume,
         'sentimentScore': sentiment_score,
-        'engagementRate': round(avg_engagement, 2),
-        'reachEstimate': total_engagement,
+        'engagementRate': round(avg_engagement, 0),
+        'reachEstimate': total_views,
         'trend': trend
     })
 

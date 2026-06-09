@@ -17,6 +17,11 @@ import {
   IconButton,
   CircularProgress,
   Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import {
   Visibility,
@@ -49,6 +54,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
 
   const from = (location.state as LocationState)?.from?.pathname || '/dashboard/sentiment';
 
@@ -102,15 +108,6 @@ const Login: React.FC = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `linear-gradient(135deg, rgba(13, 71, 161, 0.82) 0%, rgba(0, 33, 113, 0.88) 100%)`,
-          },
         }}
       />
 
@@ -257,6 +254,7 @@ const Login: React.FC = () => {
                   sx={{ color: COLORS.blue }}
                   onClick={(e) => {
                     e.preventDefault();
+                    setForgotPasswordOpen(true);
                   }}
                 >
                   ¿Olvidaste tu contraseña?
@@ -304,6 +302,39 @@ const Login: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
+
+      {/* Pop-up de Olvidó Contraseña */}
+      <Dialog
+        open={forgotPasswordOpen}
+        onClose={() => setForgotPasswordOpen(false)}
+        aria-labelledby="forgot-password-title"
+        aria-describedby="forgot-password-description"
+        PaperProps={{
+          sx: { borderRadius: 3, p: 1 }
+        }}
+      >
+        <DialogTitle id="forgot-password-title" sx={{ color: COLORS.blue, fontWeight: 'bold' }}>
+          Restablecer Contraseña
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="forgot-password-description" sx={{ mb: 2, color: 'text.primary' }}>
+            Contactate con un administrador para restablecer la contraseña.
+          </DialogContentText>
+          <Box sx={{ mt: 3, p: 2, bgcolor: '#f8fafc', borderRadius: 2, border: '1px solid #e2e8f0' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+              Desarrollador y creador del sistema:
+            </Typography>
+            <Typography variant="body1" sx={{ color: COLORS.blueDark, fontWeight: 'bold', mt: 0.5 }}>
+              Alvaro Santiago Encinas Flores (76260216)
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setForgotPasswordOpen(false)} sx={{ color: COLORS.blue, fontWeight: 600 }}>
+            Entendido
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

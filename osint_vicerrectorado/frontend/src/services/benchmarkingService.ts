@@ -153,14 +153,14 @@ export const benchmarkingService = {
       return rankings.map(r => ({ ...r, satisfactionScore: 100 }));
     }
 
-    const scores = rankings.map(r => r.satisfactionScore);
+    const scores = rankings.map(r => r.satisfactionScore ?? 0);
     const min = Math.min(...scores);
     const max = Math.max(...scores);
     const range = max - min || 1;
 
     return rankings.map(r => ({
       ...r,
-      satisfactionScore: Math.round(((r.satisfactionScore - min) / range) * 100),
+      satisfactionScore: Math.round((((r.satisfactionScore ?? 0) - min) / range) * 100),
     }));
   },
 

@@ -52,6 +52,7 @@ import {
   Hash,
   Filter,
   Calendar,
+  Brain,
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -95,6 +96,14 @@ interface Noticia {
   fecha_recoleccion?: string;
   relevancia_score: number;
   temas_json: string;
+  sentimiento?: string;
+}
+
+interface FuenteBolivia {
+  nombre: string;
+  tipo: string;
+  ciudad: string;
+  sitio: string;
 }
 
 interface OSINTExecutionStatus {
@@ -352,30 +361,57 @@ const OSINTDashboard: React.FC = () => {
   const [newsMinRelevance, setNewsMinRelevance] = useState(0);
   const [newsDateFrom, setNewsDateFrom] = useState('');
   const [newsDateTo, setNewsDateTo] = useState('');
+  const [fuentesBolivia, setFuentesBolivia] = useState<any>(null);
+  const [analizandoIA, setAnalizandoIA] = useState(false);
 
   // Cargar datos
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [resRes, patRes, temRes, notRes, intRes] = await Promise.all([
+      const [resRes, patRes, temRes, notRes, intRes, fbRes] = await Promise.all([
         fetch(`${API_URL}/osint/resumen`).then(r => r.json()).catch(() => null),
         fetch(`${API_URL}/osint/patrones`).then(r => r.json()).catch(() => []),
         fetch(`${API_URL}/osint/temas`).then(r => r.json()).catch(() => null),
         fetch(`${API_URL}/osint/noticias`).then(r => r.json()).catch(() => []),
         fetch(`${API_URL}/osint/intereses-academicos`).then(r => r.json()).catch(() => null),
+        fetch(`${API_URL}/osint/fuentes-bolivia`).then(r => r.json()).catch(() => null),
       ]);
-      
+
       setResumen(resRes);
       setPatrones(patRes);
       setTemas(temRes);
       setNoticias(notRes);
       setIntereses(intRes);
+      setFuentesBolivia(fbRes);
     } catch (err) {
       console.error('Error cargando datos OSINT:', err);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  // Parsea la metadata IA guardada en temas_json de cada noticia
+  const parseNewsAI = (n: Noticia): { tema?: string; impacto?: string; esEmiBolivia?: boolean } => {
+    try {
+      const m = JSON.parse(n.temas_json || '{}');
+      if (m && !Array.isArray(m)) {
+        return {
+          tema: m.tema_principal,
+          impacto: m.impacto_reputacional,
+          esEmiBolivia: m.es_emi_bolivia === 1 || m.es_emi_bolivia === true,
+        };
+      }
+    } catch { /* temas_json puede ser un arreglo antiguo */ }
+    return {};
+  };
+
+  const handleAnalizarNoticiasIA = async () => {
+    setAnalizandoIA(true);
+    try {
+      await fetch(`${API_URL}/osint/noticias/analizar`, { method: 'POST' });
+      setTimeout(async () => { await fetchData(); setAnalizandoIA(false); }, 8000);
+    } catch { setAnalizandoIA(false); }
+  };
 
   useEffect(() => {
     fetchData();
@@ -860,10 +896,53 @@ const OSINTDashboard: React.FC = () => {
         <div style={{ ...s.card, ...s.fullWidth }}>
           <div style={s.cardTitle}>
             <Newspaper size={20} color="#dc2626" />
-            Noticias Monitoreadas sobre la EMI
+            Noticias Monitoreadas sobre la EMI (Bolivia)
             <span style={{ ...s.badge, backgroundColor: '#fee2e2', color: '#991b1b', marginLeft: 'auto' }}>
               NEWSINT
             </span>
+          </div>
+
+          {/* ─── Panel: Fuentes gratuitas de Bolivia + IA ─── */}
+          <div style={{ background: 'linear-gradient(135deg, #f0fdf4, #eff6ff)', border: '1px solid #d1fae5', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#166534' }}>
+                Fuentes abiertas de Bolivia (gratuitas, sin API de pago)
+              </div>
+              <button
+                onClick={handleAnalizarNoticiasIA}
+                disabled={analizandoIA}
+                style={{ ...s.btn, padding: '8px 14px', fontSize: '12px', backgroundColor: analizandoIA ? '#94a3b8' : '#7c3aed' }}
+              >
+                <Brain size={14} /> {analizandoIA ? 'Analizando con IA...' : 'Clasificar noticias con IA'}
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+              {(fuentesBolivia?.fuentes || []).map((f: FuenteBolivia, i: number) => {
+                const cnt = Object.entries(fuentesBolivia?.noticiasPorFuente || {})
+                  .filter(([k]) => k.toLowerCase().includes((f.nombre || '').toLowerCase().split(' ')[0]))
+                  .reduce((a, [, v]) => a + (v as number), 0);
+                return (
+                  <span key={i} style={{ ...s.badge, backgroundColor: 'white', color: '#334155', border: '1px solid #cbd5e1', padding: '5px 10px' }}>
+                    {f.nombre}{cnt > 0 && <strong style={{ color: '#059669' }}> · {cnt}</strong>}
+                  </span>
+                );
+              })}
+            </div>
+            {(() => {
+              const pos = noticias.filter(n => n.sentimiento === 'Positivo').length;
+              const neg = noticias.filter(n => n.sentimiento === 'Negativo').length;
+              const neu = noticias.filter(n => n.sentimiento === 'Neutral').length;
+              const altoImpacto = noticias.filter(n => parseNewsAI(n).impacto === 'alto').length;
+              return (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', fontSize: '12px' }}>
+                  <span style={{ color: '#64748b' }}>Noticias IA: <strong style={{ color: '#7c3aed' }}>{fuentesBolivia?.noticiasAnalizadasIA ?? 0}/{fuentesBolivia?.totalNoticias ?? noticias.length}</strong></span>
+                  <span style={{ color: '#16a34a' }}>● Positivas: <strong>{pos}</strong></span>
+                  <span style={{ color: '#d97706' }}>● Neutrales: <strong>{neu}</strong></span>
+                  <span style={{ color: '#dc2626' }}>● Negativas: <strong>{neg}</strong></span>
+                  <span style={{ color: '#dc2626' }}>⚠ Alto impacto reputacional: <strong>{altoImpacto}</strong></span>
+                </div>
+              );
+            })()}
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '10px', marginBottom: '16px' }}>
@@ -950,6 +1029,34 @@ const OSINTDashboard: React.FC = () => {
                       {n.titulo}
                       <ExternalLink size={12} style={{ marginLeft: '6px', opacity: 0.4 }} />
                     </div>
+                    {/* Badges de clasificación IA */}
+                    {(() => {
+                      const ai = parseNewsAI(n);
+                      const sentBg: Record<string, string> = { Positivo: '#dcfce7', Neutral: '#fef9c3', Negativo: '#fee2e2' };
+                      const sentFg: Record<string, string> = { Positivo: '#166534', Neutral: '#854d0e', Negativo: '#991b1b' };
+                      const impBg: Record<string, string> = { alto: '#fee2e2', medio: '#ffedd5', bajo: '#f1f5f9' };
+                      const impFg: Record<string, string> = { alto: '#991b1b', medio: '#9a3412', bajo: '#475569' };
+                      return (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '6px 0' }}>
+                          {n.sentimiento && (
+                            <span style={{ ...s.badge, backgroundColor: sentBg[n.sentimiento] || '#f1f5f9', color: sentFg[n.sentimiento] || '#475569' }}>
+                              <Brain size={11} /> {n.sentimiento}
+                            </span>
+                          )}
+                          {ai.tema && (
+                            <span style={{ ...s.badge, backgroundColor: '#ede9fe', color: '#6d28d9' }}>{ai.tema}</span>
+                          )}
+                          {ai.impacto && (
+                            <span style={{ ...s.badge, backgroundColor: impBg[ai.impacto] || '#f1f5f9', color: impFg[ai.impacto] || '#475569' }}>
+                              Impacto {ai.impacto}
+                            </span>
+                          )}
+                          {ai.esEmiBolivia && (
+                            <span style={{ ...s.badge, backgroundColor: '#dbeafe', color: '#1e40af' }}>✓ EMI Bolivia</span>
+                          )}
+                        </div>
+                      );
+                    })()}
                     {n.resumen && (
                       <div style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.5 }}>
                         {n.resumen.slice(0, 200)}...
@@ -986,7 +1093,7 @@ const OSINTDashboard: React.FC = () => {
             <h4 style={{ fontSize: '14px', color: '#1e293b', marginBottom: '8px' }}>Técnicas de Recolección</h4>
             <ul style={{ fontSize: '13px', color: '#475569', lineHeight: 2, paddingLeft: '20px' }}>
               <li><strong>SOCMINT</strong> (Social Media Intelligence): Monitoreo de Facebook y TikTok de la EMI</li>
-              <li><strong>NEWSINT</strong> (News Intelligence): Monitoreo de noticias en Google News RSS</li>
+              <li><strong>NEWSINT</strong> (News Intelligence): Monitoreo de noticias en Google News + portales bolivianos (Los Tiempos, El Deber, Opinión, ANF…) con clasificación IA</li>
               <li><strong>TRENDINT</strong> (Trends Intelligence): Análisis de tendencias de búsqueda y actividad</li>
               <li><strong>SEINT</strong> (Search Engine Intelligence): Búsqueda en motores de datos públicos</li>
             </ul>
@@ -995,7 +1102,7 @@ const OSINTDashboard: React.FC = () => {
             <h4 style={{ fontSize: '14px', color: '#1e293b', marginBottom: '8px' }}>Técnicas de Análisis</h4>
             <ul style={{ fontSize: '13px', color: '#475569', lineHeight: 2, paddingLeft: '20px' }}>
               <li><strong>NLP</strong>: Clasificación temática automática de contenido</li>
-              <li><strong>Análisis de Sentimiento</strong>: BETO (BERT en español) 3 clases</li>
+              <li><strong>Análisis de Sentimiento</strong>: Robertuito (BERT en español) 3 clases</li>
               <li><strong>Clustering</strong>: K-Means con TF-IDF para agrupación de opiniones</li>
               <li><strong>Detección de Anomalías</strong>: Isolation Forest para alertas</li>
               <li><strong>Identificación de Patrones</strong>: Temporal, temático y de engagement</li>

@@ -10,13 +10,20 @@
         "backup_enabled": true,
         "backup_path": "data/backups/"
     },
+    "_comentario_claves": "Las claves de API se leen desde variables de entorno (.env). Estos campos quedan vacíos a propósito para no exponer secretos en el repositorio.",
     "apify": {
-        "api_key": "YOUR_APIFY_TOKEN",
+        "api_key": "",
         "api_keys": {
-            "facebook": "YOUR_APIFY_TOKEN_FACEBOOK",
-            "tiktok": "YOUR_APIFY_TOKEN_TIKTOK",
-            "fallback": "YOUR_APIFY_TOKEN_FALLBACK"
+            "facebook": "",
+            "tiktok": "",
+            "fallback": ""
         }
+    },
+    "deepseek": {
+        "api_key": "",
+        "model": "deepseek-chat",
+        "base_url": "https://api.deepseek.com",
+        "batch_size": 12
     },
     "sources": {
         "facebook": {

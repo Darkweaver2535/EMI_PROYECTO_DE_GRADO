@@ -34,8 +34,14 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
     );
     let max = 0;
 
-    data.forEach((item) => {
-      const dayIndex = item.day ?? -1;
+    data.forEach((item: any) => {
+      // dayIndex is the numeric index (0=Dom, 1=Lun, etc.)
+      // Map API dayIndex (0=Domingo) to display order (0=Lunes)
+      const apiDayIndex = item.dayIndex ?? item.day ?? -1;
+      // Convert from API order (0=Dom) to display order (0=Lun)
+      const dayIndex = typeof apiDayIndex === 'number' 
+        ? (apiDayIndex === 0 ? 6 : apiDayIndex - 1)  // Dom(0)->6, Lun(1)->0, etc.
+        : -1;
       const hourIndex = item.hour ?? -1;
       const cellValue = item.value ?? 0;
       if (dayIndex >= 0 && dayIndex < 7 && hourIndex >= 0 && hourIndex < 24) {

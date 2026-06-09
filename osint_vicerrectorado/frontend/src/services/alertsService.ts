@@ -9,6 +9,9 @@ import { Alert, AlertFilters, AlertStats, AlertSeverity, AlertType } from '../ty
 export interface GetAlertsParams extends AlertFilters {
   page?: number;
   limit?: number;
+  startDate?: string;
+  endDate?: string;
+  source?: string;
 }
 
 export interface GetAlertStatsParams {
@@ -149,61 +152,74 @@ export const alertsService = {
    * Calcula estadísticas desde lista de alertas localmente
    */
   calculateStatsFromAlerts(alerts: Alert[]): AlertStats {
-    const stats: AlertStats = {
-      totalAlertas: alerts.length,
-      nuevas: 0,
-      enProceso: 0,
-      resueltas: 0,
-      criticas: 0,
-      altas: 0,
-      medias: 0,
-      bajas: 0,
-    };
+    let criticas = 0, altas = 0, medias = 0, bajas = 0;
+    let nuevas = 0, enProceso = 0, resueltas = 0;
 
     alerts.forEach(alert => {
-      // Count by severity
-      switch (alert.severidad) {
+      // Count by severity (acepta nombres en español o inglés)
+      switch (alert.severidad ?? alert.severity) {
         case 'critica':
-          stats.criticas++;
+        case 'critical':
+          criticas++;
           break;
         case 'alta':
-          stats.altas++;
+        case 'high':
+          altas++;
           break;
         case 'media':
-          stats.medias++;
+        case 'medium':
+          medias++;
           break;
         case 'baja':
-          stats.bajas++;
+        case 'low':
+          bajas++;
           break;
       }
 
       // Count by status
-      switch (alert.estado) {
+      switch (alert.estado ?? alert.status) {
         case 'nueva':
-          stats.nuevas++;
+        case 'new':
+        case 'pending':
+          nuevas++;
           break;
         case 'en_proceso':
-          stats.enProceso++;
+          enProceso++;
           break;
         case 'resuelta':
+        case 'resolved':
         case 'descartada':
-          stats.resueltas++;
+          resueltas++;
           break;
       }
     });
 
-    return stats;
+    return {
+      // Nombres en español (UI legada)
+      totalAlertas: alerts.length,
+      nuevas, enProceso, resueltas,
+      criticas, altas, medias, bajas,
+      // Nombres en inglés (requeridos por AlertStats)
+      total: alerts.length,
+      critical: criticas,
+      high: altas,
+      medium: medias,
+      low: bajas,
+      pending: nuevas,
+      resolved: resueltas,
+      lastHour: 0,
+    };
   },
 
   /**
    * Determina el color según la severidad
    */
   getSeverityColor(severity: AlertSeverity): string {
-    const colors: Record<AlertSeverity, string> = {
-      critica: '#d32f2f',
-      alta: '#f57c00',
-      media: '#fbc02d',
-      baja: '#388e3c',
+    const colors: Partial<Record<AlertSeverity, string>> = {
+      critica: '#d32f2f', critical: '#d32f2f',
+      alta: '#f57c00', high: '#f57c00',
+      media: '#fbc02d', medium: '#fbc02d',
+      baja: '#388e3c', low: '#388e3c',
     };
     return colors[severity] || '#757575';
   },

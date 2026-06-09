@@ -48,8 +48,26 @@ import {
 import { SeverityFilter, SeverityChip } from '../filters';
 import { useFilters } from '../../contexts';
 import { alertsService } from '../../services';
+import api from '../../services/api';
 import { Alert, AlertStats } from '../../types';
 import { formatDateDisplay, formatTimeAgo } from '../../utils';
+import {
+  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip as RTooltip, Legend,
+  ResponsiveContainer,
+} from 'recharts';
+
+interface ProblemStats {
+  disponible: boolean;
+  resumen?: { totalAnalizado: number; totalProblemas: number; tasaProblemas: number; criticos: number; temasAfectados: number };
+  porTema?: { tema: string; problemas: number; negativos: number; quejas: number }[];
+  porSeveridad?: { severidad: string; cantidad: number }[];
+  porCarrera?: { careerId: string; careerName: string; problemas: number }[];
+  tendencia?: { fecha: string; problemas: number }[];
+  topProblemas?: { tema: string; severidad: string; resumen: string }[];
+}
+
+const SEV_COLORS: Record<string, string> = { critica: '#b91c1c', alta: '#ea580c', media: '#d97706', baja: '#64748b' };
 
 const AlertsDashboard: React.FC = () => {
   const { filters, setDateRange, setSeverity, getApiParams } = useFilters();
@@ -66,6 +84,7 @@ const AlertsDashboard: React.FC = () => {
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
   const [resolveDialogOpen, setResolveDialogOpen] = useState(false);
   const [resolution, setResolution] = useState('');
+  const [problemStats, setProblemStats] = useState<ProblemStats | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -74,7 +93,7 @@ const AlertsDashboard: React.FC = () => {
     try {
       const params = getApiParams();
 
-      const [alertsResponse, statsData] = await Promise.all([
+      const [alertsResponse, statsData, problemsResp] = await Promise.all([
         alertsService.getAlerts({
           ...params,
           page: page + 1,
@@ -84,11 +103,13 @@ const AlertsDashboard: React.FC = () => {
           startDate: params.startDate,
           endDate: params.endDate,
         }),
+        api.get<ProblemStats>('/ai/alerts/estadisticas-problemas').then(r => r.data).catch(() => null),
       ]);
 
       setAlerts(alertsResponse.alerts);
       setTotalAlerts(alertsResponse.total);
       setStats(statsData);
+      setProblemStats(problemsResp);
     } catch (err) {
       console.error('Error loading alerts data:', err);
       setError('Error al cargar las alertas. Por favor, intente de nuevo.');
@@ -144,7 +165,7 @@ const AlertsDashboard: React.FC = () => {
 
     try {
       await alertsService.resolveAlert({
-        alertId: selectedAlert.id,
+        alertId: String(selectedAlert.id),
         resolution: resolution.trim(),
       });
       handleCloseResolveDialog();
@@ -154,7 +175,7 @@ const AlertsDashboard: React.FC = () => {
     }
   };
 
-  const getSeverityIcon = (severity: string) => {
+  const getSeverityIcon = (severity?: string) => {
     switch (severity) {
       case 'critical':
         return <ErrorIcon sx={{ color: '#d32f2f' }} />;
@@ -274,6 +295,133 @@ const AlertsDashboard: React.FC = () => {
           />
         </Grid>
       </Grid>
+
+      {/* ══════ ESTADÍSTICAS DE DETECCIÓN DE PROBLEMAS ══════ */}
+      {problemStats?.disponible && problemStats.resumen && (
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+            Estadísticas de Detección de Problemas
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Análisis cuantitativo (IA) del contenido institucional clasificado como
+            negativo o queja, para identificar dónde y qué tan graves son los problemas.
+          </Typography>
+
+          {/* KPIs de problemas */}
+          <Grid container spacing={2} sx={{ mb: 2 }}>
+            {[
+              { label: 'Tasa de problemas', value: `${problemStats.resumen.tasaProblemas}%`, color: '#b91c1c', sub: 'del contenido institucional' },
+              { label: 'Problemas detectados', value: problemStats.resumen.totalProblemas, color: '#ea580c', sub: 'negativos + quejas' },
+              { label: 'Críticos / altos', value: problemStats.resumen.criticos, color: '#d32f2f', sub: 'requieren atención' },
+              { label: 'Áreas afectadas', value: problemStats.resumen.temasAfectados, color: '#7c3aed', sub: 'temas distintos' },
+            ].map((k) => (
+              <Grid item xs={6} md={3} key={k.label}>
+                <Card variant="outlined">
+                  <CardContent sx={{ py: 1.5 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: k.color }}>{k.value}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>{k.label}</Typography>
+                    <Typography variant="caption" color="text.secondary">{k.sub}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
+          <Grid container spacing={2}>
+            {/* Problemas por tema */}
+            <Grid item xs={12} md={7}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                    Problemas por tema institucional
+                  </Typography>
+                  {problemStats.porTema && problemStats.porTema.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={problemStats.porTema} layout="vertical" margin={{ left: 20 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                        <XAxis type="number" allowDecimals={false} fontSize={12} />
+                        <YAxis dataKey="tema" type="category" width={120} fontSize={11} />
+                        <RTooltip />
+                        <Legend />
+                        <Bar dataKey="negativos" name="Negativos" stackId="a" fill="#ef4444" />
+                        <Bar dataKey="quejas" name="Quejas" stackId="a" fill="#f59e0b" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : <EmptyState title="Sin problemas" message="No se detectaron problemas." />}
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Distribución por severidad */}
+            <Grid item xs={12} md={5}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                    Severidad de los problemas
+                  </Typography>
+                  {problemStats.porSeveridad && problemStats.porSeveridad.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie data={problemStats.porSeveridad} dataKey="cantidad" nameKey="severidad"
+                             cx="50%" cy="50%" outerRadius={95} label={(e: any) => `${e.severidad} (${e.cantidad})`}>
+                          {problemStats.porSeveridad.map((s) => (
+                            <Cell key={s.severidad} fill={SEV_COLORS[s.severidad] || '#94a3b8'} />
+                          ))}
+                        </Pie>
+                        <RTooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : <EmptyState title="Sin datos" message="" />}
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Evolución temporal */}
+            <Grid item xs={12} md={7}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                    Evolución de problemas en el tiempo
+                  </Typography>
+                  {problemStats.tendencia && problemStats.tendencia.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={260}>
+                      <LineChart data={problemStats.tendencia}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="fecha" fontSize={10} />
+                        <YAxis allowDecimals={false} fontSize={12} />
+                        <RTooltip />
+                        <Line type="monotone" dataKey="problemas" name="Problemas" stroke="#b91c1c" strokeWidth={2} dot={{ r: 3 }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  ) : <EmptyState title="Sin tendencia" message="" />}
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Problemas por carrera */}
+            <Grid item xs={12} md={5}>
+              <Card sx={{ height: '100%' }}>
+                <CardContent>
+                  <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                    Problemas por carrera
+                  </Typography>
+                  {problemStats.porCarrera && problemStats.porCarrera.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={260}>
+                      <BarChart data={problemStats.porCarrera} layout="vertical" margin={{ left: 20 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                        <XAxis type="number" allowDecimals={false} fontSize={12} />
+                        <YAxis dataKey="careerName" type="category" width={130} fontSize={10} />
+                        <RTooltip />
+                        <Bar dataKey="problemas" name="Problemas" fill="#7c3aed" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : <EmptyState title="Sin datos" message="No hay problemas asociados a carreras." />}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
 
       {/* Resumen por severidad */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -432,7 +580,7 @@ const AlertsDashboard: React.FC = () => {
                         <TableCell>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             {getSeverityIcon(alert.severity)}
-                            <SeverityChip severity={alert.severity} />
+                            <SeverityChip severity={alert.severity || 'media'} />
                           </Box>
                         </TableCell>
                         <TableCell>
@@ -440,7 +588,7 @@ const AlertsDashboard: React.FC = () => {
                             {alert.title}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {alert.message.substring(0, 60)}...
+                            {(alert.message ?? '').substring(0, 60)}...
                           </Typography>
                         </TableCell>
                         <TableCell>
@@ -455,9 +603,9 @@ const AlertsDashboard: React.FC = () => {
                           />
                         </TableCell>
                         <TableCell>
-                          <Tooltip title={formatDateDisplay(alert.createdAt)}>
+                          <Tooltip title={formatDateDisplay(alert.createdAt ?? '')}>
                             <Typography variant="body2">
-                              {formatTimeAgo(alert.createdAt)}
+                              {formatTimeAgo(alert.createdAt ?? '')}
                             </Typography>
                           </Tooltip>
                         </TableCell>
@@ -590,7 +738,7 @@ const AlertsDashboard: React.FC = () => {
                   <Typography variant="subtitle2" color="text.secondary">
                     Severidad
                   </Typography>
-                  <SeverityChip severity={selectedAlert.severity} />
+                  <SeverityChip severity={selectedAlert.severity || 'media'} />
                 </Box>
                 <Box>
                   <Typography variant="subtitle2" color="text.secondary">
@@ -608,7 +756,7 @@ const AlertsDashboard: React.FC = () => {
                   Fecha de creación
                 </Typography>
                 <Typography variant="body1">
-                  {formatDateDisplay(selectedAlert.createdAt)}
+                  {formatDateDisplay(selectedAlert.createdAt ?? '')}
                 </Typography>
               </Box>
               {selectedAlert.resolution && (
@@ -616,7 +764,9 @@ const AlertsDashboard: React.FC = () => {
                   <Typography variant="subtitle2" color="text.secondary">
                     Resolución
                   </Typography>
-                  <Typography variant="body1">{selectedAlert.resolution}</Typography>
+                  <Typography variant="body1">
+                    {selectedAlert.resolution.comment ?? selectedAlert.resolution.date ?? '-'}
+                  </Typography>
                 </Box>
               )}
             </Box>

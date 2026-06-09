@@ -17,9 +17,29 @@ Configuración en config.json:
 }
 """
 
+import os
+import sys
 import logging
 
 logger = logging.getLogger('OSINT.ApifyKeys')
+
+# Cargar variables de entorno (.env) de forma defensiva
+try:
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from env_loader import load_env
+    load_env()
+except Exception:  # noqa: BLE001 — si no existe, se sigue con config.json
+    pass
+
+
+def _env_key(platform: str) -> str:
+    """Lee la API key de Apify desde variables de entorno (prioridad sobre config)."""
+    plat = (platform or '').upper()
+    return (
+        os.getenv(f'APIFY_API_KEY_{plat}')
+        or os.getenv('APIFY_API_KEY')
+        or ''
+    )
 
 
 # Errores que indican agotamiento de créditos/memoria
@@ -53,16 +73,18 @@ def get_api_key(config: dict, platform: str = 'default') -> str:
     Returns:
         API key string
     """
+    # 1) Variables de entorno (.env) — fuente recomendada, no se sube a git
+    env_key = _env_key(platform)
+    if env_key:
+        return env_key
+
+    # 2) config.json (compatibilidad; normalmente vacío en el repo)
     apify_config = config.get('apify', {})
-    
-    # Intentar key específica de plataforma
     platform_keys = apify_config.get('api_keys', {})
     platform_key = platform_keys.get(platform.lower())
-    
     if platform_key:
         return platform_key
-    
-    # Fallback a key genérica
+
     return apify_config.get('api_key', '')
 
 
@@ -82,9 +104,9 @@ def get_fallback_key(config: dict, platform: str) -> str:
     """
     apify_config = config.get('apify', {})
     platform_keys = apify_config.get('api_keys', {})
-    
-    # Key de fallback explícita
-    fallback = platform_keys.get('fallback', '')
+
+    # Key de fallback explícita (entorno tiene prioridad)
+    fallback = os.getenv('APIFY_API_KEY_FALLBACK', '') or platform_keys.get('fallback', '')
     
     # Si no hay fallback explícito, usar la key de la otra plataforma
     if not fallback:

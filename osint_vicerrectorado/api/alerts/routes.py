@@ -15,8 +15,125 @@ from flask import Blueprint, jsonify, request
 from api.common.database import get_db
 from api.common.filters import EXTERNAL_POSTS_FILTER, EXTERNAL_PROCESADOS_SUBQUERY
 from api.common.auth import hash_password, get_active_tokens, get_current_user
+from emi_careers import EMI_CAREERS
 
 bp = Blueprint('alerts', __name__)
+
+
+@bp.route('/api/ai/alerts/estadisticas-problemas')
+def estadisticas_problemas():
+    """Estadísticas reales para la DETECCIÓN DE PROBLEMAS (OE).
+
+    Un "problema" = contenido institucional clasificado por la IA como
+    Negativo o como queja. Devuelve agregados listos para graficar:
+    por tema, por severidad, por carrera, evolución temporal y tasa global.
+    """
+    conn = get_db()
+    cur = conn.cursor()
+
+    def _existe(t):
+        cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (t,))
+        return cur.fetchone() is not None
+
+    if not _existe('analisis_deepseek'):
+        conn.close()
+        return jsonify({'disponible': False})
+
+    # Total institucional analizado (denominador para la tasa)
+    cur.execute("SELECT COUNT(*) c FROM analisis_deepseek WHERE es_institucional=1")
+    total_inst = cur.fetchone()['c']
+
+    # Problemas (posts) con su fecha real de publicación/recolección
+    cur.execute('''
+        SELECT ds.tema_principal AS tema, ds.severidad AS sev, ds.sentimiento AS sent,
+               ds.es_queja AS queja, ds.carreras_json AS carreras, ds.resumen AS resumen,
+               DATE(COALESCE(dr.fecha_publicacion, dr.fecha_recoleccion)) AS fecha
+        FROM analisis_deepseek ds
+        JOIN dato_procesado dp ON ds.id_contenido = dp.id_dato_procesado
+        JOIN dato_recolectado dr ON dp.id_dato_original = dr.id_dato
+        WHERE ds.tipo_contenido='post' AND ds.es_institucional=1
+          AND (ds.sentimiento='Negativo' OR ds.es_queja=1)
+    ''')
+    rows = [dict(r) for r in cur.fetchall()]
+
+    # Problemas (comentarios)
+    cur.execute('''
+        SELECT ds.tema_principal AS tema, ds.severidad AS sev, ds.sentimiento AS sent,
+               ds.es_queja AS queja, ds.carreras_json AS carreras, ds.resumen AS resumen,
+               DATE(COALESCE(c.fecha_publicacion, c.fecha_recoleccion)) AS fecha
+        FROM analisis_deepseek ds
+        JOIN comentario c ON ds.id_contenido = c.id_comentario
+        WHERE ds.tipo_contenido='comentario' AND ds.es_institucional=1
+          AND (ds.sentimiento='Negativo' OR ds.es_queja=1)
+    ''')
+    rows += [dict(r) for r in cur.fetchall()]
+    conn.close()
+
+    from collections import defaultdict
+    por_tema = defaultdict(lambda: {'problemas': 0, 'negativos': 0, 'quejas': 0})
+    por_sev = defaultdict(int)
+    por_carrera = defaultdict(int)
+    por_fecha = defaultdict(int)
+    sev_rank = {'critica': 4, 'alta': 3, 'media': 2, 'baja': 1}
+    top = []
+
+    for r in rows:
+        tema = (r['tema'] or 'general').strip().lower()
+        por_tema[tema]['problemas'] += 1
+        if r['sent'] == 'Negativo':
+            por_tema[tema]['negativos'] += 1
+        if r['queja']:
+            por_tema[tema]['quejas'] += 1
+        por_sev[(r['sev'] or 'baja')] += 1
+        if r['fecha']:
+            por_fecha[r['fecha']] += 1
+        try:
+            for cid in json.loads(r['carreras'] or '[]'):
+                por_carrera[cid] += 1
+        except (json.JSONDecodeError, TypeError):
+            pass
+        top.append({
+            'tema': r['tema'] or 'general',
+            'severidad': r['sev'] or 'baja',
+            'resumen': r['resumen'] or '',
+            '_rank': sev_rank.get(r['sev'], 0),
+        })
+
+    problemas_tema = sorted(
+        ({'tema': t.capitalize(), **v} for t, v in por_tema.items()),
+        key=lambda x: x['problemas'], reverse=True)[:10]
+
+    severidad = [{'severidad': s, 'cantidad': por_sev[s]}
+                 for s in ['critica', 'alta', 'media', 'baja'] if por_sev.get(s)]
+
+    carrera = sorted(
+        ({'careerId': cid, 'careerName': EMI_CAREERS.get(cid, cid), 'problemas': n}
+         for cid, n in por_carrera.items()),
+        key=lambda x: x['problemas'], reverse=True)[:10]
+
+    tendencia = [{'fecha': f, 'problemas': por_fecha[f]} for f in sorted(por_fecha.keys())]
+
+    top.sort(key=lambda x: x['_rank'], reverse=True)
+    top_problemas = [{k: v for k, v in t.items() if k != '_rank'} for t in top[:8]]
+
+    total_problemas = len(rows)
+    criticos = por_sev.get('critica', 0) + por_sev.get('alta', 0)
+
+    return jsonify({
+        'disponible': True,
+        'resumen': {
+            'totalAnalizado': total_inst,
+            'totalProblemas': total_problemas,
+            'tasaProblemas': round(total_problemas / total_inst * 100, 1) if total_inst else 0,
+            'criticos': criticos,
+            'temasAfectados': len(por_tema),
+        },
+        'porTema': problemas_tema,
+        'porSeveridad': severidad,
+        'porCarrera': carrera,
+        'tendencia': tendencia,
+        'topProblemas': top_problemas,
+    })
 
 # ============== ALERTAS (Persistentes en tabla alerta) ==============
 def _severity_map(sev):

@@ -21,13 +21,17 @@ export interface TopicData {
 }
 
 export interface TopicCluster {
-  id: number;
+  id: string;
   name: string;
   keywords: string[];
-  size: number;
+  documentCount: number;
   count?: number;
-  sentiment: number;
-  trend: 'up' | 'down' | 'stable';
+  sentiment: {
+    positive: number;
+    negative: number;
+    neutral: number;
+  };
+  sampleTexts?: string[];
 }
 
 export interface HeatmapCell {
@@ -51,9 +55,9 @@ export interface CompetitorData {
   name: string;
   satisfactionScore: number;
   mentionsCount: number;
-  mentions?: number;
+  mentions: number;
   positiveRatio: number;
-  sentiment?: number;
+  sentiment: number; // 0-100 percentage
   color: string;
 }
 

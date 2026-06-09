@@ -378,6 +378,8 @@ const Header: React.FC<HeaderProps> = ({
                     {getSeverityIcon(alert.severity || alert.severidad)}
                   </ListItemIcon>
                   <ListItemText
+                    primaryTypographyProps={{ component: 'div' }}
+                    secondaryTypographyProps={{ component: 'div' }}
                     primary={
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.3 }}>
                         <Typography variant="body2" fontWeight={600} sx={{ flex: 1, lineHeight: 1.3 }}>

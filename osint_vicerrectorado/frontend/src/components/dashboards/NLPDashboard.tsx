@@ -5,7 +5,7 @@
  * 
  * Muestra los resultados del pipeline NLP:
  * - Keywords extraídas (TF-IDF)
- * - Tópicos descubiertos (LDA)
+ * - Tópicos descubiertos (BERTopic)
  * - Clusters de opiniones (K-Means)
  * - Entidades reconocidas (NER)
  * - Sentimiento por aspecto
@@ -84,17 +84,19 @@ const NLPDashboard: React.FC = () => {
   const [clusters, setClusters] = useState<any[]>([]);
   const [entidades, setEntidades] = useState<any>({});
   const [sentAspecto, setSentAspecto] = useState<any>({});
+  const [ia, setIa] = useState<any>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [resRes, kwRes, topRes, clRes, entRes, saRes] = await Promise.all([
+      const [resRes, kwRes, topRes, clRes, entRes, saRes, iaRes] = await Promise.all([
         fetch(`${API_URL}/nlp/resumen`).then(r => r.json()).catch(() => null),
         fetch(`${API_URL}/nlp/keywords`).then(r => r.json()).catch(() => []),
         fetch(`${API_URL}/nlp/topicos`).then(r => r.json()).catch(() => []),
         fetch(`${API_URL}/nlp/clusters`).then(r => r.json()).catch(() => []),
         fetch(`${API_URL}/nlp/entidades`).then(r => r.json()).catch(() => ({})),
         fetch(`${API_URL}/nlp/sentimiento-aspecto`).then(r => r.json()).catch(() => ({})),
+        fetch(`${API_URL}/ai/deepseek/analytics`).then(r => r.json()).catch(() => null),
       ]);
       setResumen(resRes);
       setKeywords(kwRes);
@@ -102,6 +104,7 @@ const NLPDashboard: React.FC = () => {
       setClusters(clRes);
       setEntidades(entRes);
       setSentAspecto(saRes);
+      setIa(iaRes);
     } catch (err) {
       console.error('Error:', err);
     } finally {
@@ -112,7 +115,7 @@ const NLPDashboard: React.FC = () => {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   const handleExecuteNLP = async () => {
-    if (!confirm('¿Ejecutar Pipeline NLP Completo?\n\nSe aplicará:\n1. TF-IDF para keywords\n2. LDA para tópicos\n3. K-Means para clustering\n4. NER para entidades\n5. Análisis de sentimiento por aspecto')) return;
+    if (!confirm('¿Ejecutar Pipeline NLP Completo?\n\nSe aplicará:\n1. TF-IDF para keywords\n2. BERTopic para tópicos\n3. K-Means para clustering\n4. NER para entidades\n5. Análisis de sentimiento por aspecto')) return;
     setExecuting(true);
     try {
       await fetch(`${API_URL}/nlp/ejecutar`, { method: 'POST' });
@@ -148,11 +151,132 @@ const NLPDashboard: React.FC = () => {
         <div style={s.stats}>
           <div style={s.stat}><div style={s.statNum}>{nTecnicas}</div><div style={s.statLabel}>Técnicas IA/ML</div></div>
           <div style={s.stat}><div style={{ ...s.statNum, color: '#818cf8' }}>{keywords.length}</div><div style={s.statLabel}>Keywords TF-IDF</div></div>
-          <div style={s.stat}><div style={{ ...s.statNum, color: '#34d399' }}>{topicos.length}</div><div style={s.statLabel}>Tópicos LDA</div></div>
+          <div style={s.stat}><div style={{ ...s.statNum, color: '#34d399' }}>{topicos.length}</div><div style={s.statLabel}>Tópicos BERTopic</div></div>
           <div style={s.stat}><div style={{ ...s.statNum, color: '#fbbf24' }}>{clusters.length}</div><div style={s.statLabel}>Clusters K-Means</div></div>
           <div style={s.stat}><div style={{ ...s.statNum, color: '#f472b6' }}>{Object.values(entidades).reduce((sum: number, arr: any) => sum + (Array.isArray(arr) ? arr.length : 0), 0)}</div><div style={s.statLabel}>Entidades NER</div></div>
         </div>
       </div>
+
+      {/* ════════ ANÁLISIS CON IA (DeepSeek) ════════ */}
+      {ia?.disponible && (() => {
+        const sent = ia.sentimiento || {};
+        const sentTotal = (sent.Positivo || 0) + (sent.Neutral || 0) + (sent.Negativo || 0) || 1;
+        const sev = ia.severidad || {};
+        const sevTotal = Object.values(sev).reduce((a: number, b: any) => a + (b || 0), 0) || 1;
+        const maxTema = ia.temas?.[0]?.menciones || 1;
+        const maxCar = ia.carreras?.[0]?.menciones || 1;
+        const sentColors: Record<string, string> = { Positivo: '#16a34a', Neutral: '#d97706', Negativo: '#dc2626' };
+        const sevColors: Record<string, string> = { baja: '#94a3b8', media: '#d97706', alta: '#ea580c', critica: '#dc2626' };
+        const Bar = ({ label, val, total, color }: any) => (
+          <div style={{ marginBottom: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
+              <span style={{ color: '#334155', fontWeight: 600, textTransform: 'capitalize' }}>{label}</span>
+              <span style={{ color: '#64748b' }}>{val} ({Math.round((val / total) * 100)}%)</span>
+            </div>
+            <div style={{ height: '8px', borderRadius: '4px', backgroundColor: '#e2e8f0', overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${(val / total) * 100}%`, backgroundColor: color, borderRadius: '4px' }} />
+            </div>
+          </div>
+        );
+        return (
+          <div style={{ ...s.card, marginBottom: '24px', background: 'linear-gradient(135deg, #faf5ff, #eff6ff)', border: '1px solid #ddd6fe' }}>
+            <div style={s.cardTitle}>
+              <Lightbulb size={20} color="#7c3aed" /> Análisis con IA — Clasificación Inteligente
+              <span style={{ ...s.badge, backgroundColor: '#ede9fe', color: '#6d28d9', marginLeft: 'auto' }}>{ia.total} ítems</span>
+            </div>
+
+            {/* KPIs IA */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+              {[
+                { num: ia.total, label: 'Ítems analizados', color: '#7c3aed' },
+                { num: `${ia.porcentajeInstitucional}%`, label: 'Institucional', color: '#2563eb' },
+                { num: ia.institucional, label: 'Relevantes (institucionales)', color: '#0891b2' },
+                { num: ia.quejas, label: 'Quejas detectadas', color: '#dc2626' },
+                { num: ia.carreras?.length || 0, label: 'Carreras mencionadas', color: '#16a34a' },
+              ].map((k, i) => (
+                <div key={i} style={{ backgroundColor: 'white', borderRadius: '12px', padding: '14px 16px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '22px', fontWeight: 800, color: k.color }}>{k.num}</div>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{k.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={s.grid2}>
+              {/* Sentimiento institucional */}
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>Sentimiento (institucional)</div>
+                {(['Positivo', 'Neutral', 'Negativo'] as const).map(k => (
+                  <Bar key={k} label={k} val={sent[k] || 0} total={sentTotal} color={sentColors[k]} />
+                ))}
+              </div>
+              {/* Severidad institucional */}
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>Nivel de urgencia para el Vicerrectorado</div>
+                {(['critica', 'alta', 'media', 'baja'] as const).map(k => (
+                  <Bar key={k} label={k} val={sev[k] || 0} total={sevTotal} color={sevColors[k]} />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ ...s.grid2, marginTop: '8px' }}>
+              {/* Temas IA */}
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>Temas institucionales detectados por IA</div>
+                {(ia.temas || []).map((t: any, i: number) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '7px' }}>
+                    <span style={{ fontSize: '12px', color: '#334155', minWidth: '130px', textTransform: 'capitalize' }}>{t.tema}</span>
+                    <div style={{ flex: 1, height: '8px', borderRadius: '4px', backgroundColor: '#e2e8f0', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${(t.menciones / maxTema) * 100}%`, backgroundColor: '#8b5cf6', borderRadius: '4px' }} />
+                    </div>
+                    <span style={{ fontSize: '12px', color: '#64748b', minWidth: '28px', textAlign: 'right' }}>{t.menciones}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Carreras IA */}
+              <div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', marginBottom: '12px' }}>Carreras mencionadas (clasificación IA)</div>
+                {(ia.carreras || []).map((c: any, i: number) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '7px' }}>
+                    <span style={{ fontSize: '12px', color: '#334155', minWidth: '150px' }}>{c.careerName}</span>
+                    <div style={{ flex: 1, height: '8px', borderRadius: '4px', backgroundColor: '#e2e8f0', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${(c.menciones / maxCar) * 100}%`, backgroundColor: '#2563eb', borderRadius: '4px' }} />
+                    </div>
+                    <span style={{ fontSize: '12px', color: '#64748b', minWidth: '28px', textAlign: 'right' }}>{c.menciones}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Hallazgos y Recomendaciones (resumen ejecutivo automático) */}
+      {(resumen?.resumen_ejecutivo?.hallazgos_principales?.length > 0 ||
+        resumen?.resumen_ejecutivo?.recomendaciones_uebu?.length > 0) && (
+          <div style={s.grid2}>
+            <div style={s.card}>
+              <div style={s.cardTitle}><CheckCircle size={20} color="#16a34a" /> Hallazgos Principales</div>
+              {(resumen.resumen_ejecutivo.hallazgos_principales || []).map((h: any, i: number) => {
+                const isNeg = h.tipo === 'negativo' || h.tipo === 'alerta';
+                return (
+                  <div key={i} style={{ display: 'flex', gap: '10px', padding: '10px 12px', borderRadius: '10px', marginBottom: '8px', backgroundColor: isNeg ? '#fef2f2' : '#f0fdf4', border: `1px solid ${isNeg ? '#fecaca' : '#bbf7d0'}` }}>
+                    {isNeg ? <AlertTriangle size={16} color="#dc2626" style={{ flexShrink: 0, marginTop: '2px' }} /> : <CheckCircle size={16} color="#16a34a" style={{ flexShrink: 0, marginTop: '2px' }} />}
+                    <span style={{ fontSize: '13px', color: '#334155' }}>{h.descripcion}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={s.card}>
+              <div style={s.cardTitle}><Lightbulb size={20} color="#d97706" /> Recomendaciones para el Vicerrectorado</div>
+              {(resumen.resumen_ejecutivo.recomendaciones_uebu || []).map((r: string, i: number) => (
+                <div key={i} style={{ display: 'flex', gap: '10px', padding: '10px 12px', borderRadius: '10px', marginBottom: '8px', backgroundColor: '#fffbeb', border: '1px solid #fde68a' }}>
+                  <Target size={16} color="#d97706" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <span style={{ fontSize: '13px', color: '#334155' }}>{r}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       {/* Técnicas aplicadas */}
       <div style={{ ...s.card, marginBottom: '24px' }}>
@@ -206,9 +330,9 @@ const NLPDashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Tópicos LDA */}
+        {/* Tópicos BERTopic */}
         <div style={s.card}>
-          <div style={s.cardTitle}><PieChart size={20} color="#8b5cf6" /> Tópicos Descubiertos (LDA)</div>
+          <div style={s.cardTitle}><PieChart size={20} color="#8b5cf6" /> Tópicos Descubiertos (BERTopic)</div>
           {topicos.length === 0 ? (
             <p style={{ color: '#94a3b8', textAlign: 'center', padding: '20px' }}>Sin tópicos. Ejecuta el NLP.</p>
           ) : (
@@ -339,9 +463,9 @@ const NLPDashboard: React.FC = () => {
           <div>
             <h4 style={{ fontSize: '14px', color: '#1e293b', marginBottom: '8px' }}>Modelos de Machine Learning</h4>
             <ul style={{ fontSize: '13px', color: '#475569', lineHeight: 2, paddingLeft: '20px' }}>
-              <li><strong>BETO</strong> (BERT en español): Análisis de sentimiento 3 clases</li>
+              <li><strong>Robertuito</strong> (BERT en español): Análisis de sentimiento 3 clases</li>
               <li><strong>K-Means</strong>: Clustering de opiniones con selección automática de K</li>
-              <li><strong>LDA</strong>: Latent Dirichlet Allocation para modelado de tópicos</li>
+              <li><strong>BERTopic</strong>: Modelado de tópicos basado en Transformers</li>
               <li><strong>Isolation Forest</strong>: Detección de anomalías multivariada</li>
             </ul>
           </div>

@@ -224,10 +224,10 @@ const ReputationDashboard: React.FC = () => {
         <Grid item xs={12} sm={6} md={3}>
           <KPICard
             title="Tasa de Engagement"
-            value={`${metrics?.engagementRate?.toFixed(1) || 0}%`}
+            value={metrics?.engagementRate?.toLocaleString() || '0'}
             icon={<TrendingUpIcon />}
             color="success"
-            subtitle="interacciones/publicación"
+            subtitle="interacciones promedio/post"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -285,6 +285,8 @@ const ReputationDashboard: React.FC = () => {
                       }}
                     >
                       <ListItemText
+                        primaryTypographyProps={{ component: 'div' }}
+                        secondaryTypographyProps={{ component: 'div' }}
                         primary={topic.name}
                         secondary={
                           <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
@@ -300,7 +302,7 @@ const ReputationDashboard: React.FC = () => {
                         }
                       />
                       <Chip
-                        label={`${topic.count}`}
+                        label={`${topic.documentCount || topic.count || 0}`}
                         size="small"
                         color="primary"
                         sx={{ ml: 1 }}
@@ -380,13 +382,12 @@ const ReputationDashboard: React.FC = () => {
                         <Typography
                           variant="body2"
                           fontWeight={600}
-                          color={competitor.sentiment >= 0 ? 'success.main' : 'error.main'}
+                          color={competitor.sentiment >= 50 ? 'success.main' : competitor.sentiment >= 30 ? 'warning.main' : 'error.main'}
                         >
-                          {competitor.sentiment >= 0 ? '+' : ''}
-                          {(competitor.sentiment * 100).toFixed(0)}%
+                          {competitor.sentiment.toFixed(1)}%
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          sentimiento
+                          satisfacción
                         </Typography>
                       </Box>
                     </ListItem>

@@ -13,7 +13,11 @@ from collections import defaultdict
 from flask import Blueprint, jsonify, request
 
 from api.common.database import get_db
-from api.common.filters import EXTERNAL_POSTS_FILTER, EXTERNAL_PROCESADOS_SUBQUERY
+from api.common.filters import (
+    EXTERNAL_POSTS_FILTER,
+    EXTERNAL_PROCESADOS_SUBQUERY,
+    INSTITUTIONAL_POSTS_SUBQUERY,
+)
 from api.common.auth import hash_password, get_active_tokens, get_current_user
 
 bp = Blueprint('sentiment', __name__)
@@ -33,6 +37,7 @@ def sentiment_distribution():
         FROM analisis_sentimiento a
         JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
         WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+          AND {INSTITUTIONAL_POSTS_SUBQUERY}
         GROUP BY a.sentimiento_predicho
     ''')
     
@@ -67,6 +72,7 @@ def sentiment_trend():
         FROM analisis_sentimiento a
         JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
         WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+          AND {INSTITUTIONAL_POSTS_SUBQUERY}
         GROUP BY DATE(dp.fecha_publicacion_iso), a.sentimiento_predicho
         ORDER BY fecha
     ''')
@@ -113,6 +119,7 @@ def top_posts():
         FROM dato_procesado dp
         LEFT JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
         WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+          AND {INSTITUTIONAL_POSTS_SUBQUERY}
         ORDER BY dp.engagement_total DESC
         LIMIT 20
     ''')
@@ -156,6 +163,7 @@ def sentiment_top_posts():
         JOIN analisis_sentimiento a ON dp.id_dato_procesado = a.id_dato_procesado
         WHERE a.sentimiento_predicho = ?
         AND {EXTERNAL_PROCESADOS_SUBQUERY}
+          AND {INSTITUTIONAL_POSTS_SUBQUERY}
         ORDER BY a.confianza DESC, dp.engagement_total DESC
         LIMIT ?
     ''', (sentiment_filter, limit))
@@ -190,6 +198,7 @@ def sentiment_kpis():
         FROM analisis_sentimiento a
         JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
         WHERE {EXTERNAL_PROCESADOS_SUBQUERY}
+          AND {INSTITUTIONAL_POSTS_SUBQUERY}
         GROUP BY a.sentimiento_predicho
     ''')
     
@@ -211,6 +220,7 @@ def sentiment_kpis():
         JOIN dato_procesado dp ON a.id_dato_procesado = dp.id_dato_procesado
         WHERE DATE(dp.fecha_publicacion_iso) >= DATE('now', '-14 days')
         AND {EXTERNAL_PROCESADOS_SUBQUERY}
+          AND {INSTITUTIONAL_POSTS_SUBQUERY}
         GROUP BY period, a.sentimiento_predicho
     ''')
     

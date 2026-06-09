@@ -9,5 +9,6 @@ export { default as sentimentService } from './sentimentService';
 export { default as reputationService } from './reputationService';
 export { default as alertsService } from './alertsService';
 export { default as benchmarkingService } from './benchmarkingService';
+export { default as deepseekService } from './deepseekService';
 export { default as usuariosService } from './usuariosService';
 export { default as configuracionService } from './configuracionService';

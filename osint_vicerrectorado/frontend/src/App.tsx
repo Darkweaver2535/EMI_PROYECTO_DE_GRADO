@@ -19,6 +19,7 @@ const SentimentDashboard = lazy(() => import('./components/dashboards/SentimentD
 const ReputationDashboard = lazy(() => import('./components/dashboards/ReputationDashboard'));
 const AlertsDashboard = lazy(() => import('./components/dashboards/AlertsDashboard'));
 const BenchmarkingDashboard = lazy(() => import('./components/dashboards/BenchmarkingDashboard'));
+const InsightsDashboard = lazy(() => import('./components/dashboards/InsightsDashboard'));
 const OSINTDashboard = lazy(() => import('./components/dashboards/OSINTDashboard'));
 const NLPDashboard = lazy(() => import('./components/dashboards/NLPDashboard'));
 const EvaluacionDashboard = lazy(() => import('./components/dashboards/EvaluacionDashboard'));
@@ -119,6 +120,11 @@ const App: React.FC = () => {
                     <Route path="benchmarking" element={
                       <PermisoRoute permisoKey="dashboards">
                         <BenchmarkingDashboard />
+                      </PermisoRoute>
+                    } />
+                    <Route path="insights" element={
+                      <PermisoRoute permisoKey="dashboards">
+                        <InsightsDashboard />
                       </PermisoRoute>
                     } />
                     <Route path="osint" element={

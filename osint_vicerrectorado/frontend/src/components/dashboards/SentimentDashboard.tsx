@@ -324,6 +324,8 @@ const SentimentDashboard: React.FC = () => {
                             {getSentimentIcon('positive')}
                           </ListItemIcon>
                           <ListItemText
+                            primaryTypographyProps={{ component: 'div' }}
+                            secondaryTypographyProps={{ component: 'div' }}
                             primary={
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                                 <Typography variant="body1" component="span">
@@ -340,7 +342,9 @@ const SentimentDashboard: React.FC = () => {
                                 />
                                 <Chip
                                   size="small"
-                                  label={`Score: ${(post.sentimentScore * 100).toFixed(0)}%`}
+                                  label={`Score: ${isNaN(Number(post.sentimentScore)) || post.sentimentScore == null 
+                                    ? 'N/A' 
+                                    : (Number(post.sentimentScore) * 100).toFixed(0) + '%'}`}
                                   sx={{
                                     bgcolor: SENTIMENT_COLORS.positive + '20',
                                     color: SENTIMENT_COLORS.positive,
@@ -375,6 +379,8 @@ const SentimentDashboard: React.FC = () => {
                             {getSentimentIcon('negative')}
                           </ListItemIcon>
                           <ListItemText
+                            primaryTypographyProps={{ component: 'div' }}
+                            secondaryTypographyProps={{ component: 'div' }}
                             primary={
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                                 <Typography variant="body1" component="span">
@@ -391,7 +397,9 @@ const SentimentDashboard: React.FC = () => {
                                 />
                                 <Chip
                                   size="small"
-                                  label={`Score: ${(Math.abs(post.sentimentScore) * 100).toFixed(0)}%`}
+                                  label={`Score: ${isNaN(Number(post.sentimentScore)) || post.sentimentScore == null 
+                                    ? 'N/A' 
+                                    : (Number(post.sentimentScore) * 100).toFixed(0) + '%'}`}
                                   sx={{
                                     bgcolor: SENTIMENT_COLORS.negative + '20',
                                     color: SENTIMENT_COLORS.negative,

@@ -7,16 +7,17 @@ export interface CareerRanking {
   id?: number | string;
   nombre?: string;
   careerName: string;
-  careerId?: number | string;
+  // El endpoint /ai/benchmarking/careers siempre devuelve estos campos
+  careerId: string;
+  rank: number;
+  mentions: number;
+  sentiment: number;
+  engagement: number;
   codigo?: string;
   satisfactionScore?: number;
-  rank: number;
   totalOpinions?: number;
   trend?: 'up' | 'down' | 'stable';
   change?: number; // cambio vs período anterior
-  mentions?: number;
-  sentiment?: number;
-  engagement?: number;
 }
 
 export interface CareerRadarProfile {

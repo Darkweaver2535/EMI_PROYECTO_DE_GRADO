@@ -186,6 +186,12 @@ class TrendDetector:
         """Entrena modelo Prophet."""
         self.logger.info("Entrenando modelo Prophet...")
         
+        # Añadir indicadores de semestre boliviano
+        # Semestre 1: febrero - junio (meses 2 al 6)
+        # Semestre 2: agosto - noviembre (meses 8 al 11)
+        self.data['semestre_1'] = self.data['ds'].dt.month.isin([2, 3, 4, 5, 6])
+        self.data['semestre_2'] = self.data['ds'].dt.month.isin([8, 9, 10, 11])
+        
         self.prophet_model = Prophet(
             seasonality_mode=self.seasonality_mode,
             changepoint_prior_scale=self.changepoint_threshold,
@@ -195,12 +201,22 @@ class TrendDetector:
             interval_width=0.95
         )
         
-        # Añadir estacionalidad semestral (períodos académicos)
-        self.prophet_model.add_seasonality(
-            name='semestral',
-            period=182.5,  # ~6 meses
-            fourier_order=5
-        )
+        # Añadir estacionalidad semestral (períodos académicos) solo si hay suficientes datos
+        dias_totales = (self.data['ds'].max() - self.data['ds'].min()).days
+        if dias_totales > 365:
+            self.prophet_model.add_seasonality(
+                name='semestre_1',
+                period=150,  # ~5 meses
+                fourier_order=5,
+                condition_name='semestre_1'
+            )
+            self.prophet_model.add_seasonality(
+                name='semestre_2',
+                period=120,  # ~4 meses
+                fourier_order=5,
+                condition_name='semestre_2'
+            )
+            self.logger.info("Estacionalidad académica boliviana añadida")
         
         self.prophet_model.fit(self.data)
         self.logger.info("Modelo Prophet entrenado")
@@ -456,6 +472,10 @@ class TrendDetector:
             periods=periods,
             freq=self.freq
         )
+        
+        # Añadir indicadores de semestre para predicción
+        future['semestre_1'] = future['ds'].dt.month.isin([2, 3, 4, 5, 6])
+        future['semestre_2'] = future['ds'].dt.month.isin([8, 9, 10, 11])
         
         # Predecir
         forecast = self.prophet_model.predict(future)

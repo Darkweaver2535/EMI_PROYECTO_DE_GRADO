@@ -65,7 +65,7 @@ export const sentimentService = {
    * Obtiene posts más positivos o negativos
    */
   async getTopPosts(params: GetTopPostsParams): Promise<TopPost[]> {
-    const { data } = await api.get<TopPost[]>('/ai/sentiments/top-posts', {
+    const { data } = await api.get<any[]>('/ai/sentiments/top-posts', {
       params: {
         type: params.type,
         limit: params.limit || 10,
@@ -73,7 +73,12 @@ export const sentimentService = {
         end_date: params.endDate,
       },
     });
-    return data;
+    
+    // Mapear 'confidence' (del backend) a 'sentimentScore' para el frontend
+    return data.map(post => ({
+      ...post,
+      sentimentScore: post.sentimentScore ?? post.confidence,
+    }));
   },
 
   /**
